@@ -1,23 +1,20 @@
-import os
-
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    config_file = os.path.join(
-        get_package_share_directory('aegis_ros'),
-        'config',
-        'ekf.yaml'
-    )
-
     return LaunchDescription([
         Node(
             package='aegis_ros',
             executable='ekf_node',
             name='ekf_localization',
             output='screen',
-            parameters=[config_file],
-        )
+            parameters=['config/ekf.yaml'],
+        ),
+        Node(
+            package='aegis_ros',
+            executable='trajectory_logger_node',
+            name='trajectory_logger',
+            output='screen',
+        ),
     ])

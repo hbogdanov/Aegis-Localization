@@ -44,6 +44,19 @@ source install/setup.bash
 ros2 launch aegis_ros ekf_localization.launch.py
 ```
 
+## Run Benchmark and Trajectory Logging
+
+```bash
+cd ros2_ws
+source install/setup.bash
+ros2 launch aegis_ros benchmark.launch.py
+```
+
+The benchmark launch starts the EKF node and the trajectory logger, which writes results to:
+
+- `results/metrics/ekf.csv`
+- `results/metrics/odom.csv`
+
 ## Notes
 
-This repository is a starting point for the Aegis Localization project. The first milestone ships a dummy EKF localization node that publishes `/aegis/ekf_pose` and `/aegis/ekf_path` while the full filter math library is built in `aegis_core`.
+This repository now includes a working EKF node that fuses `/odom` and `/imu` into `/aegis/ekf_pose` and `/aegis/ekf_path`, and publishes diagnostics on `/aegis/diagnostics`.
