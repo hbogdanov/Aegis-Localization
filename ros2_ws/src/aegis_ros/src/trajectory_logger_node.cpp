@@ -25,6 +25,7 @@ public:
 
     ekf_file_path_ = results_path / "ekf.csv";
     ukf_file_path_ = results_path / "ukf.csv";
+    pf_file_path_ = results_path / "pf.csv";
     ground_truth_file_path_ = results_path / "ground_truth.csv";
 
     openCsv(ekf_file_, ekf_file_path_);
@@ -39,6 +40,11 @@ public:
       "/aegis/ukf_pose",
       10,
       std::bind(&TrajectoryLoggerNode::ukfCallback, this, std::placeholders::_1));
+
+    pf_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
+      "/aegis/pf_pose",
+      10,
+      std::bind(&TrajectoryLoggerNode::pfCallback, this, std::placeholders::_1));
 
     ground_truth_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
       "/ground_truth/pose",
@@ -63,6 +69,9 @@ public:
     }
     if (ukf_file_.is_open()) {
       ukf_file_.close();
+    }
+    if (pf_file_.is_open()) {
+      pf_file_.close();
     }
   }
 
@@ -165,6 +174,23 @@ private:
     ukf_file_.flush();
   }
 
+  void pfCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
+  {
+    ensureCsvOpen(pf_file_, pf_file_path_);
+
+    const double timestamp = toTimestamp(msg->header.stamp);
+    const double x = msg->pose.position.x;
+    const double y = msg->pose.position.y;
+    const double yaw = quaternionToYaw(msg->pose.orientation);
+
+    pf_file_ << std::fixed << std::setprecision(9)
+             << timestamp << ','
+             << x << ','
+             << y << ','
+             << yaw << '\n';
+    pf_file_.flush();
+  }
+
   void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
   {
     if (!ground_truth_file_.is_open()) {
@@ -188,12 +214,15 @@ private:
   bool use_odom_as_ground_truth_;
   fs::path ekf_file_path_;
   fs::path ukf_file_path_;
+  fs::path pf_file_path_;
   fs::path ground_truth_file_path_;
   std::ofstream ekf_file_;
   std::ofstream ukf_file_;
+  std::ofstream pf_file_;
   std::ofstream ground_truth_file_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr ekf_sub_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr ukf_sub_;
+  rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pf_sub_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr ground_truth_sub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
 };

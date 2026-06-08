@@ -1,0 +1,12 @@
+/**:
+  ros__parameters:
+    num_particles: 500
+    process_noise_x: 0.02
+    process_noise_y: 0.02
+    process_noise_theta: 0.01
+    measurement_noise_x: 0.05
+    measurement_noise_y: 0.05
+    measurement_noise_theta: 0.03
+    resample_threshold_ratio: 0.5
+    use_odom_pose_update: true
+    frame_id: map

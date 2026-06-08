@@ -13,14 +13,27 @@ def generate_launch_description():
     fake_sensor_config = os.path.join(share_dir, 'config', 'fake_sensor_publisher.yaml')
     ekf_config = os.path.join(share_dir, 'config', 'ekf.yaml')
     ukf_config = os.path.join(share_dir, 'config', 'ukf.yaml')
+    pf_config = os.path.join(share_dir, 'config', 'particle_filter.yaml')
     logger_config = os.path.join(share_dir, 'config', 'trajectory_logger.yaml')
 
     run_ekf = LaunchConfiguration('run_ekf')
     run_ukf = LaunchConfiguration('run_ukf')
+    run_pf = LaunchConfiguration('run_pf')
+    odom_position_noise_std = LaunchConfiguration('odom_position_noise_std')
+    odom_velocity_noise_std = LaunchConfiguration('odom_velocity_noise_std')
+    imu_yaw_rate_noise_std = LaunchConfiguration('imu_yaw_rate_noise_std')
+    dropout_probability = LaunchConfiguration('dropout_probability')
+    use_odom_pose_update = LaunchConfiguration('use_odom_pose_update')
 
     ld = LaunchDescription([
         DeclareLaunchArgument('run_ekf', default_value='true'),
         DeclareLaunchArgument('run_ukf', default_value='true'),
+        DeclareLaunchArgument('run_pf', default_value='true'),
+        DeclareLaunchArgument('odom_position_noise_std', default_value='0.03'),
+        DeclareLaunchArgument('odom_velocity_noise_std', default_value='0.02'),
+        DeclareLaunchArgument('imu_yaw_rate_noise_std', default_value='0.01'),
+        DeclareLaunchArgument('dropout_probability', default_value='0.0'),
+        DeclareLaunchArgument('use_odom_pose_update', default_value='true'),
     ])
 
     fake = Node(
@@ -33,10 +46,10 @@ def generate_launch_description():
             {
                 'radius': 1.0,
                 'omega': 0.5,
-                'odom_position_noise_std': 0.03,
-                'odom_velocity_noise_std': 0.02,
-                'imu_yaw_rate_noise_std': 0.01,
-                'dropout_probability': 0.0,
+                'odom_position_noise_std': odom_position_noise_std,
+                'odom_velocity_noise_std': odom_velocity_noise_std,
+                'imu_yaw_rate_noise_std': imu_yaw_rate_noise_std,
+                'dropout_probability': dropout_probability,
             },
         ]
     )
@@ -46,7 +59,7 @@ def generate_launch_description():
         executable='ekf_node',
         name='ekf_node',
         output='screen',
-        parameters=[ekf_config],
+        parameters=[ekf_config, {'use_odom_pose_update': use_odom_pose_update}],
         condition=IfCondition(run_ekf),
     )
 
@@ -55,8 +68,17 @@ def generate_launch_description():
         executable='ukf_node',
         name='ukf_node',
         output='screen',
-        parameters=[ukf_config],
+        parameters=[ukf_config, {'use_odom_pose_update': use_odom_pose_update}],
         condition=IfCondition(run_ukf),
+    )
+
+    pf = Node(
+        package='aegis_ros',
+        executable='particle_filter_node',
+        name='particle_filter_node',
+        output='screen',
+        parameters=[pf_config, {'use_odom_pose_update': use_odom_pose_update}],
+        condition=IfCondition(run_pf),
     )
 
     logger = Node(
@@ -70,6 +92,7 @@ def generate_launch_description():
     ld.add_action(fake)
     ld.add_action(ekf)
     ld.add_action(ukf)
+    ld.add_action(pf)
     ld.add_action(logger)
 
     return ld

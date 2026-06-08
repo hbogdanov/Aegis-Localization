@@ -9,6 +9,7 @@ add_library(aegis_core
   src/motion_model.cpp
   src/ekf.cpp
   src/ukf.cpp
+  src/particle_filter.cpp
 )
 
 target_include_directories(aegis_core PUBLIC
@@ -32,12 +33,28 @@ install(DIRECTORY include/
 )
 
 if(BUILD_TESTING)
-  ament_add_gtest(test_aegis_core
+  ament_add_gtest(test_ekf
     test/test_ekf.cpp
   )
-  if(TARGET test_aegis_core)
-    target_link_libraries(test_aegis_core aegis_core)
-    ament_target_dependencies(test_aegis_core Eigen3)
+  if(TARGET test_ekf)
+    target_link_libraries(test_ekf aegis_core)
+    ament_target_dependencies(test_ekf Eigen3)
+  endif()
+
+  ament_add_gtest(test_ukf
+    test/test_ukf.cpp
+  )
+  if(TARGET test_ukf)
+    target_link_libraries(test_ukf aegis_core)
+    ament_target_dependencies(test_ukf Eigen3)
+  endif()
+
+  ament_add_gtest(test_particle_filter
+    test/test_particle_filter.cpp
+  )
+  if(TARGET test_particle_filter)
+    target_link_libraries(test_particle_filter aegis_core)
+    ament_target_dependencies(test_particle_filter Eigen3)
   endif()
 endif()
 
