@@ -13,6 +13,18 @@
 
 using namespace std::chrono_literals;
 
+namespace
+{
+
+double quaternionToYaw(const geometry_msgs::msg::Quaternion &q)
+{
+  const double siny_cosp = 2.0 * (q.w * q.z + q.x * q.y);
+  const double cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z);
+  return std::atan2(siny_cosp, cosy_cosp);
+}
+
+}  // namespace
+
 class EkfNode : public rclcpp::Node
 {
 public:
@@ -20,6 +32,7 @@ public:
   : Node("ekf_localization_node")
   {
     frame_id_ = this->declare_parameter<std::string>("frame_id", "map");
+    use_odom_pose_update_ = this->declare_parameter<bool>("use_odom_pose_update", true);
 
     auto process_noise = this->declare_parameter<std::vector<double>>("process_noise",
       std::vector<double>{1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3});
@@ -57,6 +70,20 @@ private:
   {
     last_odom_ = *msg;
     got_odom_ = true;
+
+    if (!initialized_) {
+      aegis_core::State2D initial_state;
+      initial_state.px = msg->pose.pose.position.x;
+      initial_state.py = msg->pose.pose.position.y;
+      initial_state.theta = quaternionToYaw(msg->pose.pose.orientation);
+      initial_state.vx = msg->twist.twist.linear.x;
+      initial_state.vy = msg->twist.twist.linear.y;
+      initial_state.omega = msg->twist.twist.angular.z;
+      ekf_.setState(initial_state);
+      initialized_ = true;
+      diagnostics_status_ = "OK";
+      last_update_time_ = this->now();
+    }
   }
 
   void imuCallback(const sensor_msgs::msg::Imu::SharedPtr msg)
@@ -102,6 +129,13 @@ private:
 
   void updateAndPublish()
   {
+    if (!initialized_) {
+      last_innovation_ = 0.0;
+      diagnostics_status_ = "WAITING_FOR_INIT";
+      publishDiagnostics();
+      return;
+    }
+
     const rclcpp::Time now = this->now();
     const double dt = std::max(0.0, (now - last_update_time_).seconds());
     last_update_time_ = now;
@@ -121,6 +155,13 @@ private:
       }
       if (got_imu_) {
         omega = last_imu_.angular_velocity.z;
+      }
+
+      if (got_odom_ && use_odom_pose_update_) {
+        const double px = last_odom_.pose.pose.position.x;
+        const double py = last_odom_.pose.pose.position.y;
+        const double yaw = quaternionToYaw(last_odom_.pose.pose.orientation);
+        ekf_.updatePose(px, py, yaw);
       }
 
       const Eigen::Vector3d innovation = computeVelocityInnovation(vx, vy, omega);
@@ -174,6 +215,8 @@ private:
   }
 
   std::string frame_id_;
+  bool use_odom_pose_update_ = true;
+  bool initialized_ = false;
   rclcpp::Time last_update_time_;
   bool got_odom_ = false;
   bool got_imu_ = false;

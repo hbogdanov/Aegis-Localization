@@ -8,6 +8,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     share_dir = get_package_share_directory('aegis_ros')
     fake_sensor_config = os.path.join(share_dir, 'config', 'fake_sensor_publisher.yaml')
+    ekf_config = os.path.join(share_dir, 'config', 'ekf.yaml')
     logger_config = os.path.join(share_dir, 'config', 'trajectory_logger.yaml')
 
     ld = LaunchDescription()
@@ -34,7 +35,8 @@ def generate_launch_description():
         package='aegis_ros',
         executable='ekf_node',
         name='ekf_node',
-        output='screen'
+        output='screen',
+        parameters=[ekf_config],
     )
 
     logger = Node(

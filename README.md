@@ -94,7 +94,7 @@ The plot script also writes:
 
 ## Benchmark Evidence
 
-After a successful fake benchmark run, the first real evaluation artifacts are:
+After a successful 60-second fake benchmark run, the evaluation artifacts are:
 
 - `results/metrics/ekf.csv`
 - `results/metrics/ground_truth.csv`
@@ -102,14 +102,14 @@ After a successful fake benchmark run, the first real evaluation artifacts are:
 - `results/plots/ekf_vs_ground_truth.png`
 - `results/plots/ekf_position_error.png`
 
-Example metrics from the synthetic benchmark:
+Validated metrics from the current synthetic benchmark:
 
-- ATE RMSE: `187.1187` m
-- Final drift: `7.3581` m
-- Yaw RMSE: `1.9778` rad
+- ATE RMSE: `0.0388` m
+- Final drift: `0.0304` m
+- Yaw RMSE: `0.0248` rad
 
-These files provide direct evidence of EKF localization quality against a noisy synthetic ground truth.
+These files provide direct evidence that the EKF tracks the 1 m circular trajectory closely under the default fake-sensor noise model.
 
 ## Notes
 
-This repository now includes a working EKF node that fuses `/odom` and `/imu` into `/aegis/ekf_pose` and `/aegis/ekf_path`, and publishes diagnostics on `/aegis/diagnostics`.
+The EKF node initializes from the first odometry pose, optionally applies odometry pose corrections through `use_odom_pose_update`, fuses `/odom` and `/imu`, publishes `/aegis/ekf_pose` and `/aegis/ekf_path`, and emits diagnostics on `/aegis/diagnostics`.

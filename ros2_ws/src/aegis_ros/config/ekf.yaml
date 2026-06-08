@@ -1,6 +1,7 @@
-node:
+/**:
   ros__parameters:
     frame_id: map
     process_noise: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
     velocity_yaw_rate_noise: [0.01, 0.01, 0.01]
     pose_noise: [0.05, 0.05, 0.1]
+    use_odom_pose_update: true
