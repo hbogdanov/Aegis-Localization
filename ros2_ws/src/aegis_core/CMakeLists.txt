@@ -8,6 +8,7 @@ find_package(Eigen3 REQUIRED)
 add_library(aegis_core
   src/motion_model.cpp
   src/ekf.cpp
+  src/ukf.cpp
 )
 
 target_include_directories(aegis_core PUBLIC

@@ -59,7 +59,11 @@ def main():
     dy = merged['y_est'].to_numpy() - merged['y_gt'].to_numpy()
     pos_err = np.sqrt(dx * dx + dy * dy)
 
-    out_err = args.out_error or os.path.join(os.path.dirname(args.out), 'ekf_position_error.png')
+    if args.out_error:
+        out_err = args.out_error
+    else:
+        est_stem = os.path.splitext(os.path.basename(args.est))[0]
+        out_err = os.path.join(os.path.dirname(args.out), f'{est_stem}_position_error.png')
     ensure_dir(out_err)
     plt.figure(figsize=(8, 3))
     plt.plot(merged['timestamp'], pos_err, label='position error (m)')

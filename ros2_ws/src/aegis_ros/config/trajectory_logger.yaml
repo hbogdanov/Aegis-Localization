@@ -1,0 +1,4 @@
+/**:
+  ros__parameters:
+    frame_id: map
+    use_odom_as_ground_truth: false

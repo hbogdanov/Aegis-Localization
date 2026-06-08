@@ -2,6 +2,9 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
@@ -9,9 +12,16 @@ def generate_launch_description():
     share_dir = get_package_share_directory('aegis_ros')
     fake_sensor_config = os.path.join(share_dir, 'config', 'fake_sensor_publisher.yaml')
     ekf_config = os.path.join(share_dir, 'config', 'ekf.yaml')
+    ukf_config = os.path.join(share_dir, 'config', 'ukf.yaml')
     logger_config = os.path.join(share_dir, 'config', 'trajectory_logger.yaml')
 
-    ld = LaunchDescription()
+    run_ekf = LaunchConfiguration('run_ekf')
+    run_ukf = LaunchConfiguration('run_ukf')
+
+    ld = LaunchDescription([
+        DeclareLaunchArgument('run_ekf', default_value='true'),
+        DeclareLaunchArgument('run_ukf', default_value='true'),
+    ])
 
     fake = Node(
         package='aegis_ros',
@@ -37,6 +47,16 @@ def generate_launch_description():
         name='ekf_node',
         output='screen',
         parameters=[ekf_config],
+        condition=IfCondition(run_ekf),
+    )
+
+    ukf = Node(
+        package='aegis_ros',
+        executable='ukf_node',
+        name='ukf_node',
+        output='screen',
+        parameters=[ukf_config],
+        condition=IfCondition(run_ukf),
     )
 
     logger = Node(
@@ -49,6 +69,7 @@ def generate_launch_description():
 
     ld.add_action(fake)
     ld.add_action(ekf)
+    ld.add_action(ukf)
     ld.add_action(logger)
 
     return ld

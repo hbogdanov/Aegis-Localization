@@ -72,7 +72,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--est', required=True, help='Estimated trajectory CSV')
     parser.add_argument('--gt', required=True, help='Ground-truth trajectory CSV')
-    parser.add_argument('--out-json', default='results/metrics/ekf_metrics.json', help='Optional output JSON')
+    parser.add_argument('--out-json', default=None, help='Optional output JSON')
     args = parser.parse_args()
 
     try:
@@ -87,10 +87,14 @@ def main():
     print_table(metrics)
 
     try:
-        os.makedirs(os.path.dirname(args.out_json), exist_ok=True)
-        with open(args.out_json, 'w') as f:
+        out_json = args.out_json
+        if out_json is None:
+            est_stem = os.path.splitext(os.path.basename(args.est))[0]
+            out_json = os.path.join('results', 'metrics', f'{est_stem}_metrics.json')
+        os.makedirs(os.path.dirname(out_json), exist_ok=True)
+        with open(out_json, 'w') as f:
             json.dump(metrics, f, indent=2)
-        print(f'Wrote metrics to {args.out_json}')
+        print(f'Wrote metrics to {out_json}')
     except Exception:
         pass
 

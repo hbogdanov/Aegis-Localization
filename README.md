@@ -9,11 +9,17 @@ Aegis Localization implements and benchmarks classical robotics estimation metho
 - C++17 ROS2 localization stack
 - Extended Kalman Filter (EKF)
 - Unscented Kalman Filter (UKF)
+- Odometry + IMU fusion
+- Synthetic sensor benchmark with configurable noise/dropout
+- Ground-truth trajectory logging
+- ATE/drift/yaw RMSE evaluation
+- Trajectory plotting
+
+## Planned
+
 - Particle Filter localization
-- Optional GTSAM pose graph optimization
-- TurtleBot3 Gazebo simulation support
-- Trajectory logging and evaluation
-- ATE/RPE/drift/runtime benchmarking
+- TurtleBot3 Gazebo validation
+- GTSAM pose graph optimization
 
 ## Project Structure
 
@@ -71,11 +77,13 @@ This launch starts:
 
 - `fake_sensor_publisher_node` publishing `/odom`, `/imu`, and noiseless `/ground_truth/pose`
 - `ekf_node`
+- `ukf_node`
 - `trajectory_logger_node`
 
 The trajectory logger writes output into the repository-level `results/metrics` folder.
 
 Default fake-sensor noise settings are provided in `ros2_ws/src/aegis_ros/config/fake_sensor_publisher.yaml`.
+Use `run_ekf:=false` or `run_ukf:=false` to benchmark just one filter.
 
 ## Evaluate and Plot Trajectories
 
@@ -97,16 +105,21 @@ The plot script also writes:
 After a successful 60-second fake benchmark run, the evaluation artifacts are:
 
 - `results/metrics/ekf.csv`
+- `results/metrics/ukf.csv`
 - `results/metrics/ground_truth.csv`
 - `results/metrics/ekf_metrics.json`
+- `results/metrics/ukf_metrics.json`
 - `results/plots/ekf_vs_ground_truth.png`
 - `results/plots/ekf_position_error.png`
 
 Validated metrics from the current synthetic benchmark:
 
-- ATE RMSE: `0.0388` m
-- Final drift: `0.0304` m
-- Yaw RMSE: `0.0248` rad
+- EKF ATE RMSE: `0.0206` m
+- EKF final drift: `0.0200` m
+- EKF yaw RMSE: `0.0019` rad
+- UKF ATE RMSE: `0.0206` m
+- UKF final drift: `0.0200` m
+- UKF yaw RMSE: `0.0019` rad
 
 These files provide direct evidence that the EKF tracks the 1 m circular trajectory closely under the default fake-sensor noise model.
 

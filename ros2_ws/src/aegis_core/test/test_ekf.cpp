@@ -1,5 +1,6 @@
 #include "aegis_core/ekf.hpp"
 #include "aegis_core/motion_model.hpp"
+#include "aegis_core/ukf.hpp"
 #include "aegis_core/utils.hpp"
 
 #include <gtest/gtest.h>
@@ -25,6 +26,27 @@ TEST(MotionModelTest, PropagateConstantVelocity)
 TEST(EkfTest, PredictAndUpdate)
 {
   aegis_core::EKF filter;
+  filter.predict(0.5);
+
+  EXPECT_NEAR(filter.state().px, 0.0, 1e-9);
+  EXPECT_NEAR(filter.state().py, 0.0, 1e-9);
+
+  filter.updateVelocityYawRate(0.5, 0.0, 0.2);
+  EXPECT_NEAR(filter.state().vx, 0.5, 1e-3);
+  EXPECT_NEAR(filter.state().vy, 0.0, 1e-3);
+  EXPECT_NEAR(filter.state().omega, 0.2, 1e-3);
+
+  filter.updatePose(0.5, 0.0, 0.2);
+  EXPECT_NEAR(filter.state().px, 0.5, 1e-2);
+  EXPECT_NEAR(filter.state().py, 0.0, 1e-2);
+  EXPECT_NEAR(filter.state().theta, 0.2, 1e-2);
+}
+
+TEST(UkfTest, PredictAndUpdate)
+{
+  aegis_core::UKF filter;
+  filter.setVelocityYawRateNoise(aegis_core::Matrix3d::Zero());
+  filter.setPoseNoise(aegis_core::Matrix3d::Zero());
   filter.predict(0.5);
 
   EXPECT_NEAR(filter.state().px, 0.0, 1e-9);
