@@ -15,6 +15,7 @@ bags/*.mcap
 results/**/*.csv
 results/**/*.png
 results/**/*.pdf
+ros2_ws/results/**
 
 # OS/editor
 .DS_Store

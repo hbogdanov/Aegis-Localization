@@ -5,16 +5,16 @@ namespace aegis_core {
 EKF::EKF()
   : state_(),
     process_noise_(Matrix6d::Identity() * 1e-3),
-    velocity_yaw_rate_noise_(Matrix3d::Identity() * 1e-3),
-    pose_noise_(Matrix3d::Identity() * 1e-3)
+    velocity_yaw_rate_noise_(Matrix3d::Zero()),
+    pose_noise_(Matrix3d::Zero())
 {
 }
 
 EKF::EKF(const State2D &initial_state)
   : state_(initial_state),
     process_noise_(Matrix6d::Identity() * 1e-3),
-    velocity_yaw_rate_noise_(Matrix3d::Identity() * 1e-3),
-    pose_noise_(Matrix3d::Identity() * 1e-3)
+    velocity_yaw_rate_noise_(Matrix3d::Zero()),
+    pose_noise_(Matrix3d::Zero())
 {
 }
 

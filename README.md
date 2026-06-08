@@ -57,6 +57,37 @@ The benchmark launch starts the EKF node and the trajectory logger, which writes
 - `results/metrics/ekf.csv`
 - `results/metrics/odom.csv`
 
+## Run Fake Sensor Benchmark
+
+If you do not want to use Gazebo or TurtleBot3, run a fake sensor benchmark instead:
+
+```bash
+cd ros2_ws
+source install/setup.bash
+ros2 launch aegis_ros fake_benchmark.launch.py
+```
+
+This launch starts:
+
+- `fake_sensor_publisher_node` publishing `/odom` and `/imu`
+- `ekf_node`
+- `trajectory_logger_node`
+
+## Evaluate and Plot Trajectories
+
+After running the benchmark, evaluate and plot the recorded trajectories from `results/metrics`:
+
+```bash
+cd /mnt/c/Users/Ivan/Aegis-Localization
+python3 scripts/evaluate_trajectory.py --est results/metrics/ekf.csv --gt results/metrics/odom.csv
+python3 scripts/plot_trajectories.py --est results/metrics/ekf.csv --gt results/metrics/odom.csv --out results/plots/ekf_vs_odom.png
+```
+
+The plot script also writes:
+
+- `results/plots/ekf_vs_odom.png`
+- `results/plots/ekf_position_error.png`
+
 ## Notes
 
 This repository now includes a working EKF node that fuses `/odom` and `/imu` into `/aegis/ekf_pose` and `/aegis/ekf_path`, and publishes diagnostics on `/aegis/diagnostics`.

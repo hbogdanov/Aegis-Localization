@@ -23,7 +23,10 @@ ament_target_dependencies(trajectory_logger_node rclcpp nav_msgs geometry_msgs a
 
 target_link_libraries(trajectory_logger_node Eigen3::Eigen)
 
-install(TARGETS ekf_node trajectory_logger_node
+add_executable(fake_sensor_publisher_node src/fake_sensor_publisher_node.cpp)
+ament_target_dependencies(fake_sensor_publisher_node rclcpp nav_msgs sensor_msgs geometry_msgs)
+
+install(TARGETS ekf_node trajectory_logger_node fake_sensor_publisher_node
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY launch config
