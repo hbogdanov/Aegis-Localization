@@ -1,0 +1,8 @@
+node:
+  ros__parameters:
+    radius: 1.0
+    omega: 0.5
+    odom_position_noise_std: 0.03
+    odom_velocity_noise_std: 0.02
+    imu_yaw_rate_noise_std: 0.01
+    dropout_probability: 0.0

@@ -100,6 +100,13 @@ After a successful fake benchmark run, the first real evaluation artifacts are:
 - `results/metrics/ground_truth.csv`
 - `results/metrics/ekf_metrics.json`
 - `results/plots/ekf_vs_ground_truth.png`
+- `results/plots/ekf_position_error.png`
+
+Example metrics from the synthetic benchmark:
+
+- ATE RMSE: `187.1187` m
+- Final drift: `7.3581` m
+- Yaw RMSE: `1.9778` rad
 
 These files provide direct evidence of EKF localization quality against a noisy synthetic ground truth.
 

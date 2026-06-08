@@ -2,7 +2,7 @@
 """Evaluate estimated trajectory against ground truth.
 
 Usage:
-  python3 scripts/evaluate_trajectory.py --est results/metrics/ekf.csv --gt results/metrics/odom.csv
+  python3 scripts/evaluate_trajectory.py --est results/metrics/ekf.csv --gt results/metrics/ground_truth.csv
 """
 import argparse
 import json
@@ -35,12 +35,9 @@ def load_csv(path):
 
 
 def align_by_timestamp(est, gt):
-    # both must be sorted by timestamp
     est = est.sort_values('timestamp').reset_index(drop=True)
     gt = gt.sort_values('timestamp').reset_index(drop=True)
     merged = pd.merge_asof(est, gt, on='timestamp', suffixes=('_est', '_gt'), direction='nearest')
-    # compute time offset
-    merged['dt'] = merged['timestamp'] - merged['timestamp']
     return merged
 
 
@@ -67,8 +64,8 @@ def print_table(metrics):
     print('-----------------------------')
     print(f"Samples:       {metrics['num_samples']}")
     print(f"ATE RMSE (m):  {metrics['ate_rmse']:.4f}")
-    print(f"Final drift(m):{metrics['final_drift']:.4f}")
-    print(f"Yaw RMSE (rad):{metrics['yaw_rmse']:.4f}")
+    print(f"Final drift (m): {metrics['final_drift']:.4f}")
+    print(f"Yaw RMSE (rad): {metrics['yaw_rmse']:.4f}")
 
 
 def main():
@@ -85,32 +82,18 @@ def main():
         print(f'Error loading CSVs: {e}', file=sys.stderr)
         sys.exit(2)
 
-    # align by nearest timestamp
-    merged = pd.merge_asof(est.sort_values('timestamp'), gt.sort_values('timestamp'), on='timestamp', suffixes=('_est', '_gt'), direction='nearest')
-
+    merged = align_by_timestamp(est, gt)
     metrics = compute_metrics(merged)
     print_table(metrics)
 
-    # write JSON if requested
     try:
         os.makedirs(os.path.dirname(args.out_json), exist_ok=True)
         with open(args.out_json, 'w') as f:
             json.dump(metrics, f, indent=2)
         print(f'Wrote metrics to {args.out_json}')
     except Exception:
-        # non-fatal
         pass
 
 
 if __name__ == '__main__':
     main()
-#!/usr/bin/env python3
-
-import argparse
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Evaluate trajectory error metrics.')
-    parser.add_argument('--est', required=True)
-    parser.add_argument('--gt', required=True)
-    args = parser.parse_args()
-    print(f'Evaluating trajectories: estimated={args.est}, ground truth={args.gt}')
