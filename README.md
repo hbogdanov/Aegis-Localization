@@ -69,9 +69,13 @@ ros2 launch aegis_ros fake_benchmark.launch.py
 
 This launch starts:
 
-- `fake_sensor_publisher_node` publishing `/odom` and `/imu`
+- `fake_sensor_publisher_node` publishing `/odom`, `/imu`, and noiseless `/ground_truth/pose`
 - `ekf_node`
 - `trajectory_logger_node`
+
+The trajectory logger writes output into the repository-level `results/metrics` folder.
+
+Default fake-sensor noise settings are provided in `ros2_ws/src/aegis_ros/config/fake_sensor_publisher.yaml`.
 
 ## Evaluate and Plot Trajectories
 
@@ -79,14 +83,25 @@ After running the benchmark, evaluate and plot the recorded trajectories from `r
 
 ```bash
 cd /mnt/c/Users/Ivan/Aegis-Localization
-python3 scripts/evaluate_trajectory.py --est results/metrics/ekf.csv --gt results/metrics/odom.csv
-python3 scripts/plot_trajectories.py --est results/metrics/ekf.csv --gt results/metrics/odom.csv --out results/plots/ekf_vs_odom.png
+python3 scripts/evaluate_trajectory.py --est results/metrics/ekf.csv --gt results/metrics/ground_truth.csv
+python3 scripts/plot_trajectories.py --est results/metrics/ekf.csv --gt results/metrics/ground_truth.csv --out results/plots/ekf_vs_ground_truth.png
 ```
 
 The plot script also writes:
 
-- `results/plots/ekf_vs_odom.png`
+- `results/plots/ekf_vs_ground_truth.png`
 - `results/plots/ekf_position_error.png`
+
+## Benchmark Evidence
+
+After a successful fake benchmark run, the first real evaluation artifacts are:
+
+- `results/metrics/ekf.csv`
+- `results/metrics/ground_truth.csv`
+- `results/metrics/ekf_metrics.json`
+- `results/plots/ekf_vs_ground_truth.png`
+
+These files provide direct evidence of EKF localization quality against a noisy synthetic ground truth.
 
 ## Notes
 

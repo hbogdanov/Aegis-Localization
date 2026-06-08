@@ -18,25 +18,33 @@ public:
   : Node("trajectory_logger_node")
   {
     frame_id_ = this->declare_parameter<std::string>("frame_id", "map");
+    use_odom_as_ground_truth_ = this->declare_parameter<bool>("use_odom_as_ground_truth", false);
 
     const fs::path results_path = locateResultsPath();
     fs::create_directories(results_path);
 
     ekf_file_path_ = results_path / "ekf.csv";
-    odom_file_path_ = results_path / "odom.csv";
+    ground_truth_file_path_ = results_path / "ground_truth.csv";
 
     openCsv(ekf_file_, ekf_file_path_);
-    openCsv(odom_file_, odom_file_path_);
+    openCsv(ground_truth_file_, ground_truth_file_path_);
 
     ekf_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
       "/aegis/ekf_pose",
       10,
       std::bind(&TrajectoryLoggerNode::ekfCallback, this, std::placeholders::_1));
 
-    odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
-      "/odom",
+    ground_truth_sub_ = this->create_subscription<geometry_msgs::msg::PoseStamped>(
+      "/ground_truth/pose",
       10,
-      std::bind(&TrajectoryLoggerNode::odomCallback, this, std::placeholders::_1));
+      std::bind(&TrajectoryLoggerNode::groundTruthCallback, this, std::placeholders::_1));
+
+    if (use_odom_as_ground_truth_) {
+      odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
+        "/odom",
+        10,
+        std::bind(&TrajectoryLoggerNode::odomCallback, this, std::placeholders::_1));
+    }
   }
 
   ~TrajectoryLoggerNode() override
@@ -44,8 +52,8 @@ public:
     if (ekf_file_.is_open()) {
       ekf_file_.close();
     }
-    if (odom_file_.is_open()) {
-      odom_file_.close();
+    if (ground_truth_file_.is_open()) {
+      ground_truth_file_.close();
     }
   }
 
@@ -54,7 +62,7 @@ private:
   {
     fs::path share_dir = ament_index_cpp::get_package_share_directory("aegis_ros");
     fs::path repo_root = share_dir;
-    for (int i = 0; i < 4 && !repo_root.empty(); ++i) {
+    for (int i = 0; i < 5 && !repo_root.empty(); ++i) {
       repo_root = repo_root.parent_path();
     }
     fs::path metrics_dir = repo_root / "results" / "metrics";
@@ -105,9 +113,28 @@ private:
     ekf_file_.flush();
   }
 
+  void groundTruthCallback(const geometry_msgs::msg::PoseStamped::SharedPtr msg)
+  {
+    if (!ground_truth_file_.is_open()) {
+      return;
+    }
+
+    const double timestamp = toTimestamp(msg->header.stamp);
+    const double x = msg->pose.position.x;
+    const double y = msg->pose.position.y;
+    const double yaw = quaternionToYaw(msg->pose.orientation);
+
+    ground_truth_file_ << std::fixed << std::setprecision(9)
+                       << timestamp << ','
+                       << x << ','
+                       << y << ','
+                       << yaw << '\n';
+    ground_truth_file_.flush();
+  }
+
   void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
   {
-    if (!odom_file_.is_open()) {
+    if (!ground_truth_file_.is_open()) {
       return;
     }
 
@@ -116,20 +143,22 @@ private:
     const double y = msg->pose.pose.position.y;
     const double yaw = quaternionToYaw(msg->pose.pose.orientation);
 
-    odom_file_ << std::fixed << std::setprecision(9)
-               << timestamp << ','
-               << x << ','
-               << y << ','
-               << yaw << '\n';
-    odom_file_.flush();
+    ground_truth_file_ << std::fixed << std::setprecision(9)
+                       << timestamp << ','
+                       << x << ','
+                       << y << ','
+                       << yaw << '\n';
+    ground_truth_file_.flush();
   }
 
   std::string frame_id_;
+  bool use_odom_as_ground_truth_;
   fs::path ekf_file_path_;
-  fs::path odom_file_path_;
+  fs::path ground_truth_file_path_;
   std::ofstream ekf_file_;
-  std::ofstream odom_file_;
+  std::ofstream ground_truth_file_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr ekf_sub_;
+  rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr ground_truth_sub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
 };
 
