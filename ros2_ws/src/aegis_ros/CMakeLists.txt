@@ -20,7 +20,7 @@ ament_target_dependencies(ekf_node rclcpp nav_msgs sensor_msgs geometry_msgs std
 target_link_libraries(ekf_node ${aegis_core_LIBRARIES} Eigen3::Eigen)
 
 add_executable(ukf_node src/ukf_node.cpp)
-ament_target_dependencies(ukf_node rclcpp nav_msgs sensor_msgs geometry_msgs std_msgs tf2 tf2_ros aegis_core Eigen3)
+ament_target_dependencies(ukf_node rclcpp nav_msgs sensor_msgs geometry_msgs std_msgs tf2 tf2_ros aegis_core aegis_msgs Eigen3)
 target_link_libraries(ukf_node ${aegis_core_LIBRARIES} Eigen3::Eigen)
 
 add_executable(particle_filter_node src/particle_filter_node.cpp)
@@ -34,7 +34,7 @@ add_executable(circle_command_publisher_node src/circle_command_publisher_node.c
 ament_target_dependencies(circle_command_publisher_node rclcpp geometry_msgs)
 
 add_executable(trajectory_logger_node src/trajectory_logger_node.cpp)
-ament_target_dependencies(trajectory_logger_node rclcpp nav_msgs geometry_msgs ament_index_cpp Eigen3)
+ament_target_dependencies(trajectory_logger_node rclcpp nav_msgs geometry_msgs ament_index_cpp aegis_msgs Eigen3)
 
 target_link_libraries(trajectory_logger_node Eigen3::Eigen)
 

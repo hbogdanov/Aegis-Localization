@@ -1,3 +1,4 @@
+#include <cmath>
 #include <chrono>
 #include <cstddef>
 #include <filesystem>
@@ -5,9 +6,11 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "ament_index_cpp/get_package_share_directory.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "aegis_msgs/msg/filter_diagnostics.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 
@@ -33,9 +36,11 @@ public:
     pf_file_path_ = results_path / "pf.csv";
     ground_truth_file_path_ = results_path / "ground_truth.csv";
     odom_file_path_ = results_path / "odom.csv";
+    diagnostics_file_path_ = results_path / "filter_diagnostics.csv";
 
     openCsv(ekf_file_, ekf_file_path_);
     openCsv(ground_truth_file_, ground_truth_file_path_);
+    openDiagnosticsCsv(diagnostics_file_, diagnostics_file_path_);
     if (log_odom_baseline_) {
       openCsv(odom_file_, odom_file_path_);
     }
@@ -59,6 +64,11 @@ public:
       "/ground_truth/pose",
       1000,
       std::bind(&TrajectoryLoggerNode::groundTruthCallback, this, std::placeholders::_1));
+
+    diagnostics_sub_ = this->create_subscription<aegis_msgs::msg::FilterDiagnostics>(
+      "/aegis/diagnostics",
+      1000,
+      std::bind(&TrajectoryLoggerNode::diagnosticsCallback, this, std::placeholders::_1));
 
     if (use_odom_as_ground_truth_ || log_odom_baseline_) {
       odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
@@ -92,6 +102,9 @@ public:
     }
     if (odom_file_.is_open()) {
       odom_file_.close();
+    }
+    if (diagnostics_file_.is_open()) {
+      diagnostics_file_.close();
     }
     writeStats();
   }
@@ -155,11 +168,34 @@ private:
     }
   }
 
+  static void openDiagnosticsCsv(std::ofstream &stream, const fs::path &path)
+  {
+    stream.open(path, std::ios::out | std::ios::trunc);
+    if (!stream.is_open()) {
+      throw std::runtime_error("Failed to open diagnostics CSV file: " + path.string());
+    }
+    stream << "source,timestamp,status,measurement_type,innovation_norm,innovation_dim,nis,innovation_vector,innovation_covariance,state_covariance\n";
+    stream.flush();
+  }
+
   static void maybeFlush(std::ofstream &stream, std::size_t count)
   {
     if (stream.is_open() && count > 0 && (count % 100) == 0) {
       stream.flush();
     }
+  }
+
+  static std::string serializeVector(const std::vector<double> &values)
+  {
+    std::ostringstream stream;
+    stream << std::setprecision(17);
+    for (std::size_t index = 0; index < values.size(); ++index) {
+      if (index > 0) {
+        stream << ';';
+      }
+      stream << values[index];
+    }
+    return stream.str();
   }
 
   void writeStats() const
@@ -179,6 +215,7 @@ private:
     handle << "  \"ukf_received\": " << ukf_count_ << ",\n";
     handle << "  \"pf_received\": " << pf_count_ << ",\n";
     handle << "  \"odom_received\": " << odom_count_ << ",\n";
+    handle << "  \"diagnostics_received\": " << diagnostics_count_ << ",\n";
     handle << "  \"log_odom_baseline\": " << (log_odom_baseline_ ? "true" : "false") << ",\n";
     handle << "  \"use_odom_as_ground_truth\": " << (use_odom_as_ground_truth_ ? "true" : "false") << "\n";
     handle << "}\n";
@@ -305,10 +342,32 @@ private:
     }
   }
 
+  void diagnosticsCallback(const aegis_msgs::msg::FilterDiagnostics::SharedPtr msg)
+  {
+    if (!diagnostics_file_.is_open()) {
+      return;
+    }
+
+    diagnostics_file_ << std::fixed << std::setprecision(9)
+                      << msg->source << ','
+                      << msg->timestamp << ','
+                      << msg->status << ','
+                      << msg->measurement_type << ','
+                      << msg->innovation_norm << ','
+                      << msg->innovation_dim << ','
+                      << msg->nis << ','
+                      << serializeVector(msg->innovation_vector) << ','
+                      << serializeVector(msg->innovation_covariance) << ','
+                      << serializeVector(msg->state_covariance) << '\n';
+    ++diagnostics_count_;
+    maybeFlush(diagnostics_file_, diagnostics_count_);
+    maybeWriteStats();
+  }
+
   void maybeWriteStats() const
   {
     const std::size_t total =
-      ground_truth_count_ + ekf_count_ + ukf_count_ + pf_count_ + odom_count_;
+      ground_truth_count_ + ekf_count_ + ukf_count_ + pf_count_ + odom_count_ + diagnostics_count_;
     if (total > 0 && (total % 1000) == 0) {
       writeStats();
     }
@@ -324,21 +383,25 @@ private:
   fs::path pf_file_path_;
   fs::path ground_truth_file_path_;
   fs::path odom_file_path_;
+  fs::path diagnostics_file_path_;
   std::ofstream ekf_file_;
   std::ofstream ukf_file_;
   std::ofstream pf_file_;
   std::ofstream ground_truth_file_;
   std::ofstream odom_file_;
+  std::ofstream diagnostics_file_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr ekf_sub_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr ukf_sub_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr pf_sub_;
   rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr ground_truth_sub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
+  rclcpp::Subscription<aegis_msgs::msg::FilterDiagnostics>::SharedPtr diagnostics_sub_;
   std::size_t ekf_count_ = 0;
   std::size_t ukf_count_ = 0;
   std::size_t pf_count_ = 0;
   std::size_t ground_truth_count_ = 0;
   std::size_t odom_count_ = 0;
+  std::size_t diagnostics_count_ = 0;
 };
 
 int main(int argc, char **argv)

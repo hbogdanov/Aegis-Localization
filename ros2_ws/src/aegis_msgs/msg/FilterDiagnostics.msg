@@ -1,4 +1,10 @@
 string source
 float64 timestamp
 string status
-float64 innovation
+string measurement_type
+float64 innovation_norm
+uint32 innovation_dim
+float64 nis
+float64[] innovation_vector
+float64[] innovation_covariance
+float64[] state_covariance

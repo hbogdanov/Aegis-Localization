@@ -1,5 +1,7 @@
 #include "aegis_core/ekf.hpp"
 
+#include <stdexcept>
+
 namespace aegis_core {
 
 EKF::EKF()
@@ -43,6 +45,37 @@ void EKF::setPoseNoise(const Matrix3d &R)
   pose_noise_ = R;
 }
 
+const EKF::UpdateDiagnostics &EKF::lastUpdateDiagnostics() const noexcept
+{
+  return last_update_diagnostics_;
+}
+
+void EKF::storeUpdateDiagnostics(
+  const std::string &measurement_type,
+  const Eigen::VectorXd &innovation,
+  const Eigen::MatrixXd &innovation_covariance,
+  const Matrix6d &state_covariance)
+{
+  last_update_diagnostics_.measurement_type = measurement_type;
+  last_update_diagnostics_.innovation = innovation;
+  last_update_diagnostics_.innovation_covariance = innovation_covariance;
+  last_update_diagnostics_.state_covariance = state_covariance;
+  if (innovation.size() == 0) {
+    last_update_diagnostics_.nis = 0.0;
+    last_update_diagnostics_.available = false;
+    return;
+  }
+
+  const Eigen::LDLT<Eigen::MatrixXd> solver(innovation_covariance);
+  if (solver.info() != Eigen::Success) {
+    throw std::runtime_error("EKF innovation covariance factorization failed");
+  }
+
+  const Eigen::VectorXd solved = solver.solve(innovation);
+  last_update_diagnostics_.nis = innovation.dot(solved);
+  last_update_diagnostics_.available = true;
+}
+
 void EKF::predict(double dt)
 {
   Eigen::Vector<double, 6> x = state_.toVector();
@@ -68,13 +101,18 @@ bool EKF::updateVelocityYawRate(double vx, double vy, double omega)
 
   Eigen::Vector3d y = z - H * state_.toVector();
   Eigen::Matrix3d S = H * state_.covariance * H.transpose() + velocity_yaw_rate_noise_;
-  Eigen::Matrix<double, 6, 3> K = state_.covariance * H.transpose() * S.inverse();
+  const Eigen::LDLT<Eigen::Matrix3d> solver(S);
+  if (solver.info() != Eigen::Success) {
+    throw std::runtime_error("EKF velocity innovation covariance factorization failed");
+  }
+  const Eigen::Matrix<double, 6, 3> K = solver.solve(H * state_.covariance).transpose();
 
   Eigen::Vector<double, 6> x = state_.toVector() + K * y;
   state_.fromVector(x);
   state_.theta = normalizeAngle(state_.theta);
 
   state_.covariance = (Eigen::Matrix<double, 6, 6>::Identity() - K * H) * state_.covariance;
+  storeUpdateDiagnostics("velocity_yaw_rate", y, S, state_.covariance);
   return true;
 }
 
@@ -95,13 +133,18 @@ bool EKF::updatePose(double px, double py, double theta)
   y(2) = normalizeAngle(z(2) - x_pred(2));
 
   Eigen::Matrix3d S = H * state_.covariance * H.transpose() + pose_noise_;
-  Eigen::Matrix<double, 6, 3> K = state_.covariance * H.transpose() * S.inverse();
+  const Eigen::LDLT<Eigen::Matrix3d> solver(S);
+  if (solver.info() != Eigen::Success) {
+    throw std::runtime_error("EKF pose innovation covariance factorization failed");
+  }
+  const Eigen::Matrix<double, 6, 3> K = solver.solve(H * state_.covariance).transpose();
 
   Eigen::Vector<double, 6> x = state_.toVector() + K * y;
   state_.fromVector(x);
   state_.theta = normalizeAngle(state_.theta);
 
   state_.covariance = (Eigen::Matrix<double, 6, 6>::Identity() - K * H) * state_.covariance;
+  storeUpdateDiagnostics("pose", y, S, state_.covariance);
   return true;
 }
 

@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
+#include <limits>
 #include <sstream>
 #include <vector>
 
@@ -13,6 +14,7 @@
 #include "nav_msgs/msg/path.hpp"
 #include "sensor_msgs/msg/imu.hpp"
 #include "aegis_core/ukf.hpp"
+#include "aegis_msgs/msg/filter_diagnostics.hpp"
 
 namespace
 {
@@ -48,6 +50,7 @@ public:
 
     pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("/aegis/ukf_pose", 1000);
     path_pub_ = this->create_publisher<nav_msgs::msg::Path>("/aegis/ukf_path", 1000);
+    diagnostics_pub_ = this->create_publisher<aegis_msgs::msg::FilterDiagnostics>("/aegis/diagnostics", 1000);
 
     odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
       "/odom",
@@ -141,8 +144,10 @@ private:
       initial_state.omega = msg->twist.twist.angular.z;
       ukf_.setState(initial_state);
       initialized_ = true;
+      diagnostics_status_ = "OK";
       last_processed_stamp_ = msg->header.stamp;
       publishPose(msg->header.stamp);
+      publishDiagnostics(msg->header.stamp);
       maybeWriteStats();
       return;
     }
@@ -179,12 +184,15 @@ private:
         const double yaw = quaternionToYaw(last_odom_.pose.pose.orientation);
         ukf_.updatePose(px, py, yaw);
         ++pose_update_count_;
+        publishDiagnostics(stamp);
       }
 
       ukf_.updateVelocityYawRate(vx, vy, omega);
       ++velocity_update_count_;
       ++processed_odom_updates_;
+      diagnostics_status_ = "OK";
       publishPose(stamp);
+      publishDiagnostics(stamp);
       maybeWriteStats();
     } catch (const std::exception &exception) {
       ++failed_update_count_;
@@ -248,6 +256,36 @@ private:
     path_pub_->publish(path_msg_);
   }
 
+  void publishDiagnostics(const builtin_interfaces::msg::Time &stamp)
+  {
+    const auto &update = ukf_.lastUpdateDiagnostics();
+    aegis_msgs::msg::FilterDiagnostics diagnostics;
+    diagnostics.source = "UKF";
+    diagnostics.timestamp = rclcpp::Time(stamp).seconds();
+    diagnostics.status = diagnostics_status_;
+    diagnostics.measurement_type = update.measurement_type;
+    diagnostics.innovation_norm = update.available ? update.innovation.norm() : 0.0;
+    diagnostics.innovation_dim = update.available ? static_cast<std::uint32_t>(update.innovation.size()) : 0U;
+    diagnostics.nis = update.available ? update.nis : std::numeric_limits<double>::quiet_NaN();
+    if (update.available) {
+      diagnostics.innovation_vector.assign(update.innovation.data(), update.innovation.data() + update.innovation.size());
+      diagnostics.innovation_covariance.reserve(
+        static_cast<std::size_t>(update.innovation_covariance.rows() * update.innovation_covariance.cols()));
+      for (Eigen::Index row = 0; row < update.innovation_covariance.rows(); ++row) {
+        for (Eigen::Index col = 0; col < update.innovation_covariance.cols(); ++col) {
+          diagnostics.innovation_covariance.push_back(update.innovation_covariance(row, col));
+        }
+      }
+      diagnostics.state_covariance.reserve(36);
+      for (Eigen::Index row = 0; row < update.state_covariance.rows(); ++row) {
+        for (Eigen::Index col = 0; col < update.state_covariance.cols(); ++col) {
+          diagnostics.state_covariance.push_back(update.state_covariance(row, col));
+        }
+      }
+    }
+    diagnostics_pub_->publish(diagnostics);
+  }
+
   void maybeWriteStats() const
   {
     if ((pose_publish_count_ % 500) == 0 || failed_update_count_ > 0) {
@@ -276,8 +314,10 @@ private:
   std::size_t processed_odom_updates_ = 0;
   std::size_t pose_publish_count_ = 0;
   std::size_t failed_update_count_ = 0;
+  std::string diagnostics_status_ = "INIT";
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_pub_;
   rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub_;
+  rclcpp::Publisher<aegis_msgs::msg::FilterDiagnostics>::SharedPtr diagnostics_pub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
   rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_sub_;
   nav_msgs::msg::Path path_msg_;
