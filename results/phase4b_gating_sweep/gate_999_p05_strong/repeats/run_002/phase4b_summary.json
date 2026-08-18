@@ -1,0 +1,184 @@
+{
+  "metadata": {
+    "repeat_name": "run_002",
+    "launch_args": {
+      "odom_position_noise_std": "0.03",
+      "odom_velocity_noise_std": "0.02",
+      "imu_yaw_rate_noise_std": "0.01",
+      "dropout_probability": "0.0",
+      "use_odom_pose_update": "true",
+      "pose_gating_enabled": "true",
+      "pose_gating_threshold": "16.26623619623813",
+      "pose_outlier_probability": "0.05",
+      "pose_outlier_position_std": "1.5",
+      "pose_outlier_yaw_std": "0.75",
+      "pose_outlier_start_seconds": "1.0",
+      "benchmark_duration_seconds": "20.0",
+      "fake_sensor_seed": "10347",
+      "pf_random_seed": "10348",
+      "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4b_gating_sweep/gate_999_p05_strong/repeats/run_002",
+      "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4b_gating_sweep/gate_999_p05_strong/repeats/run_002/fake_sensor_stats.json",
+      "corruption_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4b_gating_sweep/gate_999_p05_strong/repeats/run_002/corruption_log.csv",
+      "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4b_gating_sweep/gate_999_p05_strong/repeats/run_002/ekf_stats.json",
+      "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4b_gating_sweep/gate_999_p05_strong/repeats/run_002/ukf_stats.json",
+      "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4b_gating_sweep/gate_999_p05_strong/repeats/run_002/pf_stats.json",
+      "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4b_gating_sweep/gate_999_p05_strong/repeats/run_002/logger_stats.json"
+    },
+    "seeds": {
+      "fake_sensor_seed": 10347,
+      "pf_random_seed": 10348
+    }
+  },
+  "metrics": {
+    "ekf": {
+      "num_samples": 401,
+      "ate_rmse": 0.0632947519151909,
+      "final_drift": 0.06950059115010938,
+      "yaw_rmse": 0.0022864840264416875
+    },
+    "ukf": {
+      "num_samples": 401,
+      "ate_rmse": 0.0632947519151909,
+      "final_drift": 0.06950059115010938,
+      "yaw_rmse": 0.0022864840264416875
+    },
+    "pf": {
+      "num_samples": 400,
+      "ate_rmse": 0.05472120404126569,
+      "final_drift": 0.057224200706997984,
+      "yaw_rmse": 0.017759529788448927
+    }
+  },
+  "gating": {
+    "ekf": {
+      "estimator": "EKF",
+      "measurement_type": "pose",
+      "num_measurements": 400,
+      "accepted_count": 380,
+      "rejected_count": 20,
+      "rejection_rate": 0.05,
+      "accepted_nis_mean": 0.13050947228157897,
+      "rejected_nis_mean": 82.82943587885
+    },
+    "ukf": {
+      "estimator": "UKF",
+      "measurement_type": "pose",
+      "num_measurements": 399,
+      "accepted_count": 379,
+      "rejected_count": 20,
+      "rejection_rate": 0.05012531328320802,
+      "accepted_nis_mean": 0.1307945308469657,
+      "rejected_nis_mean": 82.82943587885
+    }
+  },
+  "classification": {
+    "ekf": {
+      "estimator": "EKF",
+      "measurement_type": "pose",
+      "num_measurements": 400,
+      "true_positive_rejections": 20,
+      "false_positive_rejections": 0,
+      "true_negative_acceptances": 379,
+      "false_negative_acceptances": 1,
+      "true_positive_rate": 0.9523809523809523,
+      "false_positive_rate": 0.0,
+      "precision": 1.0,
+      "recall": 0.9523809523809523
+    },
+    "ukf": {
+      "estimator": "UKF",
+      "measurement_type": "pose",
+      "num_measurements": 399,
+      "true_positive_rejections": 20,
+      "false_positive_rejections": 0,
+      "true_negative_acceptances": 378,
+      "false_negative_acceptances": 1,
+      "true_positive_rate": 0.9523809523809523,
+      "false_positive_rate": 0.0,
+      "precision": 1.0,
+      "recall": 0.9523809523809523
+    }
+  },
+  "nis": {
+    "ekf": {
+      "pose": {
+        "num_updates": 400,
+        "innovation_dim": 3,
+        "nis_mean": 4.265455792609999,
+        "nis_median": 0.1132316675,
+        "nis_std": 22.330097384239128,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.71,
+        "fraction_in_bounds": 0.24,
+        "fraction_above_upper_bound": 0.05,
+        "violation_fraction": 0.76
+      },
+      "velocity_yaw_rate": {
+        "num_updates": 399,
+        "innovation_dim": 3,
+        "nis_mean": 2.7091554309598993,
+        "nis_median": 2.730528291,
+        "nis_std": 0.8063393498086916,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.012531328320802004,
+        "fraction_in_bounds": 0.9874686716791979,
+        "fraction_above_upper_bound": 0.0,
+        "violation_fraction": 0.01253132832080206
+      }
+    },
+    "ukf": {
+      "pose": {
+        "num_updates": 399,
+        "innovation_dim": 3,
+        "nis_mean": 4.276089836511278,
+        "nis_median": 0.113608282,
+        "nis_std": 22.357050866005967,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.7092731829573935,
+        "fraction_in_bounds": 0.24060150375939848,
+        "fraction_above_upper_bound": 0.05012531328320802,
+        "violation_fraction": 0.7593984962406015
+      },
+      "velocity_yaw_rate": {
+        "num_updates": 399,
+        "innovation_dim": 3,
+        "nis_mean": 2.7091554309598993,
+        "nis_median": 2.730528291,
+        "nis_std": 0.8063393498086916,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.012531328320802004,
+        "fraction_in_bounds": 0.9874686716791979,
+        "fraction_above_upper_bound": 0.0,
+        "violation_fraction": 0.01253132832080206
+      }
+    }
+  },
+  "stats": {
+    "fake_sensor": {
+      "random_seed": 10347,
+      "published_truth_samples": 401,
+      "dropped_measurements": 0,
+      "corrupted_pose_measurements": 21,
+      "pose_outlier_probability": 0.05,
+      "pose_outlier_position_std": 1.5,
+      "pose_outlier_yaw_std": 0.75
+    },
+    "ekf": null,
+    "ukf": null,
+    "pf": null,
+    "logger": {
+      "ground_truth_received": 334,
+      "ekf_received": 334,
+      "ukf_received": 333,
+      "pf_received": 334,
+      "odom_received": 0,
+      "diagnostics_received": 1665,
+      "log_odom_baseline": false,
+      "use_odom_as_ground_truth": false
+    }
+  }
+}

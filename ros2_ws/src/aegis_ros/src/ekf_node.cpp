@@ -35,6 +35,8 @@ public:
     stats_out_ = this->declare_parameter<std::string>("stats_out", "");
     frame_id_ = this->declare_parameter<std::string>("frame_id", "map");
     use_odom_pose_update_ = this->declare_parameter<bool>("use_odom_pose_update", true);
+    pose_gating_enabled_ = this->declare_parameter<bool>("pose_gating_enabled", false);
+    pose_gating_threshold_ = this->declare_parameter<double>("pose_gating_threshold", 9.324146034653893);
 
     auto process_noise = this->declare_parameter<std::vector<double>>("process_noise",
       std::vector<double>{1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3});
@@ -60,6 +62,7 @@ public:
     path_msg_.header.frame_id = frame_id_;
 
     configureNoise(process_noise, velocity_noise, pose_noise);
+    ekf_.setPoseUpdateGate(pose_gating_enabled_, pose_gating_threshold_);
   }
 
   ~EkfNode() override
@@ -83,9 +86,13 @@ private:
     handle << "  \"odom_received\": " << odom_received_count_ << ",\n";
     handle << "  \"imu_received\": " << imu_received_count_ << ",\n";
     handle << "  \"predict_calls\": " << predict_count_ << ",\n";
+    handle << "  \"pose_update_attempts\": " << pose_update_attempt_count_ << ",\n";
     handle << "  \"pose_update_calls\": " << pose_update_count_ << ",\n";
+    handle << "  \"pose_updates_rejected\": " << pose_update_rejected_count_ << ",\n";
     handle << "  \"velocity_update_calls\": " << velocity_update_count_ << ",\n";
-    handle << "  \"pose_published\": " << pose_publish_count_ << "\n";
+    handle << "  \"pose_published\": " << pose_publish_count_ << ",\n";
+    handle << "  \"pose_gating_enabled\": " << (pose_gating_enabled_ ? "true" : "false") << ",\n";
+    handle << "  \"pose_gating_threshold\": " << pose_gating_threshold_ << "\n";
     handle << "}\n";
   }
 
@@ -174,11 +181,17 @@ private:
     const double omega = last_odom_.twist.twist.angular.z;
 
     if (use_odom_pose_update_) {
+      ++pose_update_attempt_count_;
       const double px = last_odom_.pose.pose.position.x;
       const double py = last_odom_.pose.pose.position.y;
       const double yaw = quaternionToYaw(last_odom_.pose.pose.orientation);
-      ekf_.updatePose(px, py, yaw);
-      ++pose_update_count_;
+      if (ekf_.updatePose(px, py, yaw)) {
+        ++pose_update_count_;
+        diagnostics_status_ = "ACCEPTED";
+      } else {
+        ++pose_update_rejected_count_;
+        diagnostics_status_ = "REJECTED_GATE";
+      }
       publishDiagnostics(stamp);
     }
 
@@ -186,7 +199,7 @@ private:
     last_innovation_ = innovation.norm();
     ekf_.updateVelocityYawRate(vx, vy, omega);
     ++velocity_update_count_;
-    diagnostics_status_ = "OK";
+    diagnostics_status_ = "ACCEPTED";
 
     publishPose(stamp);
     publishDiagnostics(stamp);
@@ -229,6 +242,7 @@ private:
     diagnostics.timestamp = rclcpp::Time(stamp).seconds();
     diagnostics.status = diagnostics_status_;
     diagnostics.measurement_type = update.measurement_type;
+    diagnostics.accepted = update.available ? update.accepted : false;
     diagnostics.innovation_norm = update.available ? update.innovation.norm() : last_innovation_;
     diagnostics.innovation_dim = update.available ? static_cast<std::uint32_t>(update.innovation.size()) : 0U;
     diagnostics.nis = update.available ? update.nis : std::numeric_limits<double>::quiet_NaN();
@@ -261,6 +275,8 @@ private:
   std::string stats_out_;
   std::string frame_id_;
   bool use_odom_pose_update_ = true;
+  bool pose_gating_enabled_ = false;
+  double pose_gating_threshold_ = 9.324146034653893;
   bool initialized_ = false;
   rclcpp::Time last_processed_stamp_{0, 0, RCL_ROS_TIME};
   bool got_odom_ = false;
@@ -271,7 +287,9 @@ private:
   std::size_t odom_received_count_ = 0;
   std::size_t imu_received_count_ = 0;
   std::size_t predict_count_ = 0;
+  std::size_t pose_update_attempt_count_ = 0;
   std::size_t pose_update_count_ = 0;
+  std::size_t pose_update_rejected_count_ = 0;
   std::size_t velocity_update_count_ = 0;
   std::size_t pose_publish_count_ = 0;
   double last_innovation_ = 0.0;

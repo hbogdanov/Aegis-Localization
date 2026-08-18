@@ -1,0 +1,10 @@
+{
+  "ground_truth_received": 401,
+  "ekf_received": 401,
+  "ukf_received": 401,
+  "pf_received": 401,
+  "odom_received": 0,
+  "diagnostics_received": 2003,
+  "log_odom_baseline": false,
+  "use_odom_as_ground_truth": false
+}

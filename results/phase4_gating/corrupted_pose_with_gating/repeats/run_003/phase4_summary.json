@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "repeat_name": "run_003",
+    "duration_seconds": 20,
+    "launch_args": {
+      "odom_position_noise_std": "0.03",
+      "odom_velocity_noise_std": "0.02",
+      "imu_yaw_rate_noise_std": "0.01",
+      "dropout_probability": "0.0",
+      "use_odom_pose_update": "true",
+      "pose_gating_enabled": "true",
+      "pose_gating_threshold": "9.324146034653893",
+      "pose_outlier_probability": "0.10",
+      "pose_outlier_position_std": "1.5",
+      "pose_outlier_yaw_std": "0.75",
+      "benchmark_duration_seconds": "20.0",
+      "fake_sensor_seed": "2357",
+      "pf_random_seed": "2358",
+      "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_with_gating/repeats/run_003",
+      "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_with_gating/repeats/run_003/ekf_stats.json",
+      "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_with_gating/repeats/run_003/ukf_stats.json",
+      "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_with_gating/repeats/run_003/pf_stats.json",
+      "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_with_gating/repeats/run_003/logger_stats.json",
+      "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_with_gating/repeats/run_003/fake_sensor_stats.json"
+    },
+    "seeds": {
+      "fake_sensor_seed": 2357,
+      "pf_random_seed": 2358
+    }
+  },
+  "metrics": {
+    "ekf": {
+      "num_samples": 401,
+      "ate_rmse": 0.06595274403957498,
+      "final_drift": 0.06456157602502993,
+      "yaw_rmse": 0.003715689920818398
+    },
+    "ukf": {
+      "num_samples": 401,
+      "ate_rmse": 0.06595274403957498,
+      "final_drift": 0.06456157602502993,
+      "yaw_rmse": 0.003715689920818398
+    },
+    "pf": {
+      "num_samples": 400,
+      "ate_rmse": 0.06288667916065555,
+      "final_drift": 0.0352981267275716,
+      "yaw_rmse": 0.020615826936997622
+    }
+  },
+  "gating": {
+    "ekf": {
+      "estimator": "EKF",
+      "measurement_type": "pose",
+      "num_measurements": 400,
+      "accepted_count": 372,
+      "rejected_count": 28,
+      "rejection_rate": 0.07,
+      "accepted_nis_mean": 0.187048539844086,
+      "rejected_nis_mean": 76.98664669567859
+    },
+    "ukf": {
+      "estimator": "UKF",
+      "measurement_type": "pose",
+      "num_measurements": 399,
+      "accepted_count": 371,
+      "rejected_count": 28,
+      "rejection_rate": 0.07017543859649122,
+      "accepted_nis_mean": 0.18726330347169812,
+      "rejected_nis_mean": 76.98664669567859
+    }
+  },
+  "nis": {
+    "ekf": {
+      "pose": {
+        "num_updates": 400,
+        "innovation_dim": 3,
+        "nis_mean": 5.563020410752499,
+        "nis_median": 0.1357648155,
+        "nis_std": 26.36199479654628,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.6325,
+        "fraction_in_bounds": 0.2975,
+        "fraction_above_upper_bound": 0.07,
+        "violation_fraction": 0.7025
+      },
+      "velocity_yaw_rate": {
+        "num_updates": 399,
+        "innovation_dim": 3,
+        "nis_mean": 2.7161206014962405,
+        "nis_median": 2.731220582,
+        "nis_std": 0.7925548992355441,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.005012531328320802,
+        "fraction_in_bounds": 0.9949874686716792,
+        "fraction_above_upper_bound": 0.0,
+        "violation_fraction": 0.005012531328320802
+      }
+    },
+    "ukf": {
+      "pose": {
+        "num_updates": 399,
+        "innovation_dim": 3,
+        "nis_mean": 5.5766937169599,
+        "nis_median": 0.137017725,
+        "nis_std": 26.393592540792977,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.631578947368421,
+        "fraction_in_bounds": 0.2982456140350877,
+        "fraction_above_upper_bound": 0.07017543859649122,
+        "violation_fraction": 0.7017543859649122
+      },
+      "velocity_yaw_rate": {
+        "num_updates": 399,
+        "innovation_dim": 3,
+        "nis_mean": 2.7161206014962405,
+        "nis_median": 2.731220582,
+        "nis_std": 0.7925548992355441,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.005012531328320802,
+        "fraction_in_bounds": 0.9949874686716792,
+        "fraction_above_upper_bound": 0.0,
+        "violation_fraction": 0.005012531328320802
+      }
+    }
+  },
+  "stats": {
+    "fake_sensor": {
+      "random_seed": 2357,
+      "published_truth_samples": 401,
+      "dropped_measurements": 0,
+      "corrupted_pose_measurements": 30,
+      "pose_outlier_probability": 0.1,
+      "pose_outlier_position_std": 1.5,
+      "pose_outlier_yaw_std": 0.75
+    },
+    "ekf": null,
+    "ukf": {
+      "odom_received": 401,
+      "imu_received": 401,
+      "predict_calls": 400,
+      "pose_update_attempts": 400,
+      "pose_update_calls": 372,
+      "pose_updates_rejected": 28,
+      "velocity_update_calls": 400,
+      "pose_published": 401,
+      "failed_updates": 0,
+      "last_covariance_stage": "measurement_update",
+      "last_min_eigenvalue": 0.000600143,
+      "last_max_eigenvalue": 0.0027421,
+      "last_symmetry_error": 8.61437e-37,
+      "last_condition_number": 4.56907,
+      "last_covariance_finite": true,
+      "last_covariance_psd": true,
+      "pose_gating_enabled": true,
+      "pose_gating_threshold": 9.32415
+    },
+    "pf": null,
+    "logger": {
+      "ground_truth_received": 334,
+      "ekf_received": 334,
+      "ukf_received": 333,
+      "pf_received": 334,
+      "odom_received": 0,
+      "diagnostics_received": 1665,
+      "log_odom_baseline": false,
+      "use_odom_as_ground_truth": false
+    }
+  }
+}

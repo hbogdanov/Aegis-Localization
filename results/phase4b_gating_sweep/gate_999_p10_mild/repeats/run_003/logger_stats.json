@@ -1,0 +1,10 @@
+{
+  "ground_truth_received": 334,
+  "ekf_received": 334,
+  "ukf_received": 333,
+  "pf_received": 334,
+  "odom_received": 0,
+  "diagnostics_received": 1665,
+  "log_odom_baseline": false,
+  "use_odom_as_ground_truth": false
+}

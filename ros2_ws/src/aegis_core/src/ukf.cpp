@@ -116,6 +116,12 @@ void UKF::setSigmaPointParameters(double alpha, double beta, double kappa)
   computeWeights();
 }
 
+void UKF::setPoseUpdateGate(bool enabled, double nis_threshold)
+{
+  pose_gate_enabled_ = enabled;
+  pose_gate_threshold_ = nis_threshold;
+}
+
 const UKF::CovarianceHealth &UKF::lastCovarianceHealth() const noexcept
 {
   return last_covariance_health_;
@@ -128,11 +134,13 @@ const UKF::UpdateDiagnostics &UKF::lastUpdateDiagnostics() const noexcept
 
 void UKF::storeUpdateDiagnostics(
   const std::string &measurement_type,
+  bool accepted,
   const Eigen::VectorXd &innovation,
   const Eigen::MatrixXd &innovation_covariance,
   const Matrix6d &state_covariance)
 {
   last_update_diagnostics_.measurement_type = measurement_type;
+  last_update_diagnostics_.accepted = accepted;
   last_update_diagnostics_.innovation = innovation;
   last_update_diagnostics_.innovation_covariance = innovation_covariance;
   last_update_diagnostics_.state_covariance = state_covariance;
@@ -349,6 +357,11 @@ bool UKF::update(
   if (measurement_solver.info() != Eigen::Success) {
     throw std::runtime_error("UKF measurement covariance factorization failed");
   }
+  const double nis = innovation.dot(measurement_solver.solve(innovation));
+  if (measurement_type == "pose" && pose_gate_enabled_ && nis > pose_gate_threshold_) {
+    storeUpdateDiagnostics(measurement_type, false, innovation, measurement_covariance, state_.covariance);
+    return false;
+  }
   const Eigen::Matrix<double, kStateSize, MeasurementSize> kalman_gain =
     measurement_solver.solve(cross_covariance.transpose()).transpose();
   const Vector6d updated_state = state_mean + kalman_gain * innovation;
@@ -356,7 +369,7 @@ bool UKF::update(
     state_.covariance - kalman_gain * measurement_covariance * kalman_gain.transpose();
 
   updateStateFromVector(updated_state, updated_covariance, "measurement_update");
-  storeUpdateDiagnostics(measurement_type, innovation, measurement_covariance, state_.covariance);
+  storeUpdateDiagnostics(measurement_type, true, innovation, measurement_covariance, state_.covariance);
   return true;
 }
 

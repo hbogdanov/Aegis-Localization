@@ -1,0 +1,155 @@
+{
+  "metadata": {
+    "repeat_name": "run_001",
+    "duration_seconds": 20,
+    "launch_args": {
+      "odom_position_noise_std": "0.03",
+      "odom_velocity_noise_std": "0.02",
+      "imu_yaw_rate_noise_std": "0.01",
+      "dropout_probability": "0.0",
+      "use_odom_pose_update": "true",
+      "pose_gating_enabled": "false",
+      "pose_gating_threshold": "9.324146034653893",
+      "pose_outlier_probability": "0.10",
+      "pose_outlier_position_std": "1.5",
+      "pose_outlier_yaw_std": "0.75",
+      "benchmark_duration_seconds": "20.0",
+      "fake_sensor_seed": "1337",
+      "pf_random_seed": "1338",
+      "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_no_gating/repeats/run_001",
+      "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_no_gating/repeats/run_001/ekf_stats.json",
+      "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_no_gating/repeats/run_001/ukf_stats.json",
+      "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_no_gating/repeats/run_001/pf_stats.json",
+      "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_no_gating/repeats/run_001/logger_stats.json",
+      "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase4_gating/corrupted_pose_no_gating/repeats/run_001/fake_sensor_stats.json"
+    },
+    "seeds": {
+      "fake_sensor_seed": 1337,
+      "pf_random_seed": 1338
+    }
+  },
+  "metrics": {
+    "ekf": {
+      "num_samples": 401,
+      "ate_rmse": 0.09753456391346473,
+      "final_drift": 0.23401174770214273,
+      "yaw_rmse": 0.02722935961693232
+    },
+    "ukf": {
+      "num_samples": 400,
+      "ate_rmse": 0.09695292615763426,
+      "final_drift": 0.26703153966868826,
+      "yaw_rmse": 0.027121855359337237
+    },
+    "pf": {
+      "num_samples": 400,
+      "ate_rmse": 0.06999875317772972,
+      "final_drift": 0.09889096691465739,
+      "yaw_rmse": 0.02547913044228121
+    }
+  },
+  "gating": {
+    "ekf": {
+      "estimator": "EKF",
+      "measurement_type": "pose",
+      "num_measurements": 400,
+      "accepted_count": 400,
+      "rejected_count": 0,
+      "rejection_rate": 0.0,
+      "accepted_nis_mean": 10.5243234595575,
+      "rejected_nis_mean": NaN
+    },
+    "ukf": {
+      "estimator": "UKF",
+      "measurement_type": "pose",
+      "num_measurements": 399,
+      "accepted_count": 399,
+      "rejected_count": 0,
+      "rejection_rate": 0.0,
+      "accepted_nis_mean": 10.54704831553634,
+      "rejected_nis_mean": NaN
+    }
+  },
+  "nis": {
+    "ekf": {
+      "pose": {
+        "num_updates": 400,
+        "innovation_dim": 3,
+        "nis_mean": 10.5243234595575,
+        "nis_median": 0.1637932945,
+        "nis_std": 40.555976129073876,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.555,
+        "fraction_in_bounds": 0.3375,
+        "fraction_above_upper_bound": 0.1075,
+        "violation_fraction": 0.6625
+      },
+      "velocity_yaw_rate": {
+        "num_updates": 399,
+        "innovation_dim": 3,
+        "nis_mean": 2.6629528042656645,
+        "nis_median": 2.666234169,
+        "nis_std": 0.809885687138143,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.005012531328320802,
+        "fraction_in_bounds": 0.9949874686716792,
+        "fraction_above_upper_bound": 0.0,
+        "violation_fraction": 0.005012531328320802
+      }
+    },
+    "ukf": {
+      "pose": {
+        "num_updates": 399,
+        "innovation_dim": 3,
+        "nis_mean": 10.54704831553634,
+        "nis_median": 0.163227189,
+        "nis_std": 40.60422275864877,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.556390977443609,
+        "fraction_in_bounds": 0.3358395989974937,
+        "fraction_above_upper_bound": 0.10776942355889724,
+        "violation_fraction": 0.6641604010025063
+      },
+      "velocity_yaw_rate": {
+        "num_updates": 399,
+        "innovation_dim": 3,
+        "nis_mean": 2.6629528042656645,
+        "nis_median": 2.666234169,
+        "nis_std": 0.809885687138143,
+        "lower_bound": 0.1813891654104877,
+        "upper_bound": 9.324146034653893,
+        "fraction_below_lower_bound": 0.005012531328320802,
+        "fraction_in_bounds": 0.9949874686716792,
+        "fraction_above_upper_bound": 0.0,
+        "violation_fraction": 0.005012531328320802
+      }
+    }
+  },
+  "stats": {
+    "fake_sensor": {
+      "random_seed": 1337,
+      "published_truth_samples": 401,
+      "dropped_measurements": 0,
+      "corrupted_pose_measurements": 47,
+      "pose_outlier_probability": 0.1,
+      "pose_outlier_position_std": 1.5,
+      "pose_outlier_yaw_std": 0.75
+    },
+    "ekf": null,
+    "ukf": null,
+    "pf": null,
+    "logger": {
+      "ground_truth_received": 334,
+      "ekf_received": 334,
+      "ukf_received": 333,
+      "pf_received": 334,
+      "odom_received": 0,
+      "diagnostics_received": 1665,
+      "log_odom_baseline": false,
+      "use_odom_as_ground_truth": false
+    }
+  }
+}
