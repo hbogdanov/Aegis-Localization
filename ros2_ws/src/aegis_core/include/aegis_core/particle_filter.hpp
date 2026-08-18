@@ -21,6 +21,7 @@ class ParticleFilter
 {
 public:
   explicit ParticleFilter(std::size_t num_particles = 500);
+  void setRandomSeed(std::uint32_t seed);
 
   void setNoiseParameters(
     double process_noise_x,

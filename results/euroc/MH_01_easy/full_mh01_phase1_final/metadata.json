@@ -1,0 +1,26 @@
+{
+  "backend": "euroc",
+  "sequence_name": "MH_01_easy",
+  "run_name": "full_mh01_phase1_final",
+  "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
+  "run_started_at_utc": "2026-08-18T01:47:29.153264+00:00",
+  "truth_source": "dataset",
+  "proxy_input_csv": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\euroc\\MH_01_easy\\full_mh01_phase1_final\\logs\\proxy_planar.csv",
+  "replay_mode": "faithful",
+  "sleep_scale": 1.0,
+  "max_samples": null,
+  "expected_subscribers": {
+    "odom": 3,
+    "imu": 3,
+    "truth": 1
+  },
+  "result_layout": {
+    "root": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\euroc\\MH_01_easy\\full_mh01_phase1_final",
+    "normalized_dir": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\euroc\\MH_01_easy\\full_mh01_phase1_final\\normalized",
+    "metrics_dir": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\euroc\\MH_01_easy\\full_mh01_phase1_final\\metrics",
+    "plots_dir": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\euroc\\MH_01_easy\\full_mh01_phase1_final\\plots",
+    "logs_dir": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\euroc\\MH_01_easy\\full_mh01_phase1_final\\logs",
+    "manifest_path": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\euroc\\MH_01_easy\\full_mh01_phase1_final\\manifest.json",
+    "metadata_path": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\euroc\\MH_01_easy\\full_mh01_phase1_final\\metadata.json"
+  }
+}

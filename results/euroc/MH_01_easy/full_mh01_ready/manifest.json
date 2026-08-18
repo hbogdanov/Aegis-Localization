@@ -1,0 +1,15 @@
+{
+  "backend": "euroc",
+  "sequence_name": "MH_01_easy",
+  "run_name": "full_mh01_ready",
+  "sequence_root": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\machine_hall\\machine_hall\\MH_01_easy",
+  "proxy_input_csv": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\euroc\\MH_01_easy\\full_mh01_ready\\logs\\proxy_planar.csv",
+  "reduction_assumptions": [
+    "EuRoC is reduced to planar x, y, yaw motion only.",
+    "Ground truth is taken from state_groundtruth_estimate0/data.csv.",
+    "Planar linear velocities are derived from consecutive ground-truth positions.",
+    "Aligned IMU yaw rate is copied into /odom.twist.angular.z because current Aegis ROS wrappers read angular rate from odometry twist rather than /imu directly.",
+    "use_odom_pose_update is disabled so ground-truth pose is used only for initialization and evaluation, not for continuous estimator correction.",
+    "This backend is a real-data motion and timing benchmark, not a wheel-encoder-faithful EuRoC localization benchmark."
+  ]
+}

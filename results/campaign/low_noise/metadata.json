@@ -1,0 +1,20 @@
+{
+  "name": "low_noise",
+  "duration_seconds": 5,
+  "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
+  "run_started_at_utc": "2026-08-04T03:52:39.487887+00:00",
+  "launch_args": {
+    "odom_position_noise_std": "0.03",
+    "odom_velocity_noise_std": "0.02",
+    "imu_yaw_rate_noise_std": "0.01",
+    "dropout_probability": "0.0",
+    "use_odom_pose_update": "true",
+    "benchmark_duration_seconds": "5.0",
+    "fake_sensor_seed": "1337",
+    "pf_random_seed": "1338"
+  },
+  "seeds": {
+    "fake_sensor_seed": 1337,
+    "pf_random_seed": 1338
+  }
+}

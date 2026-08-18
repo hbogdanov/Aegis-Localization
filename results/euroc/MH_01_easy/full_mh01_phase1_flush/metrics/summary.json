@@ -1,0 +1,151 @@
+{
+  "metrics": {
+    "ekf": {
+      "num_samples": 36300,
+      "ate_rmse": 0.0010709738170590363,
+      "final_drift": 0.0007467080748783676,
+      "yaw_rmse": 1.7968555371220007
+    },
+    "ukf": {
+      "num_samples": 36300,
+      "ate_rmse": 0.001070973816801668,
+      "final_drift": 0.0007467080748783676,
+      "yaw_rmse": 1.7968555371220143
+    },
+    "pf": {
+      "num_samples": 36300,
+      "ate_rmse": 0.1552077662963913,
+      "final_drift": 0.17819537643286287,
+      "yaw_rmse": 1.8019682275599582
+    }
+  },
+  "odom_baseline": {
+    "num_samples": 36300,
+    "ate_rmse": 0.0,
+    "final_drift": 0.0,
+    "yaw_rmse": 0.0
+  },
+  "comparison": {
+    "baseline_name": "synthetic_low_noise",
+    "baseline_path": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\campaign\\low_noise",
+    "estimators": {
+      "ekf": {
+        "synthetic_low_noise": {
+          "num_samples": 101,
+          "ate_rmse": 0.020556640950211636,
+          "final_drift": 0.013171933748447419,
+          "yaw_rmse": 0.0008690138047525137
+        },
+        "euroc_proxy_planar": {
+          "num_samples": 36300,
+          "ate_rmse": 0.0010709738170590363,
+          "final_drift": 0.0007467080748783676,
+          "yaw_rmse": 1.7968555371220007
+        },
+        "delta_ate_rmse": -0.019485667133152598,
+        "delta_final_drift": -0.012425225673569051,
+        "delta_yaw_rmse": 1.7959865233172483
+      },
+      "ukf": {
+        "synthetic_low_noise": {
+          "num_samples": 101,
+          "ate_rmse": 0.020556640950211636,
+          "final_drift": 0.013171933748447419,
+          "yaw_rmse": 0.0008690138047525137
+        },
+        "euroc_proxy_planar": {
+          "num_samples": 36300,
+          "ate_rmse": 0.001070973816801668,
+          "final_drift": 0.0007467080748783676,
+          "yaw_rmse": 1.7968555371220143
+        },
+        "delta_ate_rmse": -0.01948566713340997,
+        "delta_final_drift": -0.012425225673569051,
+        "delta_yaw_rmse": 1.7959865233172618
+      },
+      "pf": {
+        "synthetic_low_noise": {
+          "num_samples": 101,
+          "ate_rmse": 0.024547072352432045,
+          "final_drift": 0.02032077162824727,
+          "yaw_rmse": 0.0009071579072944914
+        },
+        "euroc_proxy_planar": {
+          "num_samples": 36300,
+          "ate_rmse": 0.1552077662963913,
+          "final_drift": 0.17819537643286287,
+          "yaw_rmse": 1.8019682275599582
+        },
+        "delta_ate_rmse": 0.13066069394395924,
+        "delta_final_drift": 0.1578746048046156,
+        "delta_yaw_rmse": 1.8010610696526637
+      }
+    }
+  },
+  "coverage_accounting": {
+    "replay_summary": {
+      "published_samples": 36382,
+      "first_timestamp": 1403636580.838556,
+      "last_timestamp": 1403636762.743556,
+      "elapsed_wall_seconds": 209.1,
+      "subscriber_snapshot": {
+        "odom": 4,
+        "imu": 3,
+        "truth": 1
+      }
+    },
+    "ekf_stats": {
+      "odom_received": 36000,
+      "imu_received": 35999,
+      "predict_calls": 35999,
+      "pose_update_calls": 0,
+      "velocity_update_calls": 35999,
+      "pose_published": 36000
+    },
+    "ukf_stats": {
+      "odom_received": 36000,
+      "imu_received": 35999,
+      "predict_calls": 35999,
+      "pose_update_calls": 0,
+      "velocity_update_calls": 35999,
+      "pose_published": 36000,
+      "failed_updates": 0,
+      "last_covariance_stage": "measurement_update",
+      "last_min_eigenvalue": 0.000221108,
+      "last_max_eigenvalue": 0.189993,
+      "last_symmetry_error": 1.30506e-54,
+      "last_condition_number": 859.275,
+      "last_covariance_finite": true,
+      "last_covariance_psd": true
+    },
+    "pf_stats": {
+      "odom_received": 36000,
+      "imu_received": 35999,
+      "predict_calls": 35999,
+      "pose_update_calls": 0,
+      "velocity_update_calls": 35999,
+      "pose_published": 36000,
+      "effective_sample_size": 500
+    },
+    "logger_stats": {
+      "ground_truth_received": 36200,
+      "ekf_received": 36200,
+      "ukf_received": 36200,
+      "pf_received": 36200,
+      "odom_received": 36200,
+      "log_odom_baseline": true,
+      "use_odom_as_ground_truth": false
+    },
+    "csv_row_counts": {
+      "ground_truth": 36300,
+      "odom": 36300,
+      "ekf": 36300,
+      "ukf": 36300,
+      "pf": 36300
+    }
+  },
+  "plots_generated": false,
+  "plot_error": "initialization failed",
+  "replay_mode": "faithful",
+  "sleep_scale": 1.0
+}

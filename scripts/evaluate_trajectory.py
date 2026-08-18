@@ -1,62 +1,21 @@
 #!/usr/bin/env python3
-"""Evaluate estimated trajectory against ground truth.
-
-Usage:
-  python3 scripts/evaluate_trajectory.py --est results/metrics/ekf.csv --gt results/metrics/ground_truth.csv
-"""
+"""Evaluate estimated trajectory against ground truth."""
 import argparse
-import json
 import os
+from pathlib import Path
 import sys
 
-import numpy as np
-import pandas as pd
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+PYTHON_ROOT = REPO_ROOT / "python"
+if str(PYTHON_ROOT) not in sys.path:
+    sys.path.insert(0, str(PYTHON_ROOT))
 
-def wrap_angle(diff):
-    return np.arctan2(np.sin(diff), np.cos(diff))
+from aegis_eval import align_by_timestamp, compute_metrics, load_trajectory_csv, write_json
 
 
 def load_csv(path):
-    if not os.path.exists(path):
-        raise FileNotFoundError(path)
-    df = pd.read_csv(path)
-    if 'timestamp' not in df.columns:
-        raise ValueError(f"CSV missing 'timestamp' column: {path}")
-    required = ['x', 'y', 'yaw']
-    for c in required:
-        if c not in df.columns:
-            raise ValueError(f"CSV missing '{c}' column: {path}")
-    df = df[['timestamp', 'x', 'y', 'yaw']].copy()
-    df['timestamp'] = pd.to_numeric(df['timestamp'], errors='coerce')
-    df = df.dropna(subset=['timestamp'])
-    df = df.sort_values('timestamp').reset_index(drop=True)
-    return df
-
-
-def align_by_timestamp(est, gt):
-    est = est.sort_values('timestamp').reset_index(drop=True)
-    gt = gt.sort_values('timestamp').reset_index(drop=True)
-    merged = pd.merge_asof(est, gt, on='timestamp', suffixes=('_est', '_gt'), direction='nearest')
-    return merged
-
-
-def compute_metrics(merged):
-    dx = merged['x_est'].to_numpy() - merged['x_gt'].to_numpy()
-    dy = merged['y_est'].to_numpy() - merged['y_gt'].to_numpy()
-    pos_err = np.sqrt(dx * dx + dy * dy)
-    ate_rmse = float(np.sqrt(np.mean(pos_err ** 2))) if pos_err.size > 0 else float('nan')
-    final_drift = float(pos_err[-1]) if pos_err.size > 0 else float('nan')
-
-    yaw_diff = wrap_angle(merged['yaw_est'].to_numpy() - merged['yaw_gt'].to_numpy())
-    yaw_rmse = float(np.sqrt(np.mean(yaw_diff ** 2))) if yaw_diff.size > 0 else float('nan')
-
-    return {
-        'num_samples': int(len(merged)),
-        'ate_rmse': ate_rmse,
-        'final_drift': final_drift,
-        'yaw_rmse': yaw_rmse,
-    }
+    return load_trajectory_csv(path)
 
 
 def print_table(metrics):
@@ -76,14 +35,19 @@ def main():
     args = parser.parse_args()
 
     try:
-        est = load_csv(args.est)
-        gt = load_csv(args.gt)
+        est = load_trajectory_csv(args.est)
+        gt = load_trajectory_csv(args.gt)
     except Exception as e:
         print(f'Error loading CSVs: {e}', file=sys.stderr)
         sys.exit(2)
 
-    merged = align_by_timestamp(est, gt)
-    metrics = compute_metrics(merged)
+    try:
+        merged = align_by_timestamp(est, gt)
+        metrics = compute_metrics(merged)
+    except Exception as e:
+        print(f'Error computing metrics: {e}', file=sys.stderr)
+        sys.exit(2)
+
     print_table(metrics)
 
     try:
@@ -91,9 +55,7 @@ def main():
         if out_json is None:
             est_stem = os.path.splitext(os.path.basename(args.est))[0]
             out_json = os.path.join('results', 'metrics', f'{est_stem}_metrics.json')
-        os.makedirs(os.path.dirname(out_json), exist_ok=True)
-        with open(out_json, 'w') as f:
-            json.dump(metrics, f, indent=2)
+        write_json(out_json, metrics)
         print(f'Wrote metrics to {out_json}')
     except Exception:
         pass

@@ -1,0 +1,11 @@
+{
+  "published_samples": 200,
+  "first_timestamp": 1403636580.838556,
+  "last_timestamp": 1403636581.833555,
+  "elapsed_wall_seconds": 1.16263,
+  "subscriber_snapshot": {
+    "odom": 3,
+    "imu": 3,
+    "truth": 1
+  }
+}

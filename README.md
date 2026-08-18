@@ -2,7 +2,7 @@
 
 C++ ROS2 multi-sensor localization and state-estimation framework for autonomous robots.
 
-Aegis Localization implements and benchmarks classical robotics estimation methods for real-time robot pose estimation using wheel odometry, IMU, and optional LiDAR-derived measurements.
+Aegis Localization implements and benchmarks classical robotics estimation methods for real-time robot pose estimation using wheel odometry, IMU, and simulator-derived ground truth.
 
 ## Features
 
@@ -12,23 +12,23 @@ Aegis Localization implements and benchmarks classical robotics estimation metho
 - Particle Filter localization
 - Odometry + IMU fusion
 - Synthetic sensor benchmark with configurable noise/dropout
+- Reproducible multi-scenario benchmark campaign
 - Ground-truth trajectory logging
 - ATE/drift/yaw RMSE evaluation
 - Trajectory plotting
 
 ## Planned
 
-- TurtleBot3 Gazebo validation
 - GTSAM pose graph optimization
 
 ## Project Structure
 
-- `ros2_ws/src/aegis_core` — filter math library
-- `ros2_ws/src/aegis_ros` — ROS2 nodes, launch files, configs
-- `ros2_ws/src/aegis_msgs` — custom diagnostics messages
-- `scripts/` — evaluation and plotting tools
-- `docs/` — architecture and experiment notes
-- `results/` — generated metrics and plots
+- `ros2_ws/src/aegis_core` - filter math library
+- `ros2_ws/src/aegis_ros` - ROS2 nodes, launch files, configs
+- `ros2_ws/src/aegis_msgs` - custom diagnostics messages
+- `scripts/` - evaluation, plotting, and benchmark helpers
+- `docs/` - architecture, experiment notes, benchmark results, and resume bullets
+- `results/` - generated metrics and plots
 
 ## Setup
 
@@ -42,7 +42,9 @@ colcon build --symlink-install
 source install/setup.bash
 ```
 
-## Run EKF Localization
+## Run Filters
+
+EKF:
 
 ```bash
 cd ros2_ws
@@ -50,7 +52,7 @@ source install/setup.bash
 ros2 launch aegis_ros ekf_localization.launch.py
 ```
 
-## Run UKF Localization
+UKF:
 
 ```bash
 cd ros2_ws
@@ -58,7 +60,7 @@ source install/setup.bash
 ros2 launch aegis_ros ukf_localization.launch.py
 ```
 
-## Run Particle Filter Localization
+Particle Filter:
 
 ```bash
 cd ros2_ws
@@ -66,97 +68,88 @@ source install/setup.bash
 ros2 launch aegis_ros particle_filter_localization.launch.py
 ```
 
-## Run Benchmark and Trajectory Logging
+## Synthetic Benchmark
+
+The default synthetic benchmark launches the fake sensor publisher, EKF, UKF, particle filter, and the trajectory logger:
 
 ```bash
 cd ros2_ws
-source install/setup.bash
-ros2 launch aegis_ros benchmark.launch.py
-```
-
-The benchmark launch starts the EKF node and the trajectory logger, which writes results to:
-
-- `results/metrics/ekf.csv`
-- `results/metrics/odom.csv`
-
-## Run Fake Sensor Benchmark
-
-If you do not want to use Gazebo or TurtleBot3, run a fake sensor benchmark instead:
-
-```bash
-cd ros2_ws
+source /opt/ros/humble/setup.bash
 source install/setup.bash
 ros2 launch aegis_ros fake_benchmark.launch.py
 ```
 
-This launch starts:
+You can disable individual estimators with `run_ekf:=false`, `run_ukf:=false`, or `run_pf:=false`.
 
-- `fake_sensor_publisher_node` publishing `/odom`, `/imu`, and noiseless `/ground_truth/pose`
-- `ekf_node`
-- `ukf_node`
-- `particle_filter_node`
-- `trajectory_logger_node`
-
-The trajectory logger writes output into the repository-level `results/metrics` folder.
-
-Default fake-sensor noise settings are provided in `ros2_ws/src/aegis_ros/config/fake_sensor_publisher.yaml`.
-Use `run_ekf:=false`, `run_ukf:=false`, or `run_pf:=false` to benchmark just selected filters.
-
-## Benchmark Scenarios
-
-Scenario reference: `docs/benchmark_scenarios.md`
+Scenario presets are documented in `docs/benchmark_scenarios.md`. Three especially useful runs are:
 
 Low noise:
 
 ```bash
-cd ros2_ws
-source /opt/ros/humble/setup.bash
-source install/setup.bash
 ros2 launch aegis_ros fake_benchmark.launch.py odom_position_noise_std:=0.03 odom_velocity_noise_std:=0.02 imu_yaw_rate_noise_std:=0.01 dropout_probability:=0.0
 ```
 
-Medium noise:
+High noise + 20% dropout:
 
 ```bash
-cd ros2_ws
-source /opt/ros/humble/setup.bash
-source install/setup.bash
-ros2 launch aegis_ros fake_benchmark.launch.py odom_position_noise_std:=0.08 odom_velocity_noise_std:=0.05 imu_yaw_rate_noise_std:=0.03 dropout_probability:=0.0
-```
-
-High noise:
-
-```bash
-cd ros2_ws
-source /opt/ros/humble/setup.bash
-source install/setup.bash
-ros2 launch aegis_ros fake_benchmark.launch.py odom_position_noise_std:=0.15 odom_velocity_noise_std:=0.10 imu_yaw_rate_noise_std:=0.05 dropout_probability:=0.0
-```
-
-20 percent dropout:
-
-```bash
-cd ros2_ws
-source /opt/ros/humble/setup.bash
-source install/setup.bash
 ros2 launch aegis_ros fake_benchmark.launch.py odom_position_noise_std:=0.15 odom_velocity_noise_std:=0.10 imu_yaw_rate_noise_std:=0.05 dropout_probability:=0.2
 ```
 
-Dead-reckoning stress test:
+Dead reckoning stress test:
 
 ```bash
-cd ros2_ws
-source /opt/ros/humble/setup.bash
-source install/setup.bash
 ros2 launch aegis_ros fake_benchmark.launch.py use_odom_pose_update:=false
 ```
 
-## Evaluate and Plot Trajectories
-
-After running the benchmark, evaluate and plot the recorded trajectories from `results/metrics`:
+To reproduce the packaged benchmark campaign from the repository root:
 
 ```bash
-cd /mnt/c/Users/Ivan/Aegis-Localization
+cd /path/to/Aegis-Localization
+python3 scripts/run_fake_benchmark_campaign.py --duration 20
+```
+
+## Results
+
+Packaged scenario summaries currently live in `results/campaign/summary.json`, and selected evidence plots live in `docs/assets/`.
+
+Headline results from the packaged benchmark campaign:
+
+### Low Noise
+
+| Method | ATE RMSE | Final Drift | Yaw RMSE | Update Rate |
+|---|---:|---:|---:|---:|
+| EKF | 0.0420 m | 0.0159 m | 0.0245 rad | 9.71 Hz |
+| UKF | 0.0418 m | 0.0159 m | 0.0243 rad | 9.71 Hz |
+| Particle Filter | 0.0252 m | 0.0084 m | 0.0016 rad | 9.71 Hz |
+
+### High Noise + 20% Dropout
+
+| Method | ATE RMSE | Final Drift | Yaw RMSE | Update Rate |
+|---|---:|---:|---:|---:|
+| EKF | 0.1181 m | 0.0410 m | 0.0686 rad | 10.23 Hz |
+| UKF | 0.1010 m | 0.1001 m | 0.0655 rad | 10.23 Hz |
+| Particle Filter | 0.1102 m | 0.2013 m | 0.0767 rad | 10.23 Hz |
+
+### Dead Reckoning (`use_odom_pose_update:=false`)
+
+| Method | ATE RMSE | Final Drift | Yaw RMSE | Update Rate |
+|---|---:|---:|---:|---:|
+| EKF | 0.1257 m | 0.1368 m | 0.0918 rad | 10.20 Hz |
+| UKF | 0.1257 m | 0.1368 m | 0.0918 rad | 10.20 Hz |
+| Particle Filter | 0.1100 m | 0.0576 m | 0.0924 rad | 10.20 Hz |
+
+Takeaways:
+
+- PF is strongest in the easy synthetic case and remains most stable in the dead-reckoning stress test.
+- UKF delivers the best ATE in the high-noise dropout scenario, though EKF holds lower final drift there.
+- All three methods sustain roughly 10 Hz in the current ROS2 wrappers, so the comparison is mostly about estimator behavior rather than raw loop speed.
+
+![Low-noise particle filter trajectory](docs/assets/low_noise_pf_vs_ground_truth.png)
+
+## Evaluate and Plot
+
+```bash
+cd /path/to/Aegis-Localization
 python3 scripts/evaluate_trajectory.py --est results/metrics/ekf.csv --gt results/metrics/ground_truth.csv
 python3 scripts/evaluate_trajectory.py --est results/metrics/ukf.csv --gt results/metrics/ground_truth.csv
 python3 scripts/evaluate_trajectory.py --est results/metrics/pf.csv --gt results/metrics/ground_truth.csv
@@ -164,36 +157,64 @@ python3 scripts/plot_trajectories.py --est results/metrics/ekf.csv --gt results/
 python3 scripts/plot_trajectories.py --est results/metrics/pf.csv --gt results/metrics/ground_truth.csv --out results/plots/pf_vs_ground_truth.png
 ```
 
-The plot script also writes:
+These commands are intended for the synthetic benchmark outputs under `results/metrics/`. Gazebo integration should write to `results/gazebo_metrics/` so incomplete simulator ground truth does not overwrite the synthetic baseline.
 
-- `results/plots/ekf_vs_ground_truth.png`
-- `results/plots/ekf_position_error.png`
+## TurtleBot3 Gazebo Validation
 
-## Benchmark Evidence
+Headless TurtleBot3 Gazebo integration is available through a dedicated launch:
 
-After a successful 60-second fake benchmark run, the evaluation artifacts are:
+```bash
+cd ros2_ws
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+ros2 launch aegis_ros gazebo_validation.launch.py gui:=false
+```
 
-- `results/metrics/ekf.csv`
-- `results/metrics/ukf.csv`
-- `results/metrics/pf.csv`
-- `results/metrics/ground_truth.csv`
-- `results/metrics/ekf_metrics.json`
-- `results/metrics/ukf_metrics.json`
-- `results/metrics/pf_metrics.json`
-- `results/plots/ekf_vs_ground_truth.png`
-- `results/plots/pf_vs_ground_truth.png`
-- `results/plots/ekf_position_error.png`
-- `results/plots/pf_position_error.png`
+This launch:
 
-Validated metrics from the current synthetic benchmark:
+- starts TurtleBot3 Burger in Gazebo Classic
+- drives a repeatable circular `cmd_vel` profile
+- runs EKF, UKF, and particle-filter estimators on simulated `/odom` and `/imu`
+- reuses the same trajectory logger and CSV pipeline as the synthetic benchmark
 
-| Method | ATE RMSE | Final Drift | Yaw RMSE |
-|---|---:|---:|---:|
-| EKF | 0.0220 m | 0.0265 m | 0.0019 rad |
-| UKF | 0.0220 m | 0.0265 m | 0.0019 rad |
-| Particle Filter | 0.0253 m | 0.0071 m | 0.0019 rad |
+Current Gazebo status:
 
-These files provide direct evidence for comparing EKF, UKF, and particle-filter behavior under the same synthetic trajectory and noise settings.
+- launch integration is intended to run in WSL with installed TurtleBot3 and Gazebo packages
+- estimator trajectories can be logged from simulation
+- Gazebo logs should be treated as separate outputs under `results/gazebo_metrics/`
+- quantitative Gazebo scoring should still be treated as incomplete until the simulator ground-truth bridge reliably produces a populated `ground_truth.csv`
+
+## EuRoC Recorded-Data Benchmark
+
+A minimal recorded-data backend is now available for one EuRoC sequence at a time through the same evaluation pipeline used by the synthetic benchmark:
+
+```bash
+python scripts/run_euroc_benchmark.py --sequence-root C:\path\to\MH_01_easy --run-name full_mh01_ready
+```
+
+Current scope and caveats:
+
+- this is a planar proxy benchmark, not a native 6-DoF MAV localization benchmark
+- EuRoC ground truth is reduced to planar `x`, `y`, and `yaw`
+- planar linear velocities are derived from ground-truth position differences
+- IMU yaw rate is mirrored into `/odom.twist.angular.z` for compatibility with the current ROS wrappers
+- plotting is optional and benchmark generation still succeeds even if the local matplotlib stack is broken
+
+Important preserved artifacts live under:
+
+- `results/euroc/MH_01_easy/full_mh01/`
+- `results/euroc/MH_01_easy/full_mh01_diag/`
+- `results/euroc/MH_01_easy/full_mh01_ready/`
+- `results/euroc/MH_01_easy/full_mh01_phase1_accounted/`
+
+The current recorded-data findings are intentionally mixed rather than polished:
+
+- EKF and UKF now complete the faithful `MH_01_easy` replay with nearly identical translational metrics under the current proxy definition
+- the earlier UKF crash was traced to unscaled per-step process noise at high replay rates plus an overly aggressive `alpha=0.1` sigma-point setting that produced a very negative central covariance weight
+- the current accounted run still shows a small logged-sample shortfall versus replay publication, now narrowed to shutdown/write-path behavior rather than estimator failure
+- translational error can look excellent while yaw error remains large, so yaw conclusions should still be treated cautiously and not presented as the strongest result of the proxy benchmark
+
+For the benchmark-specific methodology and interpretation notes, see `docs/euroc_backend.md` and each run-local `benchmark_report.md`.
 
 ## Notes
 

@@ -1,0 +1,6 @@
+[INFO] [launch]: All log files can be found below /home/hbogdanov/.ros/log/2026-08-17-21-03-38-314322-Ivanb-333
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [ekf_node-1]: process started with pid [420]
+[INFO] [ukf_node-2]: process started with pid [422]
+[INFO] [particle_filter_node-3]: process started with pid [424]
+[INFO] [trajectory_logger_node-4]: process started with pid [426]

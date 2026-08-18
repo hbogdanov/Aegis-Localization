@@ -2,7 +2,9 @@
 
 #include <array>
 #include <cmath>
+#include <iomanip>
 #include <limits>
+#include <sstream>
 #include <stdexcept>
 
 namespace aegis_core {
@@ -65,7 +67,7 @@ UKF::UKF()
     process_noise_(Matrix6d::Identity() * 1e-3),
     velocity_yaw_rate_noise_(Matrix3d::Identity() * 1e-2),
     pose_noise_(Matrix3d::Identity() * 1e-2),
-    alpha_(1e-1),
+    alpha_(1.0),
     beta_(2.0),
     kappa_(0.0),
     lambda_(0.0),
@@ -114,6 +116,11 @@ void UKF::setSigmaPointParameters(double alpha, double beta, double kappa)
   computeWeights();
 }
 
+const UKF::CovarianceHealth &UKF::lastCovarianceHealth() const noexcept
+{
+  return last_covariance_health_;
+}
+
 void UKF::computeWeights()
 {
   const double scaling = alpha_ * alpha_ * (kStateSize + kappa_);
@@ -127,6 +134,50 @@ void UKF::computeWeights()
   weights_covariance_.setConstant(1.0 / (2.0 * denominator));
   weights_mean_(0) = lambda_ / denominator;
   weights_covariance_(0) = weights_mean_(0) + (1.0 - alpha_ * alpha_ + beta_);
+}
+
+Matrix6d UKF::discretizeProcessNoise(double dt) const
+{
+  return process_noise_ * std::max(dt, 1e-9);
+}
+
+Matrix6d UKF::validateCovariance(const Matrix6d &covariance, const std::string &stage)
+{
+  Matrix6d symmetrized = 0.5 * (covariance + covariance.transpose());
+  last_covariance_health_.stage = stage;
+  last_covariance_health_.symmetry_error = (covariance - covariance.transpose()).cwiseAbs().maxCoeff();
+  last_covariance_health_.finite = symmetrized.array().isFinite().all();
+  if (!last_covariance_health_.finite) {
+    throw std::runtime_error("UKF covariance contains NaN or Inf during " + stage);
+  }
+
+  Eigen::SelfAdjointEigenSolver<Matrix6d> eigen_solver(symmetrized);
+  if (eigen_solver.info() != Eigen::Success) {
+    throw std::runtime_error("UKF covariance eigen decomposition failed during " + stage);
+  }
+
+  const auto eigenvalues = eigen_solver.eigenvalues();
+  last_covariance_health_.min_eigenvalue = eigenvalues.minCoeff();
+  last_covariance_health_.max_eigenvalue = eigenvalues.maxCoeff();
+  last_covariance_health_.condition_number =
+    (std::abs(last_covariance_health_.min_eigenvalue) > 1e-12)
+      ? (last_covariance_health_.max_eigenvalue / std::abs(last_covariance_health_.min_eigenvalue))
+      : std::numeric_limits<double>::infinity();
+  last_covariance_health_.positive_semidefinite = last_covariance_health_.min_eigenvalue >= -1e-9;
+
+  if (!last_covariance_health_.positive_semidefinite) {
+    std::ostringstream message;
+    message << std::setprecision(6)
+            << "UKF covariance became indefinite during " << stage
+            << ". min_eigenvalue=" << last_covariance_health_.min_eigenvalue
+            << " max_eigenvalue=" << last_covariance_health_.max_eigenvalue
+            << " symmetry_error=" << last_covariance_health_.symmetry_error
+            << " weights_covariance_0=" << weights_covariance_(0)
+            << " lambda=" << lambda_;
+    throw std::runtime_error(message.str());
+  }
+
+  return symmetrized;
 }
 
 Eigen::LLT<Matrix6d> UKF::computeCovarianceFactor(const Matrix6d &covariance) const
@@ -143,7 +194,23 @@ Eigen::LLT<Matrix6d> UKF::computeCovarianceFactor(const Matrix6d &covariance) co
     jitter *= 10.0;
   }
 
-  throw std::runtime_error("UKF covariance is not positive definite");
+  const Eigen::SelfAdjointEigenSolver<Matrix6d> eigen_solver(adjusted);
+  std::ostringstream message;
+  message << std::setprecision(6)
+          << "UKF covariance is not positive definite after jitter. "
+          << "diag=[";
+  for (int i = 0; i < adjusted.rows(); ++i) {
+    if (i > 0) {
+      message << ", ";
+    }
+    message << adjusted(i, i);
+  }
+  message << "]";
+  if (eigen_solver.info() == Eigen::Success) {
+    message << " min_eigenvalue=" << eigen_solver.eigenvalues().minCoeff();
+  }
+
+  throw std::runtime_error(message.str());
 }
 
 UKF::SigmaPointMatrix UKF::generateSigmaPoints() const
@@ -161,11 +228,11 @@ UKF::SigmaPointMatrix UKF::generateSigmaPoints() const
   return sigma_points;
 }
 
-void UKF::updateStateFromVector(const Vector6d &mean, const Matrix6d &covariance)
+void UKF::updateStateFromVector(const Vector6d &mean, const Matrix6d &covariance, const std::string &stage)
 {
   state_.fromVector(mean);
   state_.theta = normalizeAngle(state_.theta);
-  state_.covariance = covariance;
+  state_.covariance = validateCovariance(covariance, stage);
 }
 
 void UKF::predict(double dt)
@@ -179,14 +246,14 @@ void UKF::predict(double dt)
   }
 
   const Vector6d predicted_mean = weightedMean(predicted_sigma_points, {2});
-  Matrix6d predicted_covariance = process_noise_;
+  Matrix6d predicted_covariance = discretizeProcessNoise(dt);
   for (int i = 0; i < kSigmaPointCount; ++i) {
     const Vector6d sigma_point = predicted_sigma_points.col(i);
     const Vector6d diff = residual(sigma_point, predicted_mean, {2});
     predicted_covariance += weights_covariance_(i) * diff * diff.transpose();
   }
 
-  updateStateFromVector(predicted_mean, predicted_covariance);
+  updateStateFromVector(predicted_mean, predicted_covariance, "prediction");
 }
 
 bool UKF::updateVelocityYawRate(double vx, double vy, double omega)
@@ -246,14 +313,17 @@ bool UKF::update(
 
   const Eigen::Matrix<double, MeasurementSize, 1> innovation =
     residual(measurement, measurement_mean, angle_indices);
+  const Eigen::LDLT<Eigen::Matrix<double, MeasurementSize, MeasurementSize>> measurement_solver(measurement_covariance);
+  if (measurement_solver.info() != Eigen::Success) {
+    throw std::runtime_error("UKF measurement covariance factorization failed");
+  }
   const Eigen::Matrix<double, kStateSize, MeasurementSize> kalman_gain =
-    cross_covariance * measurement_covariance.inverse();
+    measurement_solver.solve(cross_covariance.transpose()).transpose();
   const Vector6d updated_state = state_mean + kalman_gain * innovation;
   Matrix6d updated_covariance =
     state_.covariance - kalman_gain * measurement_covariance * kalman_gain.transpose();
 
-  updated_covariance = 0.5 * (updated_covariance + updated_covariance.transpose());
-  updateStateFromVector(updated_state, updated_covariance);
+  updateStateFromVector(updated_state, updated_covariance, "measurement_update");
   return true;
 }
 
