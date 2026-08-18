@@ -4,6 +4,7 @@
 #include "aegis_core/utils.hpp"
 
 #include <Eigen/Dense>
+#include <string>
 #include <vector>
 
 namespace aegis_core {
@@ -13,6 +14,17 @@ using Matrix3d = Eigen::Matrix<double, 3, 3>;
 class UKF
 {
 public:
+  struct CovarianceHealth
+  {
+    std::string stage = "init";
+    double min_eigenvalue = 0.0;
+    double max_eigenvalue = 0.0;
+    double symmetry_error = 0.0;
+    double condition_number = 0.0;
+    bool finite = true;
+    bool positive_semidefinite = true;
+  };
+
   UKF();
   explicit UKF(const State2D &initial_state);
 
@@ -23,6 +35,7 @@ public:
   void setVelocityYawRateNoise(const Matrix3d &R);
   void setPoseNoise(const Matrix3d &R);
   void setSigmaPointParameters(double alpha, double beta, double kappa);
+  const CovarianceHealth &lastCovarianceHealth() const noexcept;
 
   void predict(double dt);
   bool updateVelocityYawRate(double vx, double vy, double omega);
@@ -40,7 +53,9 @@ private:
 
   SigmaPointMatrix generateSigmaPoints() const;
   void computeWeights();
-  void updateStateFromVector(const Vector6d &mean, const Matrix6d &covariance);
+  void updateStateFromVector(const Vector6d &mean, const Matrix6d &covariance, const std::string &stage);
+  Matrix6d discretizeProcessNoise(double dt) const;
+  Matrix6d validateCovariance(const Matrix6d &covariance, const std::string &stage);
   Eigen::LLT<Matrix6d> computeCovarianceFactor(const Matrix6d &covariance) const;
 
   template<int MeasurementSize>
@@ -71,6 +86,7 @@ private:
   double lambda_;
   WeightVector weights_mean_;
   WeightVector weights_covariance_;
+  CovarianceHealth last_covariance_health_;
 };
 
 }  // namespace aegis_core

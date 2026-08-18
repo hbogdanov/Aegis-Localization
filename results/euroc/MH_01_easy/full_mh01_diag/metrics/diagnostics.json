@@ -1,0 +1,95 @@
+{
+  "sequence_name": "MH_01_easy",
+  "run_name": "full_mh01_diag",
+  "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
+  "truth_source": "dataset",
+  "reduction_assumptions": [
+    "EuRoC is reduced to planar x, y, yaw motion only.",
+    "Ground truth is taken from state_groundtruth_estimate0/data.csv.",
+    "Planar linear velocities are derived from consecutive ground-truth positions.",
+    "Aligned IMU yaw rate is copied into /odom.twist.angular.z because current Aegis ROS wrappers read angular rate from odometry twist rather than /imu directly.",
+    "use_odom_pose_update is disabled so ground-truth pose is used only for initialization and evaluation, not for continuous estimator correction.",
+    "This backend is a real-data motion and timing benchmark, not a wheel-encoder-faithful EuRoC localization benchmark."
+  ],
+  "replay_summary": {
+    "published_samples": 36382,
+    "first_timestamp": 1403636580.838556,
+    "last_timestamp": 1403636762.743556,
+    "elapsed_wall_seconds": 38.4591,
+    "subscriber_snapshot": {
+      "odom": 2,
+      "imu": 2,
+      "truth": 1
+    }
+  },
+  "metrics": {
+    "ekf": {
+      "num_samples": 31556,
+      "ate_rmse": 0.0010963988655066095,
+      "final_drift": 0.0006055368370371716,
+      "yaw_rmse": 1.8438065204511733
+    },
+    "ukf": {
+      "num_samples": 581,
+      "ate_rmse": 0.01082151615167692,
+      "final_drift": 0.012750950347755016,
+      "yaw_rmse": 0.7788945661815703
+    },
+    "pf": {
+      "num_samples": 31556,
+      "ate_rmse": 0.15826939097360715,
+      "final_drift": 0.16662532119630713,
+      "yaw_rmse": 1.84762989585771
+    }
+  },
+  "coverage": {
+    "ekf": {
+      "logged_samples": 31556,
+      "coverage_ratio": 0.8673519872464406
+    },
+    "ukf": {
+      "logged_samples": 581,
+      "coverage_ratio": 0.015969435435105272
+    },
+    "pf": {
+      "logged_samples": 31556,
+      "coverage_ratio": 0.8673519872464406
+    }
+  },
+  "yaw_analysis": {
+    "ekf": {
+      "yaw_rmse": 1.8438065204511698,
+      "circular_mean_offset": 2.2656978656478612,
+      "centered_yaw_rmse": 1.6669680938787954,
+      "min_error": -3.1414190680000003,
+      "max_error": 3.1415873111795865
+    },
+    "ukf": {
+      "yaw_rmse": 0.7788945661815703,
+      "circular_mean_offset": 0.6854369752661167,
+      "centered_yaw_rmse": 0.36773467135031424,
+      "min_error": -0.04068411999999988,
+      "max_error": 1.2697848421795863
+    },
+    "pf": {
+      "yaw_rmse": 1.8476298958577075,
+      "circular_mean_offset": 2.2386265621354218,
+      "centered_yaw_rmse": 1.6652542128274777,
+      "min_error": -3.1409278370000004,
+      "max_error": 3.141552801179587
+    }
+  },
+  "launch_issues": [
+    "[ukf_node-2] [ERROR] [1787016219.932152795] [ukf_node]: UKF update failed after 2019 processed odom updates; dt=0.00499994 state=[px=4.56813, py=-1.88183, theta=0.546711, vx=0.316522, vy=-0.488011, omega=0.0481001] measurement=[vx=0.334392, vy=-0.45619, omega=0.0760964] pose_measurement=[px=4.56241, py=-1.87372, yaw=2.80317] error=UKF covariance is not positive definite after jitter. diag=[2.033, 2.033, 4.94115, 0.0148127, 0.0148127, 0.0148127] min_eigenvalue=-0.0738732",
+    "[ukf_node-2] UKF update failed after 2019 processed odom updates; dt=0.00499994 state=[px=4.56813, py=-1.88183, theta=0.546711, vx=0.316522, vy=-0.488011, omega=0.0481001] measurement=[vx=0.334392, vy=-0.45619, omega=0.0760964] pose_measurement=[px=4.56241, py=-1.87372, yaw=2.80317] error=UKF covariance is not positive definite after jitter. diag=[2.033, 2.033, 4.94115, 0.0148127, 0.0148127, 0.0148127] min_eigenvalue=-0.0738732",
+    "[ukf_node-2] ukf_node fatal exception: UKF covariance is not positive definite after jitter. diag=[2.033, 2.033, 4.94115, 0.0148127, 0.0148127, 0.0148127] min_eigenvalue=-0.0738732",
+    "[ERROR] [ukf_node-2]: process has died [pid 447, exit code 1, cmd '/mnt/c/Users/Ivan/dev/Aegis-Localization/ros2_ws/install/aegis_ros/lib/aegis_ros/ukf_node --ros-args -r __node:=ukf_node --params-file /mnt/c/Users/Ivan/dev/Aegis-Localization/ros2_ws/install/aegis_ros/share/aegis_ros/config/ukf.yaml --params-file /tmp/launch_params_qdhn40t0']."
+  ],
+  "conclusions": [
+    "This run successfully produced canonical recorded-data outputs from EuRoC proxy replay.",
+    "UKF coverage is incomplete because the UKF node terminated during the run after a non-positive-definite covariance failure.",
+    "EKF and PF translation metrics are not sufficient to claim strong orientation tracking because the current motion model propagates x/y directly from world-frame vx/vy and does not couple translation to heading.",
+    "Large raw yaw RMSE therefore reflects either true orientation drift, benchmark-definition mismatch, or both, and should be interpreted cautiously.",
+    "This run is suitable as a Phase 1 recorded-data benchmark artifact and failure-analysis artifact, not yet as a final comparative estimator result."
+  ]
+}

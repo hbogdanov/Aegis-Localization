@@ -1,0 +1,140 @@
+{
+  "duration_seconds": 5,
+  "base_seed": 1337,
+  "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
+  "run_started_at_utc": "2026-08-04T03:23:13.945772+00:00",
+  "scenarios": {
+    "low_noise": {
+      "metadata": {
+        "name": "low_noise",
+        "duration_seconds": 5,
+        "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
+        "run_started_at_utc": "2026-08-04T03:23:13.945772+00:00",
+        "launch_args": {
+          "odom_position_noise_std": "0.03",
+          "odom_velocity_noise_std": "0.02",
+          "imu_yaw_rate_noise_std": "0.01",
+          "dropout_probability": "0.0",
+          "use_odom_pose_update": "true",
+          "fake_sensor_seed": "1337",
+          "pf_random_seed": "1338"
+        },
+        "seeds": {
+          "fake_sensor_seed": 1337,
+          "pf_random_seed": 1338
+        }
+      },
+      "metrics": {
+        "ekf": {
+          "num_samples": 32,
+          "ate_rmse": 0.04911945648483887,
+          "final_drift": 0.042767801722041615,
+          "yaw_rmse": 0.02034079613409021,
+          "update_rate_hz": 9.989742689843714
+        },
+        "ukf": {
+          "num_samples": 32,
+          "ate_rmse": 0.04941335204701838,
+          "final_drift": 0.042786596096449296,
+          "yaw_rmse": 0.020838040626141193,
+          "update_rate_hz": 9.990699105386499
+        },
+        "pf": {
+          "num_samples": 32,
+          "ate_rmse": 0.03930588023079242,
+          "final_drift": 0.05214612502001157,
+          "yaw_rmse": 0.024769297465737188,
+          "update_rate_hz": 9.990585492671881
+        }
+      }
+    },
+    "high_noise_dropout": {
+      "metadata": {
+        "name": "high_noise_dropout",
+        "duration_seconds": 5,
+        "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
+        "run_started_at_utc": "2026-08-04T03:23:13.945772+00:00",
+        "launch_args": {
+          "odom_position_noise_std": "0.15",
+          "odom_velocity_noise_std": "0.10",
+          "imu_yaw_rate_noise_std": "0.05",
+          "dropout_probability": "0.2",
+          "use_odom_pose_update": "true",
+          "fake_sensor_seed": "1437",
+          "pf_random_seed": "1438"
+        },
+        "seeds": {
+          "fake_sensor_seed": 1437,
+          "pf_random_seed": 1438
+        }
+      },
+      "metrics": {
+        "ekf": {
+          "num_samples": 35,
+          "ate_rmse": 0.11937059275226675,
+          "final_drift": 0.0376600666395935,
+          "yaw_rmse": 0.026599858257456737,
+          "update_rate_hz": 9.993483220979384
+        },
+        "ukf": {
+          "num_samples": 34,
+          "ate_rmse": 0.07170027545033611,
+          "final_drift": 0.04398110649867708,
+          "yaw_rmse": 0.022941608435053273,
+          "update_rate_hz": 9.993988387619536
+        },
+        "pf": {
+          "num_samples": 35,
+          "ate_rmse": 0.11132090104249223,
+          "final_drift": 0.05160960083548425,
+          "yaw_rmse": 0.03468711284545188,
+          "update_rate_hz": 9.993435599619088
+        }
+      }
+    },
+    "dead_reckoning": {
+      "metadata": {
+        "name": "dead_reckoning",
+        "duration_seconds": 5,
+        "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
+        "run_started_at_utc": "2026-08-04T03:23:13.945772+00:00",
+        "launch_args": {
+          "odom_position_noise_std": "0.03",
+          "odom_velocity_noise_std": "0.02",
+          "imu_yaw_rate_noise_std": "0.01",
+          "dropout_probability": "0.0",
+          "use_odom_pose_update": "false",
+          "fake_sensor_seed": "1537",
+          "pf_random_seed": "1538"
+        },
+        "seeds": {
+          "fake_sensor_seed": 1537,
+          "pf_random_seed": 1538
+        }
+      },
+      "metrics": {
+        "ekf": {
+          "num_samples": 33,
+          "ate_rmse": 0.12667478948069433,
+          "final_drift": 0.1524711720711586,
+          "yaw_rmse": 0.00805207475507386,
+          "update_rate_hz": 10.056190194831306
+        },
+        "ukf": {
+          "num_samples": 32,
+          "ate_rmse": 0.14567007451883068,
+          "final_drift": 0.16106797996913888,
+          "yaw_rmse": 0.06066698890889335,
+          "update_rate_hz": 10.058570872686849
+        },
+        "pf": {
+          "num_samples": 33,
+          "ate_rmse": 0.09370626135772096,
+          "final_drift": 0.10441640338361513,
+          "yaw_rmse": 0.007491586308985803,
+          "update_rate_hz": 10.055880534536563
+        }
+      }
+    }
+  }
+}

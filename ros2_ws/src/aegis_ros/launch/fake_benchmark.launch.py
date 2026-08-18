@@ -23,6 +23,9 @@ def generate_launch_description():
     odom_velocity_noise_std = LaunchConfiguration('odom_velocity_noise_std')
     imu_yaw_rate_noise_std = LaunchConfiguration('imu_yaw_rate_noise_std')
     dropout_probability = LaunchConfiguration('dropout_probability')
+    benchmark_duration_seconds = LaunchConfiguration('benchmark_duration_seconds')
+    fake_sensor_seed = LaunchConfiguration('fake_sensor_seed')
+    pf_random_seed = LaunchConfiguration('pf_random_seed')
     use_odom_pose_update = LaunchConfiguration('use_odom_pose_update')
 
     ld = LaunchDescription([
@@ -33,6 +36,9 @@ def generate_launch_description():
         DeclareLaunchArgument('odom_velocity_noise_std', default_value='0.02'),
         DeclareLaunchArgument('imu_yaw_rate_noise_std', default_value='0.01'),
         DeclareLaunchArgument('dropout_probability', default_value='0.0'),
+        DeclareLaunchArgument('benchmark_duration_seconds', default_value='30'),
+        DeclareLaunchArgument('fake_sensor_seed', default_value='1337'),
+        DeclareLaunchArgument('pf_random_seed', default_value='4242'),
         DeclareLaunchArgument('use_odom_pose_update', default_value='true'),
     ])
 
@@ -46,6 +52,8 @@ def generate_launch_description():
             {
                 'radius': 1.0,
                 'omega': 0.5,
+                'duration_seconds': benchmark_duration_seconds,
+                'random_seed': fake_sensor_seed,
                 'odom_position_noise_std': odom_position_noise_std,
                 'odom_velocity_noise_std': odom_velocity_noise_std,
                 'imu_yaw_rate_noise_std': imu_yaw_rate_noise_std,
@@ -77,7 +85,7 @@ def generate_launch_description():
         executable='particle_filter_node',
         name='particle_filter_node',
         output='screen',
-        parameters=[pf_config, {'use_odom_pose_update': use_odom_pose_update}],
+        parameters=[pf_config, {'use_odom_pose_update': use_odom_pose_update, 'random_seed': pf_random_seed}],
         condition=IfCondition(run_pf),
     )
 

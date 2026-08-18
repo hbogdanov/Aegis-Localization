@@ -24,6 +24,11 @@ ParticleFilter::ParticleFilter(std::size_t num_particles)
   }
 }
 
+void ParticleFilter::setRandomSeed(std::uint32_t seed)
+{
+  rng_.seed(seed);
+}
+
 void ParticleFilter::setNoiseParameters(
   double process_noise_x,
   double process_noise_y,

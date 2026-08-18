@@ -1,0 +1,57 @@
+{
+  "baseline_name": "synthetic_low_noise",
+  "baseline_path": "C:\\Users\\Ivan\\dev\\Aegis-Localization\\results\\campaign\\low_noise",
+  "estimators": {
+    "ekf": {
+      "synthetic_low_noise": {
+        "num_samples": 101,
+        "ate_rmse": 0.020556640950211636,
+        "final_drift": 0.013171933748447419,
+        "yaw_rmse": 0.0008690138047525137
+      },
+      "euroc_proxy_planar": {
+        "num_samples": 34306,
+        "ate_rmse": 0.000618749200314377,
+        "final_drift": 0.0003811571440390364,
+        "yaw_rmse": 1.8318028990163395
+      },
+      "delta_ate_rmse": -0.019937891749897258,
+      "delta_final_drift": -0.012790776604408383,
+      "delta_yaw_rmse": 1.830933885211587
+    },
+    "ukf": {
+      "synthetic_low_noise": {
+        "num_samples": 101,
+        "ate_rmse": 0.020556640950211636,
+        "final_drift": 0.013171933748447419,
+        "yaw_rmse": 0.0008690138047525137
+      },
+      "euroc_proxy_planar": {
+        "num_samples": 1078,
+        "ate_rmse": 0.004389856135677515,
+        "final_drift": 0.006031665868411877,
+        "yaw_rmse": 0.49648664621896443
+      },
+      "delta_ate_rmse": -0.01616678481453412,
+      "delta_final_drift": -0.0071402678800355415,
+      "delta_yaw_rmse": 0.4956176324142119
+    },
+    "pf": {
+      "synthetic_low_noise": {
+        "num_samples": 101,
+        "ate_rmse": 0.024547072352432045,
+        "final_drift": 0.02032077162824727,
+        "yaw_rmse": 0.0009071579072944914
+      },
+      "euroc_proxy_planar": {
+        "num_samples": 34318,
+        "ate_rmse": 0.15741669344236908,
+        "final_drift": 0.1678900322903145,
+        "yaw_rmse": 1.8361396429106154
+      },
+      "delta_ate_rmse": 0.13286962108993705,
+      "delta_final_drift": 0.14756926066206721,
+      "delta_yaw_rmse": 1.8352324850033208
+    }
+  }
+}

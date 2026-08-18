@@ -1,6 +1,8 @@
 #include <cmath>
 #include <memory>
 #include <chrono>
+#include <filesystem>
+#include <fstream>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
@@ -10,8 +12,6 @@
 #include "sensor_msgs/msg/imu.hpp"
 #include "aegis_core/ekf.hpp"
 #include "aegis_msgs/msg/filter_diagnostics.hpp"
-
-using namespace std::chrono_literals;
 
 namespace
 {
@@ -31,6 +31,7 @@ public:
   EkfNode()
   : Node("ekf_localization_node")
   {
+    stats_out_ = this->declare_parameter<std::string>("stats_out", "");
     frame_id_ = this->declare_parameter<std::string>("frame_id", "map");
     use_odom_pose_update_ = this->declare_parameter<bool>("use_odom_pose_update", true);
 
@@ -41,35 +42,57 @@ public:
     auto pose_noise = this->declare_parameter<std::vector<double>>("pose_noise",
       std::vector<double>{0.05, 0.05, 0.1});
 
-    pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("/aegis/ekf_pose", 10);
-    path_pub_ = this->create_publisher<nav_msgs::msg::Path>("/aegis/ekf_path", 10);
-    diagnostics_pub_ = this->create_publisher<aegis_msgs::msg::FilterDiagnostics>("/aegis/diagnostics", 10);
+    pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("/aegis/ekf_pose", 1000);
+    path_pub_ = this->create_publisher<nav_msgs::msg::Path>("/aegis/ekf_path", 1000);
+    diagnostics_pub_ = this->create_publisher<aegis_msgs::msg::FilterDiagnostics>("/aegis/diagnostics", 1000);
 
     odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
       "/odom",
-      10,
+      1000,
       std::bind(&EkfNode::odomCallback, this, std::placeholders::_1));
 
     imu_sub_ = this->create_subscription<sensor_msgs::msg::Imu>(
       "/imu",
-      10,
+      1000,
       std::bind(&EkfNode::imuCallback, this, std::placeholders::_1));
 
-    timer_ = this->create_wall_timer(
-      100ms,
-      std::bind(&EkfNode::updateAndPublish, this));
-
     path_msg_.header.frame_id = frame_id_;
-    last_update_time_ = this->now();
 
     configureNoise(process_noise, velocity_noise, pose_noise);
   }
 
+  ~EkfNode() override
+  {
+    writeStats();
+  }
+
 private:
+  void writeStats() const
+  {
+    if (stats_out_.empty()) {
+      return;
+    }
+
+    std::ofstream handle(stats_out_, std::ios::out | std::ios::trunc);
+    if (!handle.is_open()) {
+      return;
+    }
+
+    handle << "{\n";
+    handle << "  \"odom_received\": " << odom_received_count_ << ",\n";
+    handle << "  \"imu_received\": " << imu_received_count_ << ",\n";
+    handle << "  \"predict_calls\": " << predict_count_ << ",\n";
+    handle << "  \"pose_update_calls\": " << pose_update_count_ << ",\n";
+    handle << "  \"velocity_update_calls\": " << velocity_update_count_ << ",\n";
+    handle << "  \"pose_published\": " << pose_publish_count_ << "\n";
+    handle << "}\n";
+  }
+
   void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
   {
     last_odom_ = *msg;
     got_odom_ = true;
+    ++odom_received_count_;
 
     if (!initialized_) {
       aegis_core::State2D initial_state;
@@ -82,14 +105,21 @@ private:
       ekf_.setState(initial_state);
       initialized_ = true;
       diagnostics_status_ = "OK";
-      last_update_time_ = this->now();
+      last_processed_stamp_ = msg->header.stamp;
+      publishPose(msg->header.stamp);
+      publishDiagnostics(msg->header.stamp);
+      maybeWriteStats();
+      return;
     }
+
+    updateFromOdom(msg->header.stamp);
   }
 
   void imuCallback(const sensor_msgs::msg::Imu::SharedPtr msg)
   {
     last_imu_ = *msg;
     got_imu_ = true;
+    ++imu_received_count_;
   }
 
   void configureNoise(
@@ -127,60 +157,44 @@ private:
     return measurement - predicted;
   }
 
-  void updateAndPublish()
+  void updateFromOdom(const builtin_interfaces::msg::Time &stamp)
   {
-    if (!initialized_) {
-      last_innovation_ = 0.0;
-      diagnostics_status_ = "WAITING_FOR_INIT";
-      publishDiagnostics();
-      return;
-    }
-
-    const rclcpp::Time now = this->now();
-    const double dt = std::max(0.0, (now - last_update_time_).seconds());
-    last_update_time_ = now;
+    const rclcpp::Time current_stamp(stamp);
+    const double dt = std::max(0.0, (current_stamp - last_processed_stamp_).seconds());
+    last_processed_stamp_ = current_stamp;
 
     if (dt > 0.0) {
       ekf_.predict(dt);
+      ++predict_count_;
     }
 
-    if (got_odom_ || got_imu_) {
-      double vx = 0.0;
-      double vy = 0.0;
-      double omega = 0.0;
+    const double vx = last_odom_.twist.twist.linear.x;
+    const double vy = last_odom_.twist.twist.linear.y;
+    const double omega = last_odom_.twist.twist.angular.z;
 
-      if (got_odom_) {
-        vx = last_odom_.twist.twist.linear.x;
-        vy = last_odom_.twist.twist.linear.y;
-      }
-      if (got_imu_) {
-        omega = last_imu_.angular_velocity.z;
-      }
-
-      if (got_odom_ && use_odom_pose_update_) {
-        const double px = last_odom_.pose.pose.position.x;
-        const double py = last_odom_.pose.pose.position.y;
-        const double yaw = quaternionToYaw(last_odom_.pose.pose.orientation);
-        ekf_.updatePose(px, py, yaw);
-      }
-
-      const Eigen::Vector3d innovation = computeVelocityInnovation(vx, vy, omega);
-      last_innovation_ = innovation.norm();
-      ekf_.updateVelocityYawRate(vx, vy, omega);
-      diagnostics_status_ = "OK";
-    } else {
-      last_innovation_ = 0.0;
-      diagnostics_status_ = "NO_MEASUREMENT";
+    if (use_odom_pose_update_) {
+      const double px = last_odom_.pose.pose.position.x;
+      const double py = last_odom_.pose.pose.position.y;
+      const double yaw = quaternionToYaw(last_odom_.pose.pose.orientation);
+      ekf_.updatePose(px, py, yaw);
+      ++pose_update_count_;
     }
 
-    publishPose();
-    publishDiagnostics();
+    const Eigen::Vector3d innovation = computeVelocityInnovation(vx, vy, omega);
+    last_innovation_ = innovation.norm();
+    ekf_.updateVelocityYawRate(vx, vy, omega);
+    ++velocity_update_count_;
+    diagnostics_status_ = "OK";
+
+    publishPose(stamp);
+    publishDiagnostics(stamp);
+    maybeWriteStats();
   }
 
-  void publishPose()
+  void publishPose(const builtin_interfaces::msg::Time &stamp)
   {
     geometry_msgs::msg::PoseStamped msg;
-    msg.header.stamp = this->now();
+    msg.header.stamp = stamp;
     msg.header.frame_id = frame_id_;
 
     const auto &state = ekf_.state();
@@ -195,6 +209,7 @@ private:
     msg.pose.orientation.w = std::cos(half_yaw);
 
     pose_pub_->publish(msg);
+    ++pose_publish_count_;
 
     path_msg_.header.stamp = msg.header.stamp;
     path_msg_.poses.push_back(msg);
@@ -204,25 +219,39 @@ private:
     path_pub_->publish(path_msg_);
   }
 
-  void publishDiagnostics()
+  void publishDiagnostics(const builtin_interfaces::msg::Time &stamp)
   {
     aegis_msgs::msg::FilterDiagnostics diagnostics;
     diagnostics.source = "EKF";
-    diagnostics.timestamp = this->now().seconds();
+    diagnostics.timestamp = rclcpp::Time(stamp).seconds();
     diagnostics.status = diagnostics_status_;
     diagnostics.innovation = last_innovation_;
     diagnostics_pub_->publish(diagnostics);
   }
 
+  void maybeWriteStats() const
+  {
+    if ((pose_publish_count_ % 500) == 0) {
+      writeStats();
+    }
+  }
+
+  std::string stats_out_;
   std::string frame_id_;
   bool use_odom_pose_update_ = true;
   bool initialized_ = false;
-  rclcpp::Time last_update_time_;
+  rclcpp::Time last_processed_stamp_{0, 0, RCL_ROS_TIME};
   bool got_odom_ = false;
   bool got_imu_ = false;
   nav_msgs::msg::Odometry last_odom_;
   sensor_msgs::msg::Imu last_imu_;
   aegis_core::EKF ekf_;
+  std::size_t odom_received_count_ = 0;
+  std::size_t imu_received_count_ = 0;
+  std::size_t predict_count_ = 0;
+  std::size_t pose_update_count_ = 0;
+  std::size_t velocity_update_count_ = 0;
+  std::size_t pose_publish_count_ = 0;
   double last_innovation_ = 0.0;
   std::string diagnostics_status_ = "INIT";
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_pub_;
@@ -230,7 +259,6 @@ private:
   rclcpp::Publisher<aegis_msgs::msg::FilterDiagnostics>::SharedPtr diagnostics_pub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
   rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_sub_;
-  rclcpp::TimerBase::SharedPtr timer_;
   nav_msgs::msg::Path path_msg_;
 };
 

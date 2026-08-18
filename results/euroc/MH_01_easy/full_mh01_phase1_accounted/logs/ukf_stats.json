@@ -1,0 +1,16 @@
+{
+  "odom_received": 36000,
+  "imu_received": 35999,
+  "predict_calls": 35999,
+  "pose_update_calls": 0,
+  "velocity_update_calls": 35999,
+  "pose_published": 36000,
+  "failed_updates": 0,
+  "last_covariance_stage": "measurement_update",
+  "last_min_eigenvalue": 0.000221108,
+  "last_max_eigenvalue": 0.189993,
+  "last_symmetry_error": 1.30506e-54,
+  "last_condition_number": 859.275,
+  "last_covariance_finite": true,
+  "last_covariance_psd": true
+}

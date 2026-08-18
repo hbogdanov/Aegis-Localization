@@ -1,7 +1,11 @@
 node:
   ros__parameters:
+    random_seed: 1337
     radius: 1.0
     omega: 0.5
+    duration_seconds: 30.0
+    startup_delay_seconds: 2.0
+    shutdown_grace_seconds: 0.25
     odom_position_noise_std: 0.03
     odom_velocity_noise_std: 0.02
     imu_yaw_rate_noise_std: 0.01

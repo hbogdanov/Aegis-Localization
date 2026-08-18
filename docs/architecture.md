@@ -11,14 +11,14 @@ Aegis Localization separates filter logic from ROS2 integration.
 ## Data Flow
 
 ```text
-/odom → filter node
-/imu  → filter node
-/scan → optional correction
+/odom -> filter node
+/imu  -> filter node
+/ground_truth/pose -> trajectory logger
 
-filter node → /aegis/*_pose
-filter node → /aegis/*_path
-trajectory logger → CSV
-evaluator → metrics + plots
+filter node -> /aegis/*_pose
+filter node -> /aegis/*_path
+trajectory logger -> CSV
+evaluator -> metrics + plots
 ```
 
 ## Design Choices

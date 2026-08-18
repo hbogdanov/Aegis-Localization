@@ -47,12 +47,13 @@ void EKF::predict(double dt)
 {
   Eigen::Vector<double, 6> x = state_.toVector();
   Eigen::Matrix<double, 6, 6> F = MotionModel::stateTransition(dt);
+  const Matrix6d discrete_process_noise = process_noise_ * std::max(dt, 1e-9);
 
   x = MotionModel::propagate(x, dt);
   state_.fromVector(x);
   state_.theta = normalizeAngle(state_.theta);
 
-  state_.covariance = F * state_.covariance * F.transpose() + process_noise_;
+  state_.covariance = F * state_.covariance * F.transpose() + discrete_process_noise;
 }
 
 bool EKF::updateVelocityYawRate(double vx, double vy, double omega)
