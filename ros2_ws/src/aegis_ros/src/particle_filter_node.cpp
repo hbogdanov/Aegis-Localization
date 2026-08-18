@@ -206,6 +206,7 @@ private:
     diagnostics.timestamp = rclcpp::Time(stamp).seconds();
     diagnostics.status = diagnostics_status_;
     diagnostics.measurement_type = "effective_sample_size";
+    diagnostics.accepted = true;
     diagnostics.innovation_norm = last_effective_sample_size_;
     diagnostics.innovation_dim = 0U;
     diagnostics.nis = std::numeric_limits<double>::quiet_NaN();

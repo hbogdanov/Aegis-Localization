@@ -174,7 +174,7 @@ private:
     if (!stream.is_open()) {
       throw std::runtime_error("Failed to open diagnostics CSV file: " + path.string());
     }
-    stream << "source,timestamp,status,measurement_type,innovation_norm,innovation_dim,nis,innovation_vector,innovation_covariance,state_covariance\n";
+    stream << "source,timestamp,status,measurement_type,accepted,innovation_norm,innovation_dim,nis,innovation_vector,innovation_covariance,state_covariance\n";
     stream.flush();
   }
 
@@ -353,6 +353,7 @@ private:
                       << msg->timestamp << ','
                       << msg->status << ','
                       << msg->measurement_type << ','
+                      << (msg->accepted ? "true" : "false") << ','
                       << msg->innovation_norm << ','
                       << msg->innovation_dim << ','
                       << msg->nis << ','

@@ -2,6 +2,7 @@ string source
 float64 timestamp
 string status
 string measurement_type
+bool accepted
 float64 innovation_norm
 uint32 innovation_dim
 float64 nis

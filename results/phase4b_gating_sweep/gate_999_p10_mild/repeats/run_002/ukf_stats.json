@@ -1,0 +1,20 @@
+{
+  "odom_received": 401,
+  "imu_received": 401,
+  "predict_calls": 400,
+  "pose_update_attempts": 400,
+  "pose_update_calls": 378,
+  "pose_updates_rejected": 22,
+  "velocity_update_calls": 400,
+  "pose_published": 401,
+  "failed_updates": 0,
+  "last_covariance_stage": "measurement_update",
+  "last_min_eigenvalue": 0.000600322,
+  "last_max_eigenvalue": 0.00274457,
+  "last_symmetry_error": 1.06911e-50,
+  "last_condition_number": 4.57183,
+  "last_covariance_finite": true,
+  "last_covariance_psd": true,
+  "pose_gating_enabled": true,
+  "pose_gating_threshold": 16.2662
+}

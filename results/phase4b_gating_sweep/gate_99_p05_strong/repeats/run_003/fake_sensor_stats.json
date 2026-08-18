@@ -1,0 +1,9 @@
+{
+  "random_seed": 9357,
+  "published_truth_samples": 401,
+  "dropped_measurements": 0,
+  "corrupted_pose_measurements": 20,
+  "pose_outlier_probability": 0.05,
+  "pose_outlier_position_std": 1.5,
+  "pose_outlier_yaw_std": 0.75
+}

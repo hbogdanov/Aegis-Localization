@@ -1,0 +1,9 @@
+{
+  "odom_received": 401,
+  "imu_received": 401,
+  "predict_calls": 400,
+  "pose_update_calls": 400,
+  "velocity_update_calls": 400,
+  "pose_published": 401,
+  "effective_sample_size": 319.632
+}

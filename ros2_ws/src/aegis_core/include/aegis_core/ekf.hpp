@@ -17,6 +17,7 @@ public:
   struct UpdateDiagnostics
   {
     std::string measurement_type = "none";
+    bool accepted = false;
     Eigen::VectorXd innovation = Eigen::VectorXd();
     Eigen::MatrixXd innovation_covariance = Eigen::MatrixXd();
     Matrix6d state_covariance = Matrix6d::Zero();
@@ -33,6 +34,7 @@ public:
   void setProcessNoise(const Matrix6d &Q);
   void setVelocityYawRateNoise(const Matrix3d &R);
   void setPoseNoise(const Matrix3d &R);
+  void setPoseUpdateGate(bool enabled, double nis_threshold);
   const UpdateDiagnostics &lastUpdateDiagnostics() const noexcept;
 
   void predict(double dt);
@@ -42,6 +44,7 @@ public:
 private:
   void storeUpdateDiagnostics(
     const std::string &measurement_type,
+    bool accepted,
     const Eigen::VectorXd &innovation,
     const Eigen::MatrixXd &innovation_covariance,
     const Matrix6d &state_covariance);
@@ -50,6 +53,8 @@ private:
   Matrix6d process_noise_;
   Matrix3d velocity_yaw_rate_noise_;
   Matrix3d pose_noise_;
+  bool pose_gate_enabled_ = false;
+  double pose_gate_threshold_ = 9.324146034653893;
   UpdateDiagnostics last_update_diagnostics_;
 };
 

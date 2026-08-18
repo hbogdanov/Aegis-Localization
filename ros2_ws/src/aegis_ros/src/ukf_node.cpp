@@ -37,6 +37,8 @@ public:
     stats_out_ = this->declare_parameter<std::string>("stats_out", "");
     frame_id_ = this->declare_parameter<std::string>("frame_id", "map");
     use_odom_pose_update_ = this->declare_parameter<bool>("use_odom_pose_update", true);
+    pose_gating_enabled_ = this->declare_parameter<bool>("pose_gating_enabled", false);
+    pose_gating_threshold_ = this->declare_parameter<double>("pose_gating_threshold", 9.324146034653893);
     alpha_ = this->declare_parameter<double>("alpha", 1.0);
     beta_ = this->declare_parameter<double>("beta", 2.0);
     kappa_ = this->declare_parameter<double>("kappa", 0.0);
@@ -65,6 +67,7 @@ public:
     path_msg_.header.frame_id = frame_id_;
 
     configureNoise(process_noise, velocity_noise, pose_noise);
+    ukf_.setPoseUpdateGate(pose_gating_enabled_, pose_gating_threshold_);
   }
 
   ~UkfNode() override
@@ -89,7 +92,9 @@ private:
     handle << "  \"odom_received\": " << odom_received_count_ << ",\n";
     handle << "  \"imu_received\": " << imu_received_count_ << ",\n";
     handle << "  \"predict_calls\": " << predict_count_ << ",\n";
+    handle << "  \"pose_update_attempts\": " << pose_update_attempt_count_ << ",\n";
     handle << "  \"pose_update_calls\": " << pose_update_count_ << ",\n";
+    handle << "  \"pose_updates_rejected\": " << pose_update_rejected_count_ << ",\n";
     handle << "  \"velocity_update_calls\": " << velocity_update_count_ << ",\n";
     handle << "  \"pose_published\": " << pose_publish_count_ << ",\n";
     handle << "  \"failed_updates\": " << failed_update_count_ << ",\n";
@@ -99,7 +104,9 @@ private:
     handle << "  \"last_symmetry_error\": " << health.symmetry_error << ",\n";
     handle << "  \"last_condition_number\": " << health.condition_number << ",\n";
     handle << "  \"last_covariance_finite\": " << (health.finite ? "true" : "false") << ",\n";
-    handle << "  \"last_covariance_psd\": " << (health.positive_semidefinite ? "true" : "false") << "\n";
+    handle << "  \"last_covariance_psd\": " << (health.positive_semidefinite ? "true" : "false") << ",\n";
+    handle << "  \"pose_gating_enabled\": " << (pose_gating_enabled_ ? "true" : "false") << ",\n";
+    handle << "  \"pose_gating_threshold\": " << pose_gating_threshold_ << "\n";
     handle << "}\n";
   }
 
@@ -179,18 +186,24 @@ private:
       const double omega = last_odom_.twist.twist.angular.z;
 
       if (use_odom_pose_update_) {
+        ++pose_update_attempt_count_;
         const double px = last_odom_.pose.pose.position.x;
         const double py = last_odom_.pose.pose.position.y;
         const double yaw = quaternionToYaw(last_odom_.pose.pose.orientation);
-        ukf_.updatePose(px, py, yaw);
-        ++pose_update_count_;
+        if (ukf_.updatePose(px, py, yaw)) {
+          ++pose_update_count_;
+          diagnostics_status_ = "ACCEPTED";
+        } else {
+          ++pose_update_rejected_count_;
+          diagnostics_status_ = "REJECTED_GATE";
+        }
         publishDiagnostics(stamp);
       }
 
       ukf_.updateVelocityYawRate(vx, vy, omega);
       ++velocity_update_count_;
       ++processed_odom_updates_;
-      diagnostics_status_ = "OK";
+      diagnostics_status_ = "ACCEPTED";
       publishPose(stamp);
       publishDiagnostics(stamp);
       maybeWriteStats();
@@ -264,6 +277,7 @@ private:
     diagnostics.timestamp = rclcpp::Time(stamp).seconds();
     diagnostics.status = diagnostics_status_;
     diagnostics.measurement_type = update.measurement_type;
+    diagnostics.accepted = update.available ? update.accepted : false;
     diagnostics.innovation_norm = update.available ? update.innovation.norm() : 0.0;
     diagnostics.innovation_dim = update.available ? static_cast<std::uint32_t>(update.innovation.size()) : 0U;
     diagnostics.nis = update.available ? update.nis : std::numeric_limits<double>::quiet_NaN();
@@ -296,6 +310,8 @@ private:
   std::string stats_out_;
   std::string frame_id_;
   bool use_odom_pose_update_ = true;
+  bool pose_gating_enabled_ = false;
+  double pose_gating_threshold_ = 9.324146034653893;
   bool initialized_ = false;
   double alpha_ = 1.0;
   double beta_ = 2.0;
@@ -309,7 +325,9 @@ private:
   std::size_t odom_received_count_ = 0;
   std::size_t imu_received_count_ = 0;
   std::size_t predict_count_ = 0;
+  std::size_t pose_update_attempt_count_ = 0;
   std::size_t pose_update_count_ = 0;
+  std::size_t pose_update_rejected_count_ = 0;
   std::size_t velocity_update_count_ = 0;
   std::size_t processed_odom_updates_ = 0;
   std::size_t pose_publish_count_ = 0;

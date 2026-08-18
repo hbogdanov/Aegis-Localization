@@ -16,6 +16,7 @@ Aegis Localization implements and benchmarks classical robotics estimation metho
 - Ground-truth trajectory logging
 - ATE/drift/yaw RMSE evaluation
 - NIS consistency analysis for EKF and UKF synthetic runs
+- Pose-update gating experiment path for corrupted synthetic corrections
 - Trajectory plotting
 
 ## Planned
@@ -122,6 +123,15 @@ In addition to trajectory metrics, each run now logs `filter_diagnostics.csv` an
 - 95% chi-square consistency bounds
 - fraction of updates inside bounds
 - synthetic-only planar NEES summaries where the covariance interpretation is clean enough
+
+For the Phase 4 robustness path, you can run:
+
+```bash
+cd /path/to/Aegis-Localization
+python3 scripts/run_phase4_gating_experiment.py --duration 20 --repeats 5
+```
+
+That experiment injects corrupted pose-like corrections into the synthetic benchmark and compares EKF/UKF behavior with pose gating disabled versus enabled.
 
 ## Results
 

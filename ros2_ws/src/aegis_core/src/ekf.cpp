@@ -45,6 +45,12 @@ void EKF::setPoseNoise(const Matrix3d &R)
   pose_noise_ = R;
 }
 
+void EKF::setPoseUpdateGate(bool enabled, double nis_threshold)
+{
+  pose_gate_enabled_ = enabled;
+  pose_gate_threshold_ = nis_threshold;
+}
+
 const EKF::UpdateDiagnostics &EKF::lastUpdateDiagnostics() const noexcept
 {
   return last_update_diagnostics_;
@@ -52,11 +58,13 @@ const EKF::UpdateDiagnostics &EKF::lastUpdateDiagnostics() const noexcept
 
 void EKF::storeUpdateDiagnostics(
   const std::string &measurement_type,
+  bool accepted,
   const Eigen::VectorXd &innovation,
   const Eigen::MatrixXd &innovation_covariance,
   const Matrix6d &state_covariance)
 {
   last_update_diagnostics_.measurement_type = measurement_type;
+  last_update_diagnostics_.accepted = accepted;
   last_update_diagnostics_.innovation = innovation;
   last_update_diagnostics_.innovation_covariance = innovation_covariance;
   last_update_diagnostics_.state_covariance = state_covariance;
@@ -112,7 +120,7 @@ bool EKF::updateVelocityYawRate(double vx, double vy, double omega)
   state_.theta = normalizeAngle(state_.theta);
 
   state_.covariance = (Eigen::Matrix<double, 6, 6>::Identity() - K * H) * state_.covariance;
-  storeUpdateDiagnostics("velocity_yaw_rate", y, S, state_.covariance);
+  storeUpdateDiagnostics("velocity_yaw_rate", true, y, S, state_.covariance);
   return true;
 }
 
@@ -137,6 +145,11 @@ bool EKF::updatePose(double px, double py, double theta)
   if (solver.info() != Eigen::Success) {
     throw std::runtime_error("EKF pose innovation covariance factorization failed");
   }
+  const double nis = y.dot(solver.solve(y));
+  if (pose_gate_enabled_ && nis > pose_gate_threshold_) {
+    storeUpdateDiagnostics("pose", false, y, S, state_.covariance);
+    return false;
+  }
   const Eigen::Matrix<double, 6, 3> K = solver.solve(H * state_.covariance).transpose();
 
   Eigen::Vector<double, 6> x = state_.toVector() + K * y;
@@ -144,7 +157,7 @@ bool EKF::updatePose(double px, double py, double theta)
   state_.theta = normalizeAngle(state_.theta);
 
   state_.covariance = (Eigen::Matrix<double, 6, 6>::Identity() - K * H) * state_.covariance;
-  storeUpdateDiagnostics("pose", y, S, state_.covariance);
+  storeUpdateDiagnostics("pose", true, y, S, state_.covariance);
   return true;
 }
 
