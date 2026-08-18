@@ -25,6 +25,16 @@ public:
     bool positive_semidefinite = true;
   };
 
+  struct UpdateDiagnostics
+  {
+    std::string measurement_type = "none";
+    Eigen::VectorXd innovation = Eigen::VectorXd();
+    Eigen::MatrixXd innovation_covariance = Eigen::MatrixXd();
+    Matrix6d state_covariance = Matrix6d::Zero();
+    double nis = 0.0;
+    bool available = false;
+  };
+
   UKF();
   explicit UKF(const State2D &initial_state);
 
@@ -36,6 +46,7 @@ public:
   void setPoseNoise(const Matrix3d &R);
   void setSigmaPointParameters(double alpha, double beta, double kappa);
   const CovarianceHealth &lastCovarianceHealth() const noexcept;
+  const UpdateDiagnostics &lastUpdateDiagnostics() const noexcept;
 
   void predict(double dt);
   bool updateVelocityYawRate(double vx, double vy, double omega);
@@ -54,12 +65,18 @@ private:
   SigmaPointMatrix generateSigmaPoints() const;
   void computeWeights();
   void updateStateFromVector(const Vector6d &mean, const Matrix6d &covariance, const std::string &stage);
+  void storeUpdateDiagnostics(
+    const std::string &measurement_type,
+    const Eigen::VectorXd &innovation,
+    const Eigen::MatrixXd &innovation_covariance,
+    const Matrix6d &state_covariance);
   Matrix6d discretizeProcessNoise(double dt) const;
   Matrix6d validateCovariance(const Matrix6d &covariance, const std::string &stage);
   Eigen::LLT<Matrix6d> computeCovarianceFactor(const Matrix6d &covariance) const;
 
   template<int MeasurementSize>
   bool update(
+    const std::string &measurement_type,
     const Eigen::Matrix<double, MeasurementSize, 1> &measurement,
     const Eigen::Matrix<double, MeasurementSize, MeasurementSize> &noise,
     const MeasurementMatrix<MeasurementSize> &measurement_sigma_points,
@@ -87,6 +104,7 @@ private:
   WeightVector weights_mean_;
   WeightVector weights_covariance_;
   CovarianceHealth last_covariance_health_;
+  UpdateDiagnostics last_update_diagnostics_;
 };
 
 }  // namespace aegis_core

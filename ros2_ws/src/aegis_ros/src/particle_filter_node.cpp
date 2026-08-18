@@ -2,6 +2,7 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <limits>
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
@@ -204,7 +205,10 @@ private:
     diagnostics.source = "PF";
     diagnostics.timestamp = rclcpp::Time(stamp).seconds();
     diagnostics.status = diagnostics_status_;
-    diagnostics.innovation = last_effective_sample_size_;
+    diagnostics.measurement_type = "effective_sample_size";
+    diagnostics.innovation_norm = last_effective_sample_size_;
+    diagnostics.innovation_dim = 0U;
+    diagnostics.nis = std::numeric_limits<double>::quiet_NaN();
     diagnostics_pub_->publish(diagnostics);
   }
 

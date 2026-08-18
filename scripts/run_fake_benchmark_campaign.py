@@ -18,6 +18,14 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+PYTHON_ROOT = REPO_ROOT / "python"
+if str(PYTHON_ROOT) not in sys.path:
+    sys.path.insert(0, str(PYTHON_ROOT))
+
+from aegis_eval import load_filter_diagnostics_csv, summarize_nis, summarize_planar_nees
+from aegis_eval.plots import plot_consistency_fraction, plot_nis_series
+
+
 RESULTS_ROOT = REPO_ROOT / "results"
 METRICS_ROOT = RESULTS_ROOT / "metrics"
 CAMPAIGN_ROOT = RESULTS_ROOT / "campaign"
@@ -54,6 +62,7 @@ SCENARIOS = [
     },
 ]
 METHODS = ["ekf", "ukf", "pf"]
+CONSISTENCY_METHODS = ["ekf", "ukf"]
 
 
 def run(cmd: list[str], cwd: Path | None = None) -> None:
@@ -133,6 +142,30 @@ def aggregate_metric_series(values: list[float]) -> dict[str, float]:
     return {"mean": mean, "std": math.sqrt(variance)}
 
 
+def aggregate_scalar_fields(records: list[dict[str, object]], field_names: list[str]) -> dict[str, object]:
+    aggregated: dict[str, object] = {}
+    for field_name in field_names:
+        values = [
+            float(record[field_name])
+            for record in records
+            if field_name in record and record[field_name] is not None and not math.isnan(float(record[field_name]))
+        ]
+        if values:
+            aggregated[field_name] = aggregate_metric_series(values)
+    return aggregated
+
+
+def compact_measurement_summary(summary: dict[str, object]) -> dict[str, object]:
+    compact: dict[str, object] = {}
+    for measurement_type, values in summary.get("measurements", {}).items():
+        compact[measurement_type] = {
+            key: value
+            for key, value in values.items()
+            if key not in {"timestamps", "nis_values", "in_bounds"}
+        }
+    return compact
+
+
 def clean_ros_nodes() -> None:
     cleanup_cmd = (
         "for pattern in '/aegis_ros/ekf_node' '/aegis_ros/ukf_node' "
@@ -194,6 +227,7 @@ def main() -> int:
             clean_ros_nodes()
 
             repeat_metrics = {}
+            repeat_consistency = {}
             gt_path = METRICS_ROOT / "ground_truth.csv"
             require_samples(gt_path)
             shutil.copy2(gt_path, repeat_root / "ground_truth.csv")
@@ -218,6 +252,55 @@ def main() -> int:
                 metrics["update_rate_hz"] = compute_update_rate(est_path)
                 repeat_metrics[method] = metrics
 
+            diagnostics_path = METRICS_ROOT / "filter_diagnostics.csv"
+            if diagnostics_path.exists():
+                shutil.copy2(diagnostics_path, repeat_root / "filter_diagnostics.csv")
+                diagnostics_records = load_filter_diagnostics_csv(diagnostics_path)
+                consistency_plot_root = repeat_root / "plots" / "consistency"
+                fraction_by_method: dict[str, float] = {}
+
+                for method in CONSISTENCY_METHODS:
+                    nis_summary = summarize_nis(diagnostics_records, estimator=method)
+                    nees_summary = summarize_planar_nees(
+                        repeat_root / f"{method}.csv",
+                        repeat_root / "ground_truth.csv",
+                        diagnostics_records,
+                        estimator=method,
+                    )
+
+                    for measurement_type, measurement_summary in nis_summary["measurements"].items():
+                        try:
+                            plot_nis_series(
+                                measurement_summary["timestamps"],
+                                measurement_summary["nis_values"],
+                                measurement_summary["lower_bound"],
+                                measurement_summary["upper_bound"],
+                                consistency_plot_root / f"{method}_{measurement_type}_nis.png",
+                                title=f"{method.upper()} {measurement_type} NIS",
+                            )
+                        except Exception as exc:
+                            print(f"Skipping NIS plot for {method}/{measurement_type}: {exc}")
+                        if measurement_type == "velocity_yaw_rate":
+                            fraction_by_method[method.upper()] = float(measurement_summary["fraction_in_bounds"])
+
+                    repeat_consistency[method] = {
+                        "nis": nis_summary,
+                        "planar_nees": nees_summary,
+                    }
+
+                if fraction_by_method:
+                    try:
+                        plot_consistency_fraction(
+                            fraction_by_method,
+                            consistency_plot_root / "velocity_yaw_rate_fraction_in_bounds.png",
+                            title="Velocity/yaw-rate NIS consistency",
+                        )
+                    except Exception as exc:
+                        print(f"Skipping consistency fraction plot: {exc}")
+
+                with (repeat_root / "consistency_summary.json").open("w", encoding="utf-8") as handle:
+                    json.dump(repeat_consistency, handle, indent=2)
+
             repeat_metadata = {
                 "name": name,
                 "repeat_name": repeat_name,
@@ -237,6 +320,13 @@ def main() -> int:
                 {
                     "metadata": repeat_metadata,
                     "metrics": repeat_metrics,
+                    "consistency": {
+                        method: {
+                            "nis": compact_measurement_summary(summary["nis"]),
+                            "planar_nees": summary["planar_nees"],
+                        }
+                        for method, summary in repeat_consistency.items()
+                    },
                 }
             )
 
@@ -258,6 +348,67 @@ def main() -> int:
                 "update_rate_hz": aggregate_metric_series(update_rate_values),
             }
 
+        aggregate_consistency: dict[str, object] = {}
+        for method in CONSISTENCY_METHODS:
+            method_runs = [run_entry.get("consistency", {}).get(method, {}) for run_entry in repeat_runs]
+            measurement_names = sorted(
+                {
+                    measurement_name
+                    for run_entry in method_runs
+                    for measurement_name in run_entry.get("nis", {}).keys()
+                }
+            )
+            measurement_aggregate: dict[str, object] = {}
+            for measurement_name in measurement_names:
+                measurement_records = [
+                    run_entry["nis"][measurement_name]
+                    for run_entry in method_runs
+                    if measurement_name in run_entry.get("nis", {})
+                ]
+                measurement_aggregate[measurement_name] = aggregate_scalar_fields(
+                    measurement_records,
+                    [
+                        "num_updates",
+                        "innovation_dim",
+                        "nis_mean",
+                        "nis_median",
+                        "nis_std",
+                        "fraction_below_lower_bound",
+                        "fraction_in_bounds",
+                        "fraction_above_upper_bound",
+                    ],
+                )
+                if measurement_records:
+                    measurement_aggregate[measurement_name]["lower_bound"] = float(measurement_records[0]["lower_bound"])
+                    measurement_aggregate[measurement_name]["upper_bound"] = float(measurement_records[0]["upper_bound"])
+
+            nees_records = [
+                run_entry["planar_nees"]
+                for run_entry in method_runs
+                if run_entry.get("planar_nees", {}).get("num_updates", 0) > 0
+            ]
+            aggregate_consistency[method] = {
+                "nis": measurement_aggregate,
+                "planar_nees": aggregate_scalar_fields(
+                    nees_records,
+                    [
+                        "num_updates",
+                        "state_dim",
+                        "nees_mean",
+                        "nees_median",
+                        "nees_std",
+                        "fraction_below_lower_bound",
+                        "fraction_in_bounds",
+                        "fraction_above_upper_bound",
+                    ],
+                )
+                if nees_records
+                else {},
+            }
+            if nees_records:
+                aggregate_consistency[method]["planar_nees"]["lower_bound"] = float(nees_records[0]["lower_bound"])
+                aggregate_consistency[method]["planar_nees"]["upper_bound"] = float(nees_records[0]["upper_bound"])
+
         with (scenario_root / "metadata.json").open("w", encoding="utf-8") as handle:
             json.dump(representative_metadata, handle, indent=2)
 
@@ -271,6 +422,7 @@ def main() -> int:
             "metrics": representative_metrics,
             "repeats": repeat_runs,
             "aggregate_metrics": aggregate_metrics,
+            "aggregate_consistency": aggregate_consistency,
         }
 
     summary_path = CAMPAIGN_ROOT / "summary.json"

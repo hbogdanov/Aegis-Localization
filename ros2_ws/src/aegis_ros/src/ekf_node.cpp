@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
+#include <limits>
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
@@ -178,6 +179,7 @@ private:
       const double yaw = quaternionToYaw(last_odom_.pose.pose.orientation);
       ekf_.updatePose(px, py, yaw);
       ++pose_update_count_;
+      publishDiagnostics(stamp);
     }
 
     const Eigen::Vector3d innovation = computeVelocityInnovation(vx, vy, omega);
@@ -221,11 +223,31 @@ private:
 
   void publishDiagnostics(const builtin_interfaces::msg::Time &stamp)
   {
+    const auto &update = ekf_.lastUpdateDiagnostics();
     aegis_msgs::msg::FilterDiagnostics diagnostics;
     diagnostics.source = "EKF";
     diagnostics.timestamp = rclcpp::Time(stamp).seconds();
     diagnostics.status = diagnostics_status_;
-    diagnostics.innovation = last_innovation_;
+    diagnostics.measurement_type = update.measurement_type;
+    diagnostics.innovation_norm = update.available ? update.innovation.norm() : last_innovation_;
+    diagnostics.innovation_dim = update.available ? static_cast<std::uint32_t>(update.innovation.size()) : 0U;
+    diagnostics.nis = update.available ? update.nis : std::numeric_limits<double>::quiet_NaN();
+    if (update.available) {
+      diagnostics.innovation_vector.assign(update.innovation.data(), update.innovation.data() + update.innovation.size());
+      diagnostics.innovation_covariance.reserve(
+        static_cast<std::size_t>(update.innovation_covariance.rows() * update.innovation_covariance.cols()));
+      for (Eigen::Index row = 0; row < update.innovation_covariance.rows(); ++row) {
+        for (Eigen::Index col = 0; col < update.innovation_covariance.cols(); ++col) {
+          diagnostics.innovation_covariance.push_back(update.innovation_covariance(row, col));
+        }
+      }
+      diagnostics.state_covariance.reserve(36);
+      for (Eigen::Index row = 0; row < update.state_covariance.rows(); ++row) {
+        for (Eigen::Index col = 0; col < update.state_covariance.cols(); ++col) {
+          diagnostics.state_covariance.push_back(update.state_covariance(row, col));
+        }
+      }
+    }
     diagnostics_pub_->publish(diagnostics);
   }
 

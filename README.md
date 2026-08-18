@@ -15,6 +15,7 @@ Aegis Localization implements and benchmarks classical robotics estimation metho
 - Reproducible multi-scenario benchmark campaign
 - Ground-truth trajectory logging
 - ATE/drift/yaw RMSE evaluation
+- NIS consistency analysis for EKF and UKF synthetic runs
 - Trajectory plotting
 
 ## Planned
@@ -108,9 +109,30 @@ cd /path/to/Aegis-Localization
 python3 scripts/run_fake_benchmark_campaign.py --duration 20
 ```
 
+To generate repeated synthetic evidence with uncertainty consistency summaries:
+
+```bash
+cd /path/to/Aegis-Localization
+python3 scripts/run_fake_benchmark_campaign.py --duration 20 --repeats 5
+```
+
+In addition to trajectory metrics, each run now logs `filter_diagnostics.csv` and computes:
+
+- per-update NIS for EKF and UKF pose and velocity/yaw-rate updates
+- 95% chi-square consistency bounds
+- fraction of updates inside bounds
+- synthetic-only planar NEES summaries where the covariance interpretation is clean enough
+
 ## Results
 
 Packaged scenario summaries currently live in `results/campaign/summary.json`, and selected evidence plots live in `docs/assets/`.
+
+Repeated-run synthetic campaign artifacts now also preserve:
+
+- per-run `filter_diagnostics.csv`
+- per-run `consistency_summary.json`
+- NIS time-series plots when matplotlib is available
+- scenario-level aggregated NIS and planar NEES summaries inside `results/campaign/summary.json`
 
 Headline results from the packaged benchmark campaign:
 
@@ -158,6 +180,8 @@ python3 scripts/plot_trajectories.py --est results/metrics/pf.csv --gt results/m
 ```
 
 These commands are intended for the synthetic benchmark outputs under `results/metrics/`. Gazebo integration should write to `results/gazebo_metrics/` so incomplete simulator ground truth does not overwrite the synthetic baseline.
+
+For consistency analysis, the synthetic benchmark also writes `results/metrics/filter_diagnostics.csv`, which the campaign runner promotes into each preserved repeat artifact.
 
 ## TurtleBot3 Gazebo Validation
 

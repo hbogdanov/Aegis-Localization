@@ -121,6 +121,37 @@ const UKF::CovarianceHealth &UKF::lastCovarianceHealth() const noexcept
   return last_covariance_health_;
 }
 
+const UKF::UpdateDiagnostics &UKF::lastUpdateDiagnostics() const noexcept
+{
+  return last_update_diagnostics_;
+}
+
+void UKF::storeUpdateDiagnostics(
+  const std::string &measurement_type,
+  const Eigen::VectorXd &innovation,
+  const Eigen::MatrixXd &innovation_covariance,
+  const Matrix6d &state_covariance)
+{
+  last_update_diagnostics_.measurement_type = measurement_type;
+  last_update_diagnostics_.innovation = innovation;
+  last_update_diagnostics_.innovation_covariance = innovation_covariance;
+  last_update_diagnostics_.state_covariance = state_covariance;
+  if (innovation.size() == 0) {
+    last_update_diagnostics_.nis = 0.0;
+    last_update_diagnostics_.available = false;
+    return;
+  }
+
+  const Eigen::LDLT<Eigen::MatrixXd> solver(innovation_covariance);
+  if (solver.info() != Eigen::Success) {
+    throw std::runtime_error("UKF innovation covariance factorization failed");
+  }
+
+  const Eigen::VectorXd solved = solver.solve(innovation);
+  last_update_diagnostics_.nis = innovation.dot(solved);
+  last_update_diagnostics_.available = true;
+}
+
 void UKF::computeWeights()
 {
   const double scaling = alpha_ * alpha_ * (kStateSize + kappa_);
@@ -266,7 +297,7 @@ bool UKF::updateVelocityYawRate(double vx, double vy, double omega)
 
   Eigen::Vector3d measurement;
   measurement << vx, vy, omega;
-  return update<3>(measurement, velocity_yaw_rate_noise_, measurement_sigma_points, {});
+  return update<3>("velocity_yaw_rate", measurement, velocity_yaw_rate_noise_, measurement_sigma_points, {});
 }
 
 bool UKF::updatePose(double px, double py, double theta)
@@ -280,11 +311,12 @@ bool UKF::updatePose(double px, double py, double theta)
 
   Eigen::Vector3d measurement;
   measurement << px, py, normalizeAngle(theta);
-  return update<3>(measurement, pose_noise_, measurement_sigma_points, {2});
+  return update<3>("pose", measurement, pose_noise_, measurement_sigma_points, {2});
 }
 
 template<int MeasurementSize>
 bool UKF::update(
+  const std::string &measurement_type,
   const Eigen::Matrix<double, MeasurementSize, 1> &measurement,
   const Eigen::Matrix<double, MeasurementSize, MeasurementSize> &noise,
   const MeasurementMatrix<MeasurementSize> &measurement_sigma_points,
@@ -324,6 +356,7 @@ bool UKF::update(
     state_.covariance - kalman_gain * measurement_covariance * kalman_gain.transpose();
 
   updateStateFromVector(updated_state, updated_covariance, "measurement_update");
+  storeUpdateDiagnostics(measurement_type, innovation, measurement_covariance, state_.covariance);
   return true;
 }
 
@@ -345,6 +378,7 @@ Eigen::Matrix<double, VectorSize, 1> UKF::residual(
 }
 
 template bool UKF::update<3>(
+  const std::string &measurement_type,
   const Eigen::Matrix<double, 3, 1> &measurement,
   const Eigen::Matrix<double, 3, 3> &noise,
   const MeasurementMatrix<3> &measurement_sigma_points,
