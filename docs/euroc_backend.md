@@ -111,3 +111,30 @@ If this backend performs well, the correct claim is:
 The correct claim is **not**:
 
 > Aegis is fully validated on EuRoC as a native MAV localization system.
+
+## External-Data Limitations
+
+What the EuRoC proxy path proves:
+
+- Aegis can replay one public recorded sequence through the same evaluation path used for synthetic benchmarks.
+- EKF, UKF, and PF can be compared on the same timestamped planar proxy stream.
+- The recorded-data path is useful for surfacing implementation weaknesses that synthetic benchmarks may hide.
+
+What it does not prove:
+
+- hardware validation
+- wheel-encoder-faithful mobile-robot localization
+- native 6-DoF MAV localization performance
+- strong yaw-validation evidence under the current planar proxy
+
+Why planarization was chosen:
+
+- the current Aegis estimator stack is 2D
+- planarization lets one public dataset exercise the shared benchmark path without rewriting the project into a different problem
+- it creates a bridge from synthetic benchmarking to external recorded data with limited engineering overhead
+
+Why this is still useful:
+
+- it strengthens the credibility of the benchmark pipeline beyond toy-only synthetic runs
+- it creates a reproducible recorded-data artifact that can be inspected, compared, and extended later
+- it gives a concrete foundation for later work on stronger public-dataset support or heading-aware correction methods

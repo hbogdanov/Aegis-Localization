@@ -216,6 +216,16 @@ The current recorded-data findings are intentionally mixed rather than polished:
 
 For the benchmark-specific methodology and interpretation notes, see `docs/euroc_backend.md` and each run-local `benchmark_report.md`.
 
+The cleanest external-data claim for the repo is:
+
+- Aegis supports a reproducible planar recorded-data benchmark on one public EuRoC sequence using the same shared evaluation path as its synthetic benchmark.
+
+The repo should not claim:
+
+- full EuRoC validation as a native MAV localizer
+- hardware validation
+- strong yaw validation from the current planar proxy alone
+
 ## Notes
 
 The localization nodes initialize from the first odometry pose, optionally apply odometry pose corrections through `use_odom_pose_update`, fuse `/odom` and `/imu`, and publish filter-specific pose/path topics for benchmarking.

@@ -1,22 +1,24 @@
 {
-  "duration_seconds": 5,
+  "duration_seconds": 20,
   "base_seed": 1337,
-  "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
-  "run_started_at_utc": "2026-08-04T03:52:39.487887+00:00",
+  "repeats": 5,
+  "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+  "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
   "scenarios": {
     "low_noise": {
       "metadata": {
         "name": "low_noise",
-        "duration_seconds": 5,
-        "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
-        "run_started_at_utc": "2026-08-04T03:52:39.487887+00:00",
+        "repeat_name": "run_001",
+        "duration_seconds": 20,
+        "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+        "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
         "launch_args": {
           "odom_position_noise_std": "0.03",
           "odom_velocity_noise_std": "0.02",
           "imu_yaw_rate_noise_std": "0.01",
           "dropout_probability": "0.0",
           "use_odom_pose_update": "true",
-          "benchmark_duration_seconds": "5.0",
+          "benchmark_duration_seconds": "20.0",
           "fake_sensor_seed": "1337",
           "pf_random_seed": "1338"
         },
@@ -27,115 +29,990 @@
       },
       "metrics": {
         "ekf": {
-          "num_samples": 101,
-          "ate_rmse": 0.020556640950211636,
-          "final_drift": 0.013171933748447419,
-          "yaw_rmse": 0.0008690138047525137,
+          "num_samples": 401,
+          "ate_rmse": 0.0652211086351386,
+          "final_drift": 0.059042624907813514,
+          "yaw_rmse": 0.0017520081662710286,
           "update_rate_hz": 20.0
         },
         "ukf": {
-          "num_samples": 101,
-          "ate_rmse": 0.020556640950211636,
-          "final_drift": 0.013171933748447419,
-          "yaw_rmse": 0.0008690138047525137,
+          "num_samples": 401,
+          "ate_rmse": 0.0652211086351386,
+          "final_drift": 0.059042624907813514,
+          "yaw_rmse": 0.0017520081662710286,
           "update_rate_hz": 20.0
         },
         "pf": {
-          "num_samples": 101,
-          "ate_rmse": 0.024547072352432045,
-          "final_drift": 0.02032077162824727,
-          "yaw_rmse": 0.0009071579072944914,
-          "update_rate_hz": 20.0
+          "num_samples": 400,
+          "ate_rmse": 0.025617726738361934,
+          "final_drift": 0.013190076621342289,
+          "yaw_rmse": 0.0011978934594190885,
+          "update_rate_hz": 20.000000191212898
+        }
+      },
+      "repeats": [
+        {
+          "metadata": {
+            "name": "low_noise",
+            "repeat_name": "run_001",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.03",
+              "odom_velocity_noise_std": "0.02",
+              "imu_yaw_rate_noise_std": "0.01",
+              "dropout_probability": "0.0",
+              "use_odom_pose_update": "true",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "1337",
+              "pf_random_seed": "1338"
+            },
+            "seeds": {
+              "fake_sensor_seed": 1337,
+              "pf_random_seed": 1338
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 401,
+              "ate_rmse": 0.0652211086351386,
+              "final_drift": 0.059042624907813514,
+              "yaw_rmse": 0.0017520081662710286,
+              "update_rate_hz": 20.0
+            },
+            "ukf": {
+              "num_samples": 401,
+              "ate_rmse": 0.0652211086351386,
+              "final_drift": 0.059042624907813514,
+              "yaw_rmse": 0.0017520081662710286,
+              "update_rate_hz": 20.0
+            },
+            "pf": {
+              "num_samples": 400,
+              "ate_rmse": 0.025617726738361934,
+              "final_drift": 0.013190076621342289,
+              "yaw_rmse": 0.0011978934594190885,
+              "update_rate_hz": 20.000000191212898
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "low_noise",
+            "repeat_name": "run_002",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.03",
+              "odom_velocity_noise_std": "0.02",
+              "imu_yaw_rate_noise_std": "0.01",
+              "dropout_probability": "0.0",
+              "use_odom_pose_update": "true",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "1347",
+              "pf_random_seed": "1348"
+            },
+            "seeds": {
+              "fake_sensor_seed": 1347,
+              "pf_random_seed": 1348
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 401,
+              "ate_rmse": 0.06316587988489301,
+              "final_drift": 0.05548100891574264,
+              "yaw_rmse": 0.0016468779638820316,
+              "update_rate_hz": 20.0
+            },
+            "ukf": {
+              "num_samples": 400,
+              "ate_rmse": 0.06318392079248518,
+              "final_drift": 0.07156220778200022,
+              "yaw_rmse": 0.0010766181180350012,
+              "update_rate_hz": 20.000000191212898
+            },
+            "pf": {
+              "num_samples": 400,
+              "ate_rmse": 0.024461261118385175,
+              "final_drift": 0.016643594462357848,
+              "yaw_rmse": 0.001459825940070909,
+              "update_rate_hz": 20.000000191212898
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "low_noise",
+            "repeat_name": "run_003",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.03",
+              "odom_velocity_noise_std": "0.02",
+              "imu_yaw_rate_noise_std": "0.01",
+              "dropout_probability": "0.0",
+              "use_odom_pose_update": "true",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "1357",
+              "pf_random_seed": "1358"
+            },
+            "seeds": {
+              "fake_sensor_seed": 1357,
+              "pf_random_seed": 1358
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 401,
+              "ate_rmse": 0.0631925864900403,
+              "final_drift": 0.05599339541267456,
+              "yaw_rmse": 0.0025018238803013694,
+              "update_rate_hz": 20.0
+            },
+            "ukf": {
+              "num_samples": 400,
+              "ate_rmse": 0.06320955698266581,
+              "final_drift": 0.07595061875589969,
+              "yaw_rmse": 0.002202725883768816,
+              "update_rate_hz": 19.999999952196777
+            },
+            "pf": {
+              "num_samples": 400,
+              "ate_rmse": 0.025702539830329316,
+              "final_drift": 0.007440586169501448,
+              "yaw_rmse": 0.0014856112719930524,
+              "update_rate_hz": 19.999999952196777
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "low_noise",
+            "repeat_name": "run_004",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.03",
+              "odom_velocity_noise_std": "0.02",
+              "imu_yaw_rate_noise_std": "0.01",
+              "dropout_probability": "0.0",
+              "use_odom_pose_update": "true",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "1367",
+              "pf_random_seed": "1368"
+            },
+            "seeds": {
+              "fake_sensor_seed": 1367,
+              "pf_random_seed": 1368
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 401,
+              "ate_rmse": 0.06636061262992497,
+              "final_drift": 0.0623620731639233,
+              "yaw_rmse": 0.002691675417509561,
+              "update_rate_hz": 20.0
+            },
+            "ukf": {
+              "num_samples": 400,
+              "ate_rmse": 0.06637030710692281,
+              "final_drift": 0.06298309473167167,
+              "yaw_rmse": 0.002686635114336673,
+              "update_rate_hz": 19.99999971318066
+            },
+            "pf": {
+              "num_samples": 400,
+              "ate_rmse": 0.02632055805470349,
+              "final_drift": 0.007663248382121353,
+              "yaw_rmse": 0.0014589719182048838,
+              "update_rate_hz": 19.99999971318066
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "low_noise",
+            "repeat_name": "run_005",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.03",
+              "odom_velocity_noise_std": "0.02",
+              "imu_yaw_rate_noise_std": "0.01",
+              "dropout_probability": "0.0",
+              "use_odom_pose_update": "true",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "1377",
+              "pf_random_seed": "1378"
+            },
+            "seeds": {
+              "fake_sensor_seed": 1377,
+              "pf_random_seed": 1378
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 401,
+              "ate_rmse": 0.06298392044262068,
+              "final_drift": 0.06270979037657945,
+              "yaw_rmse": 0.00208012066571108,
+              "update_rate_hz": 20.0
+            },
+            "ukf": {
+              "num_samples": 400,
+              "ate_rmse": 0.06298460427267517,
+              "final_drift": 0.06329429785946507,
+              "yaw_rmse": 0.002082710498833743,
+              "update_rate_hz": 19.999999952196777
+            },
+            "pf": {
+              "num_samples": 400,
+              "ate_rmse": 0.025840734015367853,
+              "final_drift": 0.018010639996336175,
+              "yaw_rmse": 0.0012801639808275934,
+              "update_rate_hz": 19.999999952196777
+            }
+          }
+        }
+      ],
+      "aggregate_metrics": {
+        "ekf": {
+          "num_runs": 5,
+          "ate_rmse": {
+            "mean": 0.06418482161652352,
+            "std": 0.0013618291924551496
+          },
+          "final_drift": {
+            "mean": 0.05911777855534669,
+            "std": 0.003047015193123009
+          },
+          "yaw_rmse": {
+            "mean": 0.002134501218735014,
+            "std": 0.00040802050043694426
+          },
+          "update_rate_hz": {
+            "mean": 20.0,
+            "std": 0.0
+          }
+        },
+        "ukf": {
+          "num_runs": 5,
+          "ate_rmse": {
+            "mean": 0.06419389955797752,
+            "std": 0.001359653691693539
+          },
+          "final_drift": {
+            "mean": 0.06656656880737002,
+            "std": 0.006215715206035785
+          },
+          "yaw_rmse": {
+            "mean": 0.0019601395562490525,
+            "std": 0.0005339656104028945
+          },
+          "update_rate_hz": {
+            "mean": 19.99999996175742,
+            "std": 1.523716040465976e-07
+          }
+        },
+        "pf": {
+          "num_runs": 5,
+          "ate_rmse": {
+            "mean": 0.025588563951429555,
+            "std": 0.0006138497788346882
+          },
+          "final_drift": {
+            "mean": 0.012589629126331821,
+            "std": 0.004403734814924316
+          },
+          "yaw_rmse": {
+            "mean": 0.0013764933141031054,
+            "std": 0.00011561230381044797
+          },
+          "update_rate_hz": {
+            "mean": 20.000000000000004,
+            "std": 1.7886328555568843e-07
+          }
         }
       }
     },
     "high_noise_dropout": {
       "metadata": {
         "name": "high_noise_dropout",
-        "duration_seconds": 5,
-        "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
-        "run_started_at_utc": "2026-08-04T03:52:39.487887+00:00",
+        "repeat_name": "run_001",
+        "duration_seconds": 20,
+        "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+        "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
         "launch_args": {
           "odom_position_noise_std": "0.15",
           "odom_velocity_noise_std": "0.10",
           "imu_yaw_rate_noise_std": "0.05",
           "dropout_probability": "0.2",
           "use_odom_pose_update": "true",
-          "benchmark_duration_seconds": "5.0",
-          "fake_sensor_seed": "1437",
-          "pf_random_seed": "1438"
+          "benchmark_duration_seconds": "20.0",
+          "fake_sensor_seed": "2337",
+          "pf_random_seed": "2338"
         },
         "seeds": {
-          "fake_sensor_seed": 1437,
-          "pf_random_seed": 1438
+          "fake_sensor_seed": 2337,
+          "pf_random_seed": 2338
         }
       },
       "metrics": {
         "ekf": {
-          "num_samples": 82,
-          "ate_rmse": 0.07671974703057091,
-          "final_drift": 0.053195758221852976,
-          "yaw_rmse": 0.007013593588926476,
-          "update_rate_hz": 16.363636206004248
+          "num_samples": 317,
+          "ate_rmse": 0.12639241555612413,
+          "final_drift": 0.07586375091794514,
+          "yaw_rmse": 0.008999777797736998,
+          "update_rate_hz": 15.879396908825262
         },
         "ukf": {
-          "num_samples": 82,
-          "ate_rmse": 0.07671974703057091,
-          "final_drift": 0.053195758221852976,
-          "yaw_rmse": 0.007013593588926476,
-          "update_rate_hz": 16.363636206004248
+          "num_samples": 300,
+          "ate_rmse": 0.12868500539042868,
+          "final_drift": 0.07054052710010175,
+          "yaw_rmse": 0.009088145340380882,
+          "update_rate_hz": 15.904255359487978
         },
         "pf": {
-          "num_samples": 82,
-          "ate_rmse": 0.0922427119002226,
-          "final_drift": 0.09523445852198363,
-          "yaw_rmse": 0.008466917771806663,
-          "update_rate_hz": 16.363636206004248
+          "num_samples": 300,
+          "ate_rmse": 0.08647379153100528,
+          "final_drift": 0.029574838517847063,
+          "yaw_rmse": 0.008301893107643182,
+          "update_rate_hz": 15.904255359487978
+        }
+      },
+      "repeats": [
+        {
+          "metadata": {
+            "name": "high_noise_dropout",
+            "repeat_name": "run_001",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.15",
+              "odom_velocity_noise_std": "0.10",
+              "imu_yaw_rate_noise_std": "0.05",
+              "dropout_probability": "0.2",
+              "use_odom_pose_update": "true",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "2337",
+              "pf_random_seed": "2338"
+            },
+            "seeds": {
+              "fake_sensor_seed": 2337,
+              "pf_random_seed": 2338
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 317,
+              "ate_rmse": 0.12639241555612413,
+              "final_drift": 0.07586375091794514,
+              "yaw_rmse": 0.008999777797736998,
+              "update_rate_hz": 15.879396908825262
+            },
+            "ukf": {
+              "num_samples": 300,
+              "ate_rmse": 0.12868500539042868,
+              "final_drift": 0.07054052710010175,
+              "yaw_rmse": 0.009088145340380882,
+              "update_rate_hz": 15.904255359487978
+            },
+            "pf": {
+              "num_samples": 300,
+              "ate_rmse": 0.08647379153100528,
+              "final_drift": 0.029574838517847063,
+              "yaw_rmse": 0.008301893107643182,
+              "update_rate_hz": 15.904255359487978
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "high_noise_dropout",
+            "repeat_name": "run_002",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.15",
+              "odom_velocity_noise_std": "0.10",
+              "imu_yaw_rate_noise_std": "0.05",
+              "dropout_probability": "0.2",
+              "use_odom_pose_update": "true",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "2347",
+              "pf_random_seed": "2348"
+            },
+            "seeds": {
+              "fake_sensor_seed": 2347,
+              "pf_random_seed": 2348
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 313,
+              "ate_rmse": 0.0802683808055158,
+              "final_drift": 0.09219713248480725,
+              "yaw_rmse": 0.009262562894325853,
+              "update_rate_hz": 15.6
+            },
+            "ukf": {
+              "num_samples": 300,
+              "ate_rmse": 0.08050437427649035,
+              "final_drift": 0.05473756278228181,
+              "yaw_rmse": 0.009300055980803823,
+              "update_rate_hz": 15.452196458585854
+            },
+            "pf": {
+              "num_samples": 300,
+              "ate_rmse": 0.08322061986931747,
+              "final_drift": 0.07507730361873458,
+              "yaw_rmse": 0.009016000197827783,
+              "update_rate_hz": 15.452196458585854
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "high_noise_dropout",
+            "repeat_name": "run_003",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.15",
+              "odom_velocity_noise_std": "0.10",
+              "imu_yaw_rate_noise_std": "0.05",
+              "dropout_probability": "0.2",
+              "use_odom_pose_update": "true",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "2357",
+              "pf_random_seed": "2358"
+            },
+            "seeds": {
+              "fake_sensor_seed": 2357,
+              "pf_random_seed": 2358
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 313,
+              "ate_rmse": 0.11037390201347788,
+              "final_drift": 0.06983524684903347,
+              "yaw_rmse": 0.007846840010966987,
+              "update_rate_hz": 15.6
+            },
+            "ukf": {
+              "num_samples": 300,
+              "ate_rmse": 0.11197449381090173,
+              "final_drift": 0.06318334039819505,
+              "yaw_rmse": 0.007775055008977834,
+              "update_rate_hz": 15.736842105263158
+            },
+            "pf": {
+              "num_samples": 300,
+              "ate_rmse": 0.0915488473585516,
+              "final_drift": 0.004657253671481707,
+              "yaw_rmse": 0.009638585795421805,
+              "update_rate_hz": 15.736842105263158
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "high_noise_dropout",
+            "repeat_name": "run_004",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.15",
+              "odom_velocity_noise_std": "0.10",
+              "imu_yaw_rate_noise_std": "0.05",
+              "dropout_probability": "0.2",
+              "use_odom_pose_update": "true",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "2367",
+              "pf_random_seed": "2368"
+            },
+            "seeds": {
+              "fake_sensor_seed": 2367,
+              "pf_random_seed": 2368
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 318,
+              "ate_rmse": 0.09615852700343733,
+              "final_drift": 0.07550478766109268,
+              "yaw_rmse": 0.011517578833767902,
+              "update_rate_hz": 15.85
+            },
+            "ukf": {
+              "num_samples": 300,
+              "ate_rmse": 0.09463764455036018,
+              "final_drift": 0.11252087781591555,
+              "yaw_rmse": 0.011652159577328623,
+              "update_rate_hz": 15.862069045767893
+            },
+            "pf": {
+              "num_samples": 300,
+              "ate_rmse": 0.0807746371367893,
+              "final_drift": 0.06766758215409062,
+              "yaw_rmse": 0.009296057285333186,
+              "update_rate_hz": 15.862069045767893
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "high_noise_dropout",
+            "repeat_name": "run_005",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.15",
+              "odom_velocity_noise_std": "0.10",
+              "imu_yaw_rate_noise_std": "0.05",
+              "dropout_probability": "0.2",
+              "use_odom_pose_update": "true",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "2377",
+              "pf_random_seed": "2378"
+            },
+            "seeds": {
+              "fake_sensor_seed": 2377,
+              "pf_random_seed": 2378
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 338,
+              "ate_rmse": 0.11505773631550496,
+              "final_drift": 0.1254419500303092,
+              "yaw_rmse": 0.012875236641289388,
+              "update_rate_hz": 16.85
+            },
+            "ukf": {
+              "num_samples": 300,
+              "ate_rmse": 0.11697619851102482,
+              "final_drift": 0.15746421018347048,
+              "yaw_rmse": 0.012095629165598927,
+              "update_rate_hz": 16.892655549266575
+            },
+            "pf": {
+              "num_samples": 300,
+              "ate_rmse": 0.09141191453105264,
+              "final_drift": 0.08447667895817933,
+              "yaw_rmse": 0.007276249078908695,
+              "update_rate_hz": 16.892655549266575
+            }
+          }
+        }
+      ],
+      "aggregate_metrics": {
+        "ekf": {
+          "num_runs": 5,
+          "ate_rmse": {
+            "mean": 0.10565019233881201,
+            "std": 0.015971118985914967
+          },
+          "final_drift": {
+            "mean": 0.08776857358863754,
+            "std": 0.020261415954762007
+          },
+          "yaw_rmse": {
+            "mean": 0.010100399235617426,
+            "std": 0.0018275659826473116
+          },
+          "update_rate_hz": {
+            "mean": 15.955879381765053,
+            "std": 0.4625606902523679
+          }
+        },
+        "ukf": {
+          "num_runs": 5,
+          "ate_rmse": {
+            "mean": 0.10655554330784116,
+            "std": 0.01701979958857634
+          },
+          "final_drift": {
+            "mean": 0.09168930365599293,
+            "std": 0.03843327895286217
+          },
+          "yaw_rmse": {
+            "mean": 0.009982209014618017,
+            "std": 0.0016365507041467102
+          },
+          "update_rate_hz": {
+            "mean": 15.969603703674291,
+            "std": 0.48780058166328
+          }
+        },
+        "pf": {
+          "num_runs": 5,
+          "ate_rmse": {
+            "mean": 0.08668596208534327,
+            "std": 0.004312299974843775
+          },
+          "final_drift": {
+            "mean": 0.05229073138406666,
+            "std": 0.030254158797619043
+          },
+          "yaw_rmse": {
+            "mean": 0.008705757093026931,
+            "std": 0.0008392227082536895
+          },
+          "update_rate_hz": {
+            "mean": 15.969603703674291,
+            "std": 0.48780058166328
+          }
         }
       }
     },
     "dead_reckoning": {
       "metadata": {
         "name": "dead_reckoning",
-        "duration_seconds": 5,
-        "git_commit": "76db690ec34c672fede6b22b208034930c391e7f",
-        "run_started_at_utc": "2026-08-04T03:52:39.487887+00:00",
+        "repeat_name": "run_001",
+        "duration_seconds": 20,
+        "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+        "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
         "launch_args": {
           "odom_position_noise_std": "0.03",
           "odom_velocity_noise_std": "0.02",
           "imu_yaw_rate_noise_std": "0.01",
           "dropout_probability": "0.0",
           "use_odom_pose_update": "false",
-          "benchmark_duration_seconds": "5.0",
-          "fake_sensor_seed": "1537",
-          "pf_random_seed": "1538"
+          "benchmark_duration_seconds": "20.0",
+          "fake_sensor_seed": "3337",
+          "pf_random_seed": "3338"
         },
         "seeds": {
-          "fake_sensor_seed": 1537,
-          "pf_random_seed": 1538
+          "fake_sensor_seed": 3337,
+          "pf_random_seed": 3338
         }
       },
       "metrics": {
         "ekf": {
-          "num_samples": 101,
-          "ate_rmse": 0.028559978854083443,
-          "final_drift": 0.03963536992408137,
-          "yaw_rmse": 0.009469537949708515,
+          "num_samples": 401,
+          "ate_rmse": 0.07084720037210615,
+          "final_drift": 0.08036936495959583,
+          "yaw_rmse": 0.003008407659092617,
           "update_rate_hz": 20.0
         },
         "ukf": {
-          "num_samples": 101,
-          "ate_rmse": 0.028559978854083443,
-          "final_drift": 0.03963536992408137,
-          "yaw_rmse": 0.009469537949708515,
-          "update_rate_hz": 20.0
+          "num_samples": 400,
+          "ate_rmse": 0.07082179062976839,
+          "final_drift": 0.07974082873173242,
+          "yaw_rmse": 0.003001856705088217,
+          "update_rate_hz": 20.000000191212898
         },
         "pf": {
-          "num_samples": 101,
-          "ate_rmse": 0.02044335751260115,
-          "final_drift": 0.024970251058105655,
-          "yaw_rmse": 0.005689097520409511,
-          "update_rate_hz": 20.0
+          "num_samples": 400,
+          "ate_rmse": 0.03237453560407858,
+          "final_drift": 0.04986598984526866,
+          "yaw_rmse": 0.017842818331848947,
+          "update_rate_hz": 20.000000191212898
+        }
+      },
+      "repeats": [
+        {
+          "metadata": {
+            "name": "dead_reckoning",
+            "repeat_name": "run_001",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.03",
+              "odom_velocity_noise_std": "0.02",
+              "imu_yaw_rate_noise_std": "0.01",
+              "dropout_probability": "0.0",
+              "use_odom_pose_update": "false",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "3337",
+              "pf_random_seed": "3338"
+            },
+            "seeds": {
+              "fake_sensor_seed": 3337,
+              "pf_random_seed": 3338
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 401,
+              "ate_rmse": 0.07084720037210615,
+              "final_drift": 0.08036936495959583,
+              "yaw_rmse": 0.003008407659092617,
+              "update_rate_hz": 20.0
+            },
+            "ukf": {
+              "num_samples": 400,
+              "ate_rmse": 0.07082179062976839,
+              "final_drift": 0.07974082873173242,
+              "yaw_rmse": 0.003001856705088217,
+              "update_rate_hz": 20.000000191212898
+            },
+            "pf": {
+              "num_samples": 400,
+              "ate_rmse": 0.03237453560407858,
+              "final_drift": 0.04986598984526866,
+              "yaw_rmse": 0.017842818331848947,
+              "update_rate_hz": 20.000000191212898
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "dead_reckoning",
+            "repeat_name": "run_002",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.03",
+              "odom_velocity_noise_std": "0.02",
+              "imu_yaw_rate_noise_std": "0.01",
+              "dropout_probability": "0.0",
+              "use_odom_pose_update": "false",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "3347",
+              "pf_random_seed": "3348"
+            },
+            "seeds": {
+              "fake_sensor_seed": 3347,
+              "pf_random_seed": 3348
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 401,
+              "ate_rmse": 0.08765758057582823,
+              "final_drift": 0.09647911841258165,
+              "yaw_rmse": 0.005713735243706222,
+              "update_rate_hz": 20.0
+            },
+            "ukf": {
+              "num_samples": 400,
+              "ate_rmse": 0.08763441396086737,
+              "final_drift": 0.09996166549163964,
+              "yaw_rmse": 0.0054572218930382796,
+              "update_rate_hz": 20.000000191212898
+            },
+            "pf": {
+              "num_samples": 400,
+              "ate_rmse": 0.029158943266834873,
+              "final_drift": 0.03997652225665791,
+              "yaw_rmse": 0.010985608008294052,
+              "update_rate_hz": 20.000000191212898
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "dead_reckoning",
+            "repeat_name": "run_003",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.03",
+              "odom_velocity_noise_std": "0.02",
+              "imu_yaw_rate_noise_std": "0.01",
+              "dropout_probability": "0.0",
+              "use_odom_pose_update": "false",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "3357",
+              "pf_random_seed": "3358"
+            },
+            "seeds": {
+              "fake_sensor_seed": 3357,
+              "pf_random_seed": 3358
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 401,
+              "ate_rmse": 0.05595007119740414,
+              "final_drift": 0.06083639587294816,
+              "yaw_rmse": 0.00556121806429939,
+              "update_rate_hz": 20.0
+            },
+            "ukf": {
+              "num_samples": 400,
+              "ate_rmse": 0.055937320507019765,
+              "final_drift": 0.06095246561277117,
+              "yaw_rmse": 0.005564552885484847,
+              "update_rate_hz": 19.99999971318066
+            },
+            "pf": {
+              "num_samples": 400,
+              "ate_rmse": 0.038201268136288484,
+              "final_drift": 0.00895751377347342,
+              "yaw_rmse": 0.017221947213763477,
+              "update_rate_hz": 19.99999971318066
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "dead_reckoning",
+            "repeat_name": "run_004",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.03",
+              "odom_velocity_noise_std": "0.02",
+              "imu_yaw_rate_noise_std": "0.01",
+              "dropout_probability": "0.0",
+              "use_odom_pose_update": "false",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "3367",
+              "pf_random_seed": "3368"
+            },
+            "seeds": {
+              "fake_sensor_seed": 3367,
+              "pf_random_seed": 3368
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 401,
+              "ate_rmse": 0.10229846064771049,
+              "final_drift": 0.11271485041528043,
+              "yaw_rmse": 0.002494097077410429,
+              "update_rate_hz": 20.0
+            },
+            "ukf": {
+              "num_samples": 400,
+              "ate_rmse": 0.10227109021985663,
+              "final_drift": 0.12265227458757844,
+              "yaw_rmse": 0.0021036973107101753,
+              "update_rate_hz": 19.999999952196777
+            },
+            "pf": {
+              "num_samples": 400,
+              "ate_rmse": 0.049698427119513444,
+              "final_drift": 0.0497159704044069,
+              "yaw_rmse": 0.007604542072808094,
+              "update_rate_hz": 19.999999952196777
+            }
+          }
+        },
+        {
+          "metadata": {
+            "name": "dead_reckoning",
+            "repeat_name": "run_005",
+            "duration_seconds": 20,
+            "git_commit": "f059fe149f0c79072eca69dd5295ab2ca253cf6c",
+            "run_started_at_utc": "2026-08-18T20:04:40.898021+00:00",
+            "launch_args": {
+              "odom_position_noise_std": "0.03",
+              "odom_velocity_noise_std": "0.02",
+              "imu_yaw_rate_noise_std": "0.01",
+              "dropout_probability": "0.0",
+              "use_odom_pose_update": "false",
+              "benchmark_duration_seconds": "20.0",
+              "fake_sensor_seed": "3377",
+              "pf_random_seed": "3378"
+            },
+            "seeds": {
+              "fake_sensor_seed": 3377,
+              "pf_random_seed": 3378
+            }
+          },
+          "metrics": {
+            "ekf": {
+              "num_samples": 401,
+              "ate_rmse": 0.04063271895196608,
+              "final_drift": 0.04130986471121938,
+              "yaw_rmse": 0.0026859003704943103,
+              "update_rate_hz": 20.0
+            },
+            "ukf": {
+              "num_samples": 400,
+              "ate_rmse": 0.040631011945887946,
+              "final_drift": 0.041963570882272996,
+              "yaw_rmse": 0.0026880463895929373,
+              "update_rate_hz": 20.000000191212898
+            },
+            "pf": {
+              "num_samples": 400,
+              "ate_rmse": 0.03941944270294413,
+              "final_drift": 0.05858930876861897,
+              "yaw_rmse": 0.011244327680895418,
+              "update_rate_hz": 20.000000191212898
+            }
+          }
+        }
+      ],
+      "aggregate_metrics": {
+        "ekf": {
+          "num_runs": 5,
+          "ate_rmse": {
+            "mean": 0.07147720634900302,
+            "std": 0.021930004391238125
+          },
+          "final_drift": {
+            "mean": 0.0783419188743251,
+            "std": 0.025268095846459615
+          },
+          "yaw_rmse": {
+            "mean": 0.003892671683000594,
+            "std": 0.001434890261360981
+          },
+          "update_rate_hz": {
+            "mean": 20.0,
+            "std": 0.0
+          }
+        },
+        "ukf": {
+          "num_runs": 5,
+          "ate_rmse": {
+            "mean": 0.07145912545268002,
+            "std": 0.021921324494528632
+          },
+          "final_drift": {
+            "mean": 0.08105416106119893,
+            "std": 0.028361149535892922
+          },
+          "yaw_rmse": {
+            "mean": 0.0037630750367828912,
+            "std": 0.0014563056264738652
+          },
+          "update_rate_hz": {
+            "mean": 20.000000047803226,
+            "std": 1.91212895295223e-07
+          }
+        },
+        "pf": {
+          "num_runs": 5,
+          "ate_rmse": {
+            "mean": 0.0377705233659319,
+            "std": 0.007049189452995313
+          },
+          "final_drift": {
+            "mean": 0.04142106100968517,
+            "std": 0.017267539879111886
+          },
+          "yaw_rmse": {
+            "mean": 0.012979848661521997,
+            "std": 0.003937685206344007
+          },
+          "update_rate_hz": {
+            "mean": 20.000000047803226,
+            "std": 1.91212895295223e-07
+          }
         }
       }
     }

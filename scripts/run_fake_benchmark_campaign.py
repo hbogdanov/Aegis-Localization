@@ -10,6 +10,7 @@ import argparse
 import csv
 from datetime import datetime, timezone
 import json
+import math
 import shutil
 import subprocess
 import sys
@@ -124,6 +125,14 @@ def require_samples(csv_path: Path, minimum_rows: int = 2) -> None:
         )
 
 
+def aggregate_metric_series(values: list[float]) -> dict[str, float]:
+    if not values:
+        return {"mean": float("nan"), "std": float("nan")}
+    mean = sum(values) / len(values)
+    variance = sum((value - mean) ** 2 for value in values) / len(values)
+    return {"mean": mean, "std": math.sqrt(variance)}
+
+
 def clean_ros_nodes() -> None:
     cleanup_cmd = (
         "for pattern in '/aegis_ros/ekf_node' '/aegis_ros/ukf_node' "
@@ -140,6 +149,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--duration", type=int, default=30, help="Scenario runtime in seconds")
     parser.add_argument("--base-seed", type=int, default=1337, help="Base seed used to derive deterministic scenario seeds")
+    parser.add_argument("--repeats", type=int, default=1, help="Number of repeated runs per scenario with different deterministic seeds")
     args = parser.parse_args()
 
     CAMPAIGN_ROOT.mkdir(parents=True, exist_ok=True)
@@ -148,6 +158,7 @@ def main() -> int:
     summary = {
         "duration_seconds": args.duration,
         "base_seed": args.base_seed,
+        "repeats": args.repeats,
         "git_commit": git_commit,
         "run_started_at_utc": run_started_at,
         "scenarios": {},
@@ -156,68 +167,110 @@ def main() -> int:
 
     for index, scenario in enumerate(SCENARIOS):
         name = scenario["name"]
-        fake_sensor_seed = args.base_seed + index * 100
-        pf_random_seed = fake_sensor_seed + 1
-        launch_args = dict(scenario["launch_args"])
-        launch_args["benchmark_duration_seconds"] = f"{float(args.duration):.1f}"
-        launch_args["fake_sensor_seed"] = str(fake_sensor_seed)
-        launch_args["pf_random_seed"] = str(pf_random_seed)
-        launch_items = [f"{k}:={v}" for k, v in launch_args.items()]
         scenario_root = CAMPAIGN_ROOT / name
         scenario_root.mkdir(parents=True, exist_ok=True)
+        repeat_runs: list[dict[str, object]] = []
 
-        clean_ros_nodes()
-        launch_cmd = (
-            "source /opt/ros/humble/setup.bash && "
-            f"cd {ros2_ws_wsl_path} && "
-            "source install/setup.bash && "
-            f"timeout {args.duration + 6}s ros2 launch aegis_ros fake_benchmark.launch.py {' '.join(launch_items)}"
-        )
-        run_wsl_bash(launch_cmd, check=False)
-        clean_ros_nodes()
+        for repeat_index in range(args.repeats):
+            fake_sensor_seed = args.base_seed + index * 1000 + repeat_index * 10
+            pf_random_seed = fake_sensor_seed + 1
+            launch_args = dict(scenario["launch_args"])
+            launch_args["benchmark_duration_seconds"] = f"{float(args.duration):.1f}"
+            launch_args["fake_sensor_seed"] = str(fake_sensor_seed)
+            launch_args["pf_random_seed"] = str(pf_random_seed)
+            launch_items = [f"{k}:={v}" for k, v in launch_args.items()]
+            repeat_name = f"run_{repeat_index + 1:03d}"
+            repeat_root = scenario_root / "repeats" / repeat_name
+            repeat_root.mkdir(parents=True, exist_ok=True)
 
-        scenario_metrics = {}
-        gt_path = METRICS_ROOT / "ground_truth.csv"
-        require_samples(gt_path)
-        shutil.copy2(gt_path, scenario_root / "ground_truth.csv")
+            clean_ros_nodes()
+            launch_cmd = (
+                "source /opt/ros/humble/setup.bash && "
+                f"cd {ros2_ws_wsl_path} && "
+                "source install/setup.bash && "
+                f"timeout {args.duration + 6}s ros2 launch aegis_ros fake_benchmark.launch.py {' '.join(launch_items)}"
+            )
+            run_wsl_bash(launch_cmd, check=False)
+            clean_ros_nodes()
+
+            repeat_metrics = {}
+            gt_path = METRICS_ROOT / "ground_truth.csv"
+            require_samples(gt_path)
+            shutil.copy2(gt_path, repeat_root / "ground_truth.csv")
+
+            for method in METHODS:
+                est_path = METRICS_ROOT / f"{method}.csv"
+                require_samples(est_path)
+                out_json = repeat_root / f"{method}_metrics.json"
+                shutil.copy2(est_path, repeat_root / f"{method}.csv")
+                run([
+                    sys.executable,
+                    str(REPO_ROOT / "scripts" / "evaluate_trajectory.py"),
+                    "--est",
+                    str(est_path),
+                    "--gt",
+                    str(gt_path),
+                    "--out-json",
+                    str(out_json),
+                ], cwd=REPO_ROOT)
+                with out_json.open("r", encoding="utf-8") as handle:
+                    metrics = json.load(handle)
+                metrics["update_rate_hz"] = compute_update_rate(est_path)
+                repeat_metrics[method] = metrics
+
+            repeat_metadata = {
+                "name": name,
+                "repeat_name": repeat_name,
+                "duration_seconds": args.duration,
+                "git_commit": git_commit,
+                "run_started_at_utc": run_started_at,
+                "launch_args": launch_args,
+                "seeds": {
+                    "fake_sensor_seed": fake_sensor_seed,
+                    "pf_random_seed": pf_random_seed,
+                },
+            }
+            with (repeat_root / "metadata.json").open("w", encoding="utf-8") as handle:
+                json.dump(repeat_metadata, handle, indent=2)
+
+            repeat_runs.append(
+                {
+                    "metadata": repeat_metadata,
+                    "metrics": repeat_metrics,
+                }
+            )
+
+        representative = repeat_runs[0]
+        representative_metrics = representative["metrics"]
+        representative_metadata = representative["metadata"]
+
+        aggregate_metrics = {}
+        for method in METHODS:
+            ate_values = [float(run_entry["metrics"][method]["ate_rmse"]) for run_entry in repeat_runs]
+            drift_values = [float(run_entry["metrics"][method]["final_drift"]) for run_entry in repeat_runs]
+            yaw_values = [float(run_entry["metrics"][method]["yaw_rmse"]) for run_entry in repeat_runs]
+            update_rate_values = [float(run_entry["metrics"][method]["update_rate_hz"]) for run_entry in repeat_runs]
+            aggregate_metrics[method] = {
+                "num_runs": len(repeat_runs),
+                "ate_rmse": aggregate_metric_series(ate_values),
+                "final_drift": aggregate_metric_series(drift_values),
+                "yaw_rmse": aggregate_metric_series(yaw_values),
+                "update_rate_hz": aggregate_metric_series(update_rate_values),
+            }
+
+        with (scenario_root / "metadata.json").open("w", encoding="utf-8") as handle:
+            json.dump(representative_metadata, handle, indent=2)
 
         for method in METHODS:
-            est_path = METRICS_ROOT / f"{method}.csv"
-            require_samples(est_path)
-            out_json = scenario_root / f"{method}_metrics.json"
-            shutil.copy2(est_path, scenario_root / f"{method}.csv")
-            run([
-                sys.executable,
-                str(REPO_ROOT / "scripts" / "evaluate_trajectory.py"),
-                "--est",
-                str(est_path),
-                "--gt",
-                str(gt_path),
-                "--out-json",
-                str(out_json),
-            ], cwd=REPO_ROOT)
-            with out_json.open("r", encoding="utf-8") as handle:
-                metrics = json.load(handle)
-            metrics["update_rate_hz"] = compute_update_rate(est_path)
-            scenario_metrics[method] = metrics
-
-        scenario_metadata = {
-            "name": name,
-            "duration_seconds": args.duration,
-            "git_commit": git_commit,
-            "run_started_at_utc": run_started_at,
-            "launch_args": launch_args,
-            "seeds": {
-                "fake_sensor_seed": fake_sensor_seed,
-                "pf_random_seed": pf_random_seed,
-            },
-        }
-        with (scenario_root / "metadata.json").open("w", encoding="utf-8") as handle:
-            json.dump(scenario_metadata, handle, indent=2)
+            first_metrics = representative_metrics[method]
+            with (scenario_root / f"{method}_metrics.json").open("w", encoding="utf-8") as handle:
+                json.dump(first_metrics, handle, indent=2)
 
         summary["scenarios"][name] = {
-            "metadata": scenario_metadata,
-            "metrics": scenario_metrics,
+            "metadata": representative_metadata,
+            "metrics": representative_metrics,
+            "repeats": repeat_runs,
+            "aggregate_metrics": aggregate_metrics,
         }
 
     summary_path = CAMPAIGN_ROOT / "summary.json"
