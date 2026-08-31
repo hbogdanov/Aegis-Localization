@@ -12,6 +12,7 @@ venv/
 # ROS bags and generated results
 bags/*.db3
 bags/*.mcap
+machine_hall/
 results/**/*.csv
 results/**/*.png
 results/**/*.pdf

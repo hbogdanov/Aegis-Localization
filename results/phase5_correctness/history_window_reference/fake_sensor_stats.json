@@ -1,0 +1,15 @@
+{
+  "random_seed": 3100,
+  "published_truth_samples": 166,
+  "dropped_measurements": 0,
+  "corrupted_pose_measurements": 0,
+  "published_corrections": 1,
+  "dropped_corrections": 0,
+  "corrupted_corrections": 0,
+  "enqueued_corrections": 1,
+  "correction_frequency_hz": 1,
+  "correction_latency_seconds": 0,
+  "pose_outlier_probability": 0,
+  "pose_outlier_position_std": 1.5,
+  "pose_outlier_yaw_std": 0.75
+}

@@ -1,0 +1,16 @@
+{
+  "odom_received": 161,
+  "imu_received": 161,
+  "predict_calls": 160,
+  "pose_update_attempts": 1,
+  "pose_update_calls": 1,
+  "pose_updates_rejected": 0,
+  "velocity_update_calls": 160,
+  "pose_published": 162,
+  "correction_messages_received": 2,
+  "correction_messages_applied": 1,
+  "correction_replays": 1,
+  "correction_history_rejections": 1,
+  "pose_gating_enabled": false,
+  "pose_gating_threshold": 9.32415
+}

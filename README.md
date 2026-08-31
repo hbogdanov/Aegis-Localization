@@ -17,6 +17,8 @@ Aegis Localization implements and benchmarks classical robotics estimation metho
 - ATE/drift/yaw RMSE evaluation
 - NIS consistency analysis for EKF and UKF synthetic runs
 - Pose-update gating experiment path for corrupted synthetic corrections
+- Intermittent timestamped pose corrections with bounded out-of-sequence replay
+- Phase 5 replay-correctness evidence for EKF and UKF
 - Trajectory plotting
 
 ## Planned
@@ -217,6 +219,26 @@ Current Gazebo status:
 - estimator trajectories can be logged from simulation
 - Gazebo logs should be treated as separate outputs under `results/gazebo_metrics/`
 - quantitative Gazebo scoring should still be treated as incomplete until the simulator ground-truth bridge reliably produces a populated `ground_truth.csv`
+
+Gazebo is therefore an integration/demo path, not a source of benchmark claims in the current project direction.
+
+## Intermittent Correction And Delayed Replay
+
+The synthetic benchmark can inject timestamped pose-like corrections with configurable frequency, dropout, latency, noise, and outliers. EKF and UKF apply delayed corrections at their measurement timestamp and replay stored odometry forward; corrections outside the retained history are explicitly rejected.
+
+To reproduce the focused Phase 5 artifacts after building the ROS workspace:
+
+```bash
+cd /path/to/Aegis-Localization
+python3 scripts/run_phase5_correctness_checks.py --duration 8
+python3 scripts/generate_phase5_correctness_report.py
+python3 scripts/run_phase5_intermittent_correction_experiment.py --duration 12
+python3 scripts/generate_phase5_report.py
+```
+
+The correctness checks show that, for deterministic EKF/UKF cases, zero-latency replay agrees with immediate fusion and terminal state/covariance remain invariant for 100 ms, 500 ms, and 1000 ms delayed arrivals. They also cover reversed correction arrival order and clean rejection of corrections older than the retained history window.
+
+The delayed-run trajectory remains an online record: estimates published before a correction arrives cannot be retroactively improved. Whole-trajectory error and reconstructed current-state correctness are therefore reported as distinct concepts. See `results/reports/phase5_correctness.md` and `results/reports/phase5_intermittent_correction.md` for the preserved evidence.
 
 ## EuRoC Recorded-Data Benchmark
 

@@ -1,0 +1,13 @@
+{
+  "odom_received": 161,
+  "imu_received": 161,
+  "predict_calls": 188,
+  "pose_update_calls": 2,
+  "velocity_update_calls": 188,
+  "pose_published": 163,
+  "correction_messages_received": 2,
+  "correction_messages_applied": 2,
+  "correction_replays": 2,
+  "correction_history_rejections": 0,
+  "effective_sample_size": 500
+}

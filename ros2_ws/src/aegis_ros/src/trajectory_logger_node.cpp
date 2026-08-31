@@ -249,6 +249,7 @@ private:
               << x << ','
               << y << ','
               << yaw << '\n';
+    ekf_file_.flush();
     ++ekf_count_;
     maybeFlush(ekf_file_, ekf_count_);
     maybeWriteStats();
@@ -270,6 +271,7 @@ private:
                        << x << ','
                        << y << ','
                        << yaw << '\n';
+    ground_truth_file_.flush();
     ++ground_truth_count_;
     maybeFlush(ground_truth_file_, ground_truth_count_);
     maybeWriteStats();
@@ -289,6 +291,7 @@ private:
               << x << ','
               << y << ','
               << yaw << '\n';
+    ukf_file_.flush();
     ++ukf_count_;
     maybeFlush(ukf_file_, ukf_count_);
     maybeWriteStats();
@@ -308,6 +311,7 @@ private:
              << x << ','
              << y << ','
              << yaw << '\n';
+    pf_file_.flush();
     ++pf_count_;
     maybeFlush(pf_file_, pf_count_);
     maybeWriteStats();
@@ -326,6 +330,7 @@ private:
                          << x << ','
                          << y << ','
                          << yaw << '\n';
+      ground_truth_file_.flush();
       ++ground_truth_count_;
     }
 
@@ -336,6 +341,7 @@ private:
                  << x << ','
                  << y << ','
                  << yaw << '\n';
+      odom_file_.flush();
       ++odom_count_;
       maybeFlush(odom_file_, odom_count_);
       maybeWriteStats();
@@ -360,6 +366,7 @@ private:
                       << serializeVector(msg->innovation_vector) << ','
                       << serializeVector(msg->innovation_covariance) << ','
                       << serializeVector(msg->state_covariance) << '\n';
+    diagnostics_file_.flush();
     ++diagnostics_count_;
     maybeFlush(diagnostics_file_, diagnostics_count_);
     maybeWriteStats();

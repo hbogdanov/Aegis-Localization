@@ -33,13 +33,27 @@ def generate_launch_description():
     pose_outlier_position_std = LaunchConfiguration('pose_outlier_position_std')
     pose_outlier_yaw_std = LaunchConfiguration('pose_outlier_yaw_std')
     pose_outlier_start_seconds = LaunchConfiguration('pose_outlier_start_seconds')
+    correction_enabled = LaunchConfiguration('correction_enabled')
+    correction_start_seconds = LaunchConfiguration('correction_start_seconds')
+    correction_frequency_hz = LaunchConfiguration('correction_frequency_hz')
+    correction_dropout_probability = LaunchConfiguration('correction_dropout_probability')
+    correction_latency_seconds = LaunchConfiguration('correction_latency_seconds')
+    correction_latency_schedule_seconds = LaunchConfiguration('correction_latency_schedule_seconds')
+    correction_max_emissions = LaunchConfiguration('correction_max_emissions')
+    correction_position_noise_std = LaunchConfiguration('correction_position_noise_std')
+    correction_yaw_noise_std = LaunchConfiguration('correction_yaw_noise_std')
+    correction_outlier_probability = LaunchConfiguration('correction_outlier_probability')
+    correction_outlier_position_std = LaunchConfiguration('correction_outlier_position_std')
+    correction_outlier_yaw_std = LaunchConfiguration('correction_outlier_yaw_std')
     results_dir = LaunchConfiguration('results_dir')
     fake_sensor_stats_out = LaunchConfiguration('fake_sensor_stats_out')
     corruption_log_out = LaunchConfiguration('corruption_log_out')
+    correction_log_out = LaunchConfiguration('correction_log_out')
     ekf_stats_out = LaunchConfiguration('ekf_stats_out')
     ukf_stats_out = LaunchConfiguration('ukf_stats_out')
     pf_stats_out = LaunchConfiguration('pf_stats_out')
     logger_stats_out = LaunchConfiguration('logger_stats_out')
+    max_history_seconds = LaunchConfiguration('max_history_seconds')
 
     ld = LaunchDescription([
         DeclareLaunchArgument('run_ekf', default_value='true'),
@@ -59,13 +73,27 @@ def generate_launch_description():
         DeclareLaunchArgument('pose_outlier_position_std', default_value='1.5'),
         DeclareLaunchArgument('pose_outlier_yaw_std', default_value='0.75'),
         DeclareLaunchArgument('pose_outlier_start_seconds', default_value='0.0'),
+        DeclareLaunchArgument('correction_enabled', default_value='false'),
+        DeclareLaunchArgument('correction_start_seconds', default_value='0.0'),
+        DeclareLaunchArgument('correction_frequency_hz', default_value='2.0'),
+        DeclareLaunchArgument('correction_dropout_probability', default_value='0.0'),
+        DeclareLaunchArgument('correction_latency_seconds', default_value='0.0'),
+        DeclareLaunchArgument('correction_latency_schedule_seconds', default_value=''),
+        DeclareLaunchArgument('correction_max_emissions', default_value='0'),
+        DeclareLaunchArgument('correction_position_noise_std', default_value='0.05'),
+        DeclareLaunchArgument('correction_yaw_noise_std', default_value='0.08'),
+        DeclareLaunchArgument('correction_outlier_probability', default_value='0.0'),
+        DeclareLaunchArgument('correction_outlier_position_std', default_value='1.5'),
+        DeclareLaunchArgument('correction_outlier_yaw_std', default_value='0.75'),
         DeclareLaunchArgument('results_dir', default_value='results/metrics'),
         DeclareLaunchArgument('fake_sensor_stats_out', default_value=''),
         DeclareLaunchArgument('corruption_log_out', default_value=''),
+        DeclareLaunchArgument('correction_log_out', default_value=''),
         DeclareLaunchArgument('ekf_stats_out', default_value=''),
         DeclareLaunchArgument('ukf_stats_out', default_value=''),
         DeclareLaunchArgument('pf_stats_out', default_value=''),
         DeclareLaunchArgument('logger_stats_out', default_value=''),
+        DeclareLaunchArgument('max_history_seconds', default_value='5.0'),
     ])
 
     fake = Node(
@@ -88,8 +116,21 @@ def generate_launch_description():
                 'pose_outlier_position_std': pose_outlier_position_std,
                 'pose_outlier_yaw_std': pose_outlier_yaw_std,
                 'pose_outlier_start_seconds': pose_outlier_start_seconds,
+                'correction_enabled': correction_enabled,
+                'correction_start_seconds': correction_start_seconds,
+                'correction_frequency_hz': correction_frequency_hz,
+                'correction_dropout_probability': correction_dropout_probability,
+                'correction_latency_seconds': correction_latency_seconds,
+                'correction_latency_schedule_seconds': correction_latency_schedule_seconds,
+                'correction_max_emissions': correction_max_emissions,
+                'correction_position_noise_std': correction_position_noise_std,
+                'correction_yaw_noise_std': correction_yaw_noise_std,
+                'correction_outlier_probability': correction_outlier_probability,
+                'correction_outlier_position_std': correction_outlier_position_std,
+                'correction_outlier_yaw_std': correction_outlier_yaw_std,
                 'stats_out': fake_sensor_stats_out,
                 'corruption_log_out': corruption_log_out,
+                'correction_log_out': correction_log_out,
             },
         ]
     )
@@ -103,6 +144,7 @@ def generate_launch_description():
             'use_odom_pose_update': use_odom_pose_update,
             'pose_gating_enabled': pose_gating_enabled,
             'pose_gating_threshold': pose_gating_threshold,
+            'max_history_seconds': max_history_seconds,
             'stats_out': ekf_stats_out,
         }],
         condition=IfCondition(run_ekf),
@@ -117,6 +159,7 @@ def generate_launch_description():
             'use_odom_pose_update': use_odom_pose_update,
             'pose_gating_enabled': pose_gating_enabled,
             'pose_gating_threshold': pose_gating_threshold,
+            'max_history_seconds': max_history_seconds,
             'stats_out': ukf_stats_out,
         }],
         condition=IfCondition(run_ukf),
@@ -129,6 +172,7 @@ def generate_launch_description():
         output='screen',
         parameters=[pf_config, {
             'use_odom_pose_update': use_odom_pose_update,
+            'max_history_seconds': max_history_seconds,
             'random_seed': pf_random_seed,
             'stats_out': pf_stats_out,
         }],

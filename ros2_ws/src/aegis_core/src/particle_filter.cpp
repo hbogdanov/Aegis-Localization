@@ -47,6 +47,16 @@ void ParticleFilter::setNoiseParameters(
   resample_threshold_ratio_ = std::clamp(resample_threshold_ratio, 0.0, 1.0);
 }
 
+void ParticleFilter::setMeasurementNoise(
+  double measurement_noise_x,
+  double measurement_noise_y,
+  double measurement_noise_theta)
+{
+  measurement_noise_x_ = measurement_noise_x;
+  measurement_noise_y_ = measurement_noise_y;
+  measurement_noise_theta_ = measurement_noise_theta;
+}
+
 void ParticleFilter::initialize(
   const State2D &mean,
   double std_x,

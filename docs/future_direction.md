@@ -1,5 +1,7 @@
 # Future Direction Review
 
+> **Implementation update (2026-08-19):** This document records the design decision that led to the current direction. Since the review, the repository has completed the single-sequence EuRoC planar proxy, repeated-seed synthetic evidence, EKF/UKF consistency analysis, and the Phase 4 gating study. Phase 5 now has intermittent correction infrastructure and verified EKF/UKF delayed-replay correctness. The active implementation target is the small naive-late-fusion versus timestamp-aware-replay comparison, followed by one compact degradation campaign. See `development_plan.md` for the current execution state.
+
 ## Context
 
 This review is based on:

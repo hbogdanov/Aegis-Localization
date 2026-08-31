@@ -1,0 +1,270 @@
+{
+  "run_started_at_utc": "2026-08-19T01:12:20.016513+00:00",
+  "duration_seconds": 8,
+  "zero_latency_equivalence": {
+    "ekf": {
+      "trajectory": {
+        "num_samples": 161,
+        "final_position_error": 5.224653097742255e-07,
+        "max_position_error": 3.138723466636208e-05,
+        "rmse_position_error": 1.528044935235052e-05,
+        "final_yaw_error": 0.0,
+        "max_abs_yaw_error": 0.0,
+        "rmse_yaw_error": 0.0
+      },
+      "covariance": {
+        "frobenius_norm": 2.860253046303923e-09,
+        "max_abs_element": 2.8384766225832136e-09
+      }
+    },
+    "ukf": {
+      "trajectory": {
+        "num_samples": 161,
+        "final_position_error": 5.224653097742255e-07,
+        "max_position_error": 3.138723466636208e-05,
+        "rmse_position_error": 1.528044935235052e-05,
+        "final_yaw_error": 0.0,
+        "max_abs_yaw_error": 0.0,
+        "rmse_yaw_error": 0.0
+      },
+      "covariance": {
+        "frobenius_norm": 2.860253020723508e-09,
+        "max_abs_element": 2.8384765969960424e-09
+      }
+    },
+    "pf": {
+      "trajectory": {
+        "num_samples": 161,
+        "final_position_error": 0.0008724330743873223,
+        "max_position_error": 0.007883936281120307,
+        "rmse_position_error": 0.0036949628561287963,
+        "final_yaw_error": 0.0023550050000000766,
+        "max_abs_yaw_error": 0.0059574399999999805,
+        "rmse_yaw_error": 0.0019167559467451387
+      }
+    }
+  },
+  "arrival_time_invariance": {
+    "arrival_100ms": {
+      "ekf": {
+        "trajectory": {
+          "num_samples": 161,
+          "final_position_error": 0.0,
+          "max_position_error": 0.005160691483773929,
+          "rmse_position_error": 0.002063626182582623,
+          "final_yaw_error": 0.0,
+          "max_abs_yaw_error": 0.0,
+          "rmse_yaw_error": 0.0
+        },
+        "covariance": {
+          "frobenius_norm": 0.0,
+          "max_abs_element": 0.0
+        }
+      },
+      "ukf": {
+        "trajectory": {
+          "num_samples": 161,
+          "final_position_error": 0.0,
+          "max_position_error": 0.005160691483773929,
+          "rmse_position_error": 0.0020231768318182642,
+          "final_yaw_error": 0.0,
+          "max_abs_yaw_error": 0.0,
+          "rmse_yaw_error": 0.0
+        },
+        "covariance": {
+          "frobenius_norm": 0.0,
+          "max_abs_element": 0.0
+        }
+      },
+      "pf": {
+        "trajectory": {
+          "num_samples": 161,
+          "final_position_error": 0.008825583067700454,
+          "max_position_error": 0.01743037999440334,
+          "rmse_position_error": 0.004396849368488451,
+          "final_yaw_error": -0.006563048999999932,
+          "max_abs_yaw_error": 0.015477305000000108,
+          "rmse_yaw_error": 0.0035317498733014978
+        }
+      }
+    },
+    "arrival_500ms": {
+      "ekf": {
+        "trajectory": {
+          "num_samples": 161,
+          "final_position_error": 0.0,
+          "max_position_error": 0.013392157445866002,
+          "rmse_position_error": 0.007763359151741971,
+          "final_yaw_error": 0.0,
+          "max_abs_yaw_error": 0.0,
+          "rmse_yaw_error": 0.0
+        },
+        "covariance": {
+          "frobenius_norm": 0.0,
+          "max_abs_element": 0.0
+        }
+      },
+      "ukf": {
+        "trajectory": {
+          "num_samples": 161,
+          "final_position_error": 0.0,
+          "max_position_error": 0.013392157445866002,
+          "rmse_position_error": 0.007763359151741971,
+          "final_yaw_error": 0.0,
+          "max_abs_yaw_error": 0.0,
+          "rmse_yaw_error": 0.0
+        },
+        "covariance": {
+          "frobenius_norm": 0.0,
+          "max_abs_element": 0.0
+        }
+      },
+      "pf": {
+        "trajectory": {
+          "num_samples": 161,
+          "final_position_error": 0.008825583067700454,
+          "max_position_error": 0.01765925621445295,
+          "rmse_position_error": 0.008610264124486905,
+          "final_yaw_error": -0.006563048999999932,
+          "max_abs_yaw_error": 0.013896589999999875,
+          "rmse_yaw_error": 0.005074584787797528
+        }
+      }
+    },
+    "arrival_1000ms": {
+      "ekf": {
+        "trajectory": {
+          "num_samples": 161,
+          "final_position_error": 0.0,
+          "max_position_error": 0.022082950220342932,
+          "rmse_position_error": 0.014657706253524642,
+          "final_yaw_error": 0.0,
+          "max_abs_yaw_error": 0.0,
+          "rmse_yaw_error": 0.0
+        },
+        "covariance": {
+          "frobenius_norm": 0.0,
+          "max_abs_element": 0.0
+        }
+      },
+      "ukf": {
+        "trajectory": {
+          "num_samples": 161,
+          "final_position_error": 0.0,
+          "max_position_error": 0.022082950220342932,
+          "rmse_position_error": 0.014657706253524642,
+          "final_yaw_error": 0.0,
+          "max_abs_yaw_error": 0.0,
+          "rmse_yaw_error": 0.0
+        },
+        "covariance": {
+          "frobenius_norm": 0.0,
+          "max_abs_element": 0.0
+        }
+      },
+      "pf": {
+        "trajectory": {
+          "num_samples": 161,
+          "final_position_error": 0.008825583067700454,
+          "max_position_error": 0.024342529319511433,
+          "rmse_position_error": 0.009974693904996093,
+          "final_yaw_error": -0.006563048999999932,
+          "max_abs_yaw_error": 0.01298412399999993,
+          "rmse_yaw_error": 0.005442757630721276
+        }
+      }
+    }
+  },
+  "reversed_arrival_order": {
+    "ekf": {
+      "final_state": {
+        "position_error": 0.0,
+        "yaw_error": 0.0,
+        "dx": 0.0,
+        "dy": 0.0,
+        "timestamp_delta": -29.57028031349182
+      },
+      "covariance": {
+        "frobenius_norm": 0.0,
+        "max_abs_element": 0.0
+      }
+    },
+    "ukf": {
+      "final_state": {
+        "position_error": 0.0,
+        "yaw_error": 0.0,
+        "dx": 0.0,
+        "dy": 0.0,
+        "timestamp_delta": -29.57028031349182
+      },
+      "covariance": {
+        "frobenius_norm": 0.0,
+        "max_abs_element": 0.0
+      }
+    },
+    "pf": {
+      "final_state": {
+        "position_error": 0.0,
+        "yaw_error": 0.0,
+        "dx": 0.0,
+        "dy": 0.0,
+        "timestamp_delta": -29.57028031349182
+      }
+    }
+  },
+  "history_window_rejection": {
+    "ekf": {
+      "final_state": {
+        "position_error": 0.0,
+        "yaw_error": 0.0,
+        "dx": 0.0,
+        "dy": 0.0,
+        "timestamp_delta": 28.81587290763855
+      },
+      "stale_run_stats": {
+        "odom_received": 161,
+        "imu_received": 161,
+        "predict_calls": 160,
+        "pose_update_attempts": 1,
+        "pose_update_calls": 1,
+        "pose_updates_rejected": 0,
+        "velocity_update_calls": 160,
+        "pose_published": 162,
+        "correction_messages_received": 2,
+        "correction_messages_applied": 1,
+        "correction_replays": 1,
+        "correction_history_rejections": 1,
+        "pose_gating_enabled": false,
+        "pose_gating_threshold": 9.32415
+      },
+      "covariance": {
+        "frobenius_norm": 0.0,
+        "max_abs_element": 0.0
+      }
+    },
+    "ukf": {
+      "final_state": {
+        "position_error": 0.0,
+        "yaw_error": 0.0,
+        "dx": 0.0,
+        "dy": 0.0,
+        "timestamp_delta": 28.81587290763855
+      },
+      "stale_run_stats": null,
+      "covariance": {
+        "frobenius_norm": 0.0,
+        "max_abs_element": 0.0
+      }
+    },
+    "pf": {
+      "final_state": {
+        "position_error": 0.0,
+        "yaw_error": 0.0,
+        "dx": 0.0,
+        "dy": 0.0,
+        "timestamp_delta": 28.81587290763855
+      },
+      "stale_run_stats": null
+    }
+  }
+}

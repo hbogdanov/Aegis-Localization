@@ -31,6 +31,7 @@ public:
     double measurement_noise_y,
     double measurement_noise_theta,
     double resample_threshold_ratio);
+  void setMeasurementNoise(double measurement_noise_x, double measurement_noise_y, double measurement_noise_theta);
 
   void initialize(
     const State2D &mean,

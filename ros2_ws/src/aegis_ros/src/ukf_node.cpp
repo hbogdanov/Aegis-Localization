@@ -1,15 +1,15 @@
+#include <algorithm>
 #include <cmath>
-#include <chrono>
-#include <cstdio>
-#include <filesystem>
+#include <deque>
 #include <fstream>
-#include <memory>
 #include <limits>
-#include <sstream>
+#include <memory>
+#include <string>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
 #include "geometry_msgs/msg/pose_stamped.hpp"
+#include "geometry_msgs/msg/pose_with_covariance_stamped.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "nav_msgs/msg/path.hpp"
 #include "sensor_msgs/msg/imu.hpp"
@@ -24,6 +24,23 @@ double quaternionToYaw(const geometry_msgs::msg::Quaternion &q)
   const double siny_cosp = 2.0 * (q.w * q.z + q.x * q.y);
   const double cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z);
   return std::atan2(siny_cosp, cosy_cosp);
+}
+
+aegis_core::Matrix3d covarianceFromPoseMessage(
+  const geometry_msgs::msg::PoseWithCovarianceStamped &msg,
+  const aegis_core::Matrix3d &fallback)
+{
+  aegis_core::Matrix3d covariance = fallback;
+  const double xx = msg.pose.covariance[0];
+  const double yy = msg.pose.covariance[7];
+  const double yaw = msg.pose.covariance[35];
+  if (xx > 0.0 && yy > 0.0 && yaw > 0.0) {
+    covariance.setZero();
+    covariance(0, 0) = xx;
+    covariance(1, 1) = yy;
+    covariance(2, 2) = yaw;
+  }
+  return covariance;
 }
 
 }  // namespace
@@ -42,12 +59,16 @@ public:
     alpha_ = this->declare_parameter<double>("alpha", 1.0);
     beta_ = this->declare_parameter<double>("beta", 2.0);
     kappa_ = this->declare_parameter<double>("kappa", 0.0);
+    max_history_seconds_ = this->declare_parameter<double>("max_history_seconds", 5.0);
 
-    auto process_noise = this->declare_parameter<std::vector<double>>("process_noise",
+    auto process_noise = this->declare_parameter<std::vector<double>>(
+      "process_noise",
       std::vector<double>{1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3});
-    auto velocity_noise = this->declare_parameter<std::vector<double>>("velocity_yaw_rate_noise",
+    auto velocity_noise = this->declare_parameter<std::vector<double>>(
+      "velocity_yaw_rate_noise",
       std::vector<double>{1e-2, 1e-2, 1e-2});
-    auto pose_noise = this->declare_parameter<std::vector<double>>("pose_noise",
+    auto pose_noise = this->declare_parameter<std::vector<double>>(
+      "pose_noise",
       std::vector<double>{0.05, 0.05, 0.1});
 
     pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseStamped>("/aegis/ukf_pose", 1000);
@@ -64,6 +85,11 @@ public:
       1000,
       std::bind(&UkfNode::imuCallback, this, std::placeholders::_1));
 
+    correction_sub_ = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>(
+      "/pose_correction",
+      1000,
+      std::bind(&UkfNode::correctionCallback, this, std::placeholders::_1));
+
     path_msg_.header.frame_id = frame_id_;
 
     configureNoise(process_noise, velocity_noise, pose_noise);
@@ -76,6 +102,44 @@ public:
   }
 
 private:
+  struct OdomRecord
+  {
+    rclcpp::Time stamp{0, 0, RCL_ROS_TIME};
+    nav_msgs::msg::Odometry msg;
+  };
+
+  struct Snapshot
+  {
+    rclcpp::Time stamp{0, 0, RCL_ROS_TIME};
+    aegis_core::UKF filter;
+  };
+
+  struct CorrectionRecord
+  {
+    rclcpp::Time stamp{0, 0, RCL_ROS_TIME};
+    geometry_msgs::msg::PoseWithCovarianceStamped msg;
+  };
+
+  std::deque<Snapshot>::iterator findSnapshot(const rclcpp::Time &stamp)
+  {
+    return std::find_if(
+      snapshot_history_.begin(),
+      snapshot_history_.end(),
+      [&stamp](const Snapshot &snapshot) {
+        return snapshot.stamp == stamp;
+      });
+  }
+
+  std::deque<OdomRecord>::iterator findOdomRecord(const rclcpp::Time &stamp)
+  {
+    return std::find_if(
+      odom_history_.begin(),
+      odom_history_.end(),
+      [&stamp](const OdomRecord &record) {
+        return record.stamp == stamp;
+      });
+  }
+
   void writeStats() const
   {
     if (stats_out_.empty()) {
@@ -98,6 +162,10 @@ private:
     handle << "  \"velocity_update_calls\": " << velocity_update_count_ << ",\n";
     handle << "  \"pose_published\": " << pose_publish_count_ << ",\n";
     handle << "  \"failed_updates\": " << failed_update_count_ << ",\n";
+    handle << "  \"correction_messages_received\": " << correction_received_count_ << ",\n";
+    handle << "  \"correction_messages_applied\": " << correction_applied_count_ << ",\n";
+    handle << "  \"correction_replays\": " << correction_replay_count_ << ",\n";
+    handle << "  \"correction_history_rejections\": " << correction_history_rejection_count_ << ",\n";
     handle << "  \"last_covariance_stage\": \"" << health.stage << "\",\n";
     handle << "  \"last_min_eigenvalue\": " << health.min_eigenvalue << ",\n";
     handle << "  \"last_max_eigenvalue\": " << health.max_eigenvalue << ",\n";
@@ -127,11 +195,11 @@ private:
     }
     ukf_.setVelocityYawRateNoise(Rv);
 
-    aegis_core::Matrix3d Rp = aegis_core::Matrix3d::Zero();
+    configured_pose_noise_.setZero();
     for (size_t i = 0; i < pose_noise.size() && i < 3; ++i) {
-      Rp(i, i) = pose_noise[i];
+      configured_pose_noise_(i, i) = pose_noise[i];
     }
-    ukf_.setPoseNoise(Rp);
+    ukf_.setPoseNoise(configured_pose_noise_);
     ukf_.setSigmaPointParameters(alpha_, beta_, kappa_);
   }
 
@@ -152,14 +220,19 @@ private:
       ukf_.setState(initial_state);
       initialized_ = true;
       diagnostics_status_ = "OK";
-      last_processed_stamp_ = msg->header.stamp;
+      last_processed_stamp_ = rclcpp::Time(msg->header.stamp);
+      odom_history_.push_back(OdomRecord{last_processed_stamp_, *msg});
+      snapshot_history_.push_back(Snapshot{last_processed_stamp_, ukf_});
       publishPose(msg->header.stamp);
       publishDiagnostics(msg->header.stamp);
-      maybeWriteStats();
       return;
     }
 
-    updateFromOdom(msg->header.stamp);
+    applyOdomMeasurement(*msg, true);
+    odom_history_.push_back(OdomRecord{rclcpp::Time(msg->header.stamp), *msg});
+    snapshot_history_.push_back(Snapshot{rclcpp::Time(msg->header.stamp), ukf_});
+    trimHistory();
+    maybeWriteStats();
   }
 
   void imuCallback(const sensor_msgs::msg::Imu::SharedPtr msg)
@@ -169,9 +242,37 @@ private:
     ++imu_received_count_;
   }
 
-  void updateFromOdom(const builtin_interfaces::msg::Time &stamp)
+  void correctionCallback(const geometry_msgs::msg::PoseWithCovarianceStamped::SharedPtr msg)
   {
-    const rclcpp::Time current_stamp(stamp);
+    ++correction_received_count_;
+    if (!initialized_) {
+      return;
+    }
+
+    const rclcpp::Time correction_stamp(msg->header.stamp);
+    if (!odom_history_.empty() && correction_stamp < odom_history_.front().stamp) {
+      ++correction_history_rejection_count_;
+      return;
+    }
+    if (correction_stamp > last_processed_stamp_) {
+      return;
+    }
+
+    processed_corrections_.push_back(CorrectionRecord{correction_stamp, *msg});
+    std::stable_sort(
+      processed_corrections_.begin(),
+      processed_corrections_.end(),
+      [](const CorrectionRecord &lhs, const CorrectionRecord &rhs) {
+        return lhs.stamp < rhs.stamp;
+      });
+
+    replayFromCorrection(correction_stamp);
+    maybeWriteStats();
+  }
+
+  void applyOdomMeasurement(const nav_msgs::msg::Odometry &msg, bool publish_outputs)
+  {
+    const rclcpp::Time current_stamp(msg.header.stamp);
     const double dt = std::max(0.0, (current_stamp - last_processed_stamp_).seconds());
     last_processed_stamp_ = current_stamp;
 
@@ -181,63 +282,137 @@ private:
         ++predict_count_;
       }
 
-      const double vx = last_odom_.twist.twist.linear.x;
-      const double vy = last_odom_.twist.twist.linear.y;
-      const double omega = last_odom_.twist.twist.angular.z;
+      const double vx = msg.twist.twist.linear.x;
+      const double vy = msg.twist.twist.linear.y;
+      const double omega = msg.twist.twist.angular.z;
 
       if (use_odom_pose_update_) {
         ++pose_update_attempt_count_;
-        const double px = last_odom_.pose.pose.position.x;
-        const double py = last_odom_.pose.pose.position.y;
-        const double yaw = quaternionToYaw(last_odom_.pose.pose.orientation);
-        if (ukf_.updatePose(px, py, yaw)) {
+        if (ukf_.updatePose(
+            msg.pose.pose.position.x,
+            msg.pose.pose.position.y,
+            quaternionToYaw(msg.pose.pose.orientation)))
+        {
           ++pose_update_count_;
           diagnostics_status_ = "ACCEPTED";
         } else {
           ++pose_update_rejected_count_;
           diagnostics_status_ = "REJECTED_GATE";
         }
-        publishDiagnostics(stamp);
+        if (publish_outputs) {
+          publishDiagnostics(msg.header.stamp);
+        }
       }
 
       ukf_.updateVelocityYawRate(vx, vy, omega);
       ++velocity_update_count_;
-      ++processed_odom_updates_;
       diagnostics_status_ = "ACCEPTED";
-      publishPose(stamp);
-      publishDiagnostics(stamp);
-      maybeWriteStats();
-    } catch (const std::exception &exception) {
+
+      if (publish_outputs) {
+        publishPose(msg.header.stamp);
+        publishDiagnostics(msg.header.stamp);
+      }
+    } catch (const std::exception &) {
       ++failed_update_count_;
-      const auto &state = ukf_.state();
-      const auto &health = ukf_.lastCovarianceHealth();
-      std::ostringstream message;
-      message
-        << "UKF update failed after " << processed_odom_updates_
-        << " processed odom updates; dt=" << dt
-        << " state=[px=" << state.px
-        << ", py=" << state.py
-        << ", theta=" << state.theta
-        << ", vx=" << state.vx
-        << ", vy=" << state.vy
-        << ", omega=" << state.omega
-        << "] measurement=[vx=" << last_odom_.twist.twist.linear.x
-        << ", vy=" << last_odom_.twist.twist.linear.y
-        << ", omega=" << last_odom_.twist.twist.angular.z
-        << "] pose_measurement=[px=" << last_odom_.pose.pose.position.x
-        << ", py=" << last_odom_.pose.pose.position.y
-        << ", yaw=" << quaternionToYaw(last_odom_.pose.pose.orientation)
-        << "] covariance_health=[stage=" << health.stage
-        << ", min_eigenvalue=" << health.min_eigenvalue
-        << ", max_eigenvalue=" << health.max_eigenvalue
-        << ", symmetry_error=" << health.symmetry_error
-        << ", condition_number=" << health.condition_number
-        << ", finite=" << (health.finite ? "true" : "false")
-        << ", psd=" << (health.positive_semidefinite ? "true" : "false")
-        << "] error=" << exception.what();
-      RCLCPP_ERROR(this->get_logger(), "%s", message.str().c_str());
-      std::fprintf(stderr, "%s\n", message.str().c_str());
       throw;
+    }
+  }
+
+  void applyCorrectionMeasurement(const geometry_msgs::msg::PoseWithCovarianceStamped &msg, bool publish_outputs)
+  {
+    ++pose_update_attempt_count_;
+    ukf_.setPoseNoise(covarianceFromPoseMessage(msg, configured_pose_noise_));
+    if (ukf_.updatePose(
+        msg.pose.pose.position.x,
+        msg.pose.pose.position.y,
+        quaternionToYaw(msg.pose.pose.orientation)))
+    {
+      ++pose_update_count_;
+      ++correction_applied_count_;
+      diagnostics_status_ = "ACCEPTED";
+    } else {
+      ++pose_update_rejected_count_;
+      diagnostics_status_ = "REJECTED_GATE";
+    }
+    ukf_.setPoseNoise(configured_pose_noise_);
+
+    if (publish_outputs) {
+      publishDiagnostics(msg.header.stamp);
+    }
+  }
+
+  void replayFromCorrection(const rclcpp::Time &correction_stamp)
+  {
+    const auto snapshot_it = findSnapshot(correction_stamp);
+    if (snapshot_it == snapshot_history_.end()) {
+      ++correction_history_rejection_count_;
+      return;
+    }
+
+    const auto odom_it = findOdomRecord(correction_stamp);
+    if (odom_it == odom_history_.end()) {
+      ++correction_history_rejection_count_;
+      return;
+    }
+
+    ukf_ = snapshot_it->filter;
+    last_processed_stamp_ = correction_stamp;
+
+    for (const auto &correction : processed_corrections_) {
+      if (correction.stamp == correction_stamp) {
+        applyCorrectionMeasurement(correction.msg, false);
+      }
+    }
+    snapshot_it->filter = ukf_;
+
+    auto replay_it = odom_it;
+    auto replay_snapshot_it = snapshot_it;
+    ++replay_it;
+    ++replay_snapshot_it;
+    for (; replay_it != odom_history_.end(); ++replay_it) {
+      applyOdomMeasurement(replay_it->msg, false);
+      for (const auto &correction : processed_corrections_) {
+        if (correction.stamp == replay_it->stamp) {
+          applyCorrectionMeasurement(correction.msg, false);
+        }
+      }
+      if (replay_snapshot_it != snapshot_history_.end() && replay_snapshot_it->stamp == replay_it->stamp) {
+        replay_snapshot_it->filter = ukf_;
+        ++replay_snapshot_it;
+      }
+    }
+
+    ++correction_replay_count_;
+    publishPose(toBuiltinTime(last_processed_stamp_));
+    publishDiagnostics(toBuiltinTime(last_processed_stamp_));
+  }
+
+  builtin_interfaces::msg::Time toBuiltinTime(const rclcpp::Time &stamp) const
+  {
+    return stamp;
+  }
+
+  void trimHistory()
+  {
+    const rclcpp::Duration max_history = rclcpp::Duration::from_seconds(max_history_seconds_);
+    while (!odom_history_.empty() && (last_processed_stamp_ - odom_history_.front().stamp) > max_history) {
+      const rclcpp::Time trimmed_stamp = odom_history_.front().stamp;
+      odom_history_.pop_front();
+      if (!snapshot_history_.empty() && snapshot_history_.front().stamp <= trimmed_stamp) {
+        snapshot_history_.pop_front();
+      }
+      if (odom_history_.empty()) {
+        processed_corrections_.clear();
+      } else {
+        processed_corrections_.erase(
+          std::remove_if(
+            processed_corrections_.begin(),
+            processed_corrections_.end(),
+            [this](const CorrectionRecord &correction) {
+              return correction.stamp < odom_history_.front().stamp;
+            }),
+          processed_corrections_.end());
+      }
     }
   }
 
@@ -282,9 +457,12 @@ private:
     diagnostics.innovation_dim = update.available ? static_cast<std::uint32_t>(update.innovation.size()) : 0U;
     diagnostics.nis = update.available ? update.nis : std::numeric_limits<double>::quiet_NaN();
     if (update.available) {
-      diagnostics.innovation_vector.assign(update.innovation.data(), update.innovation.data() + update.innovation.size());
+      diagnostics.innovation_vector.assign(
+        update.innovation.data(),
+        update.innovation.data() + update.innovation.size());
       diagnostics.innovation_covariance.reserve(
-        static_cast<std::size_t>(update.innovation_covariance.rows() * update.innovation_covariance.cols()));
+        static_cast<std::size_t>(
+          update.innovation_covariance.rows() * update.innovation_covariance.cols()));
       for (Eigen::Index row = 0; row < update.innovation_covariance.rows(); ++row) {
         for (Eigen::Index col = 0; col < update.innovation_covariance.cols(); ++col) {
           diagnostics.innovation_covariance.push_back(update.innovation_covariance(row, col));
@@ -316,12 +494,17 @@ private:
   double alpha_ = 1.0;
   double beta_ = 2.0;
   double kappa_ = 0.0;
+  double max_history_seconds_ = 5.0;
   rclcpp::Time last_processed_stamp_{0, 0, RCL_ROS_TIME};
   bool got_odom_ = false;
   bool got_imu_ = false;
   nav_msgs::msg::Odometry last_odom_;
   sensor_msgs::msg::Imu last_imu_;
   aegis_core::UKF ukf_;
+  aegis_core::Matrix3d configured_pose_noise_ = aegis_core::Matrix3d::Zero();
+  std::deque<OdomRecord> odom_history_;
+  std::deque<Snapshot> snapshot_history_;
+  std::vector<CorrectionRecord> processed_corrections_;
   std::size_t odom_received_count_ = 0;
   std::size_t imu_received_count_ = 0;
   std::size_t predict_count_ = 0;
@@ -329,15 +512,19 @@ private:
   std::size_t pose_update_count_ = 0;
   std::size_t pose_update_rejected_count_ = 0;
   std::size_t velocity_update_count_ = 0;
-  std::size_t processed_odom_updates_ = 0;
   std::size_t pose_publish_count_ = 0;
   std::size_t failed_update_count_ = 0;
+  std::size_t correction_received_count_ = 0;
+  std::size_t correction_applied_count_ = 0;
+  std::size_t correction_replay_count_ = 0;
+  std::size_t correction_history_rejection_count_ = 0;
   std::string diagnostics_status_ = "INIT";
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_pub_;
   rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub_;
   rclcpp::Publisher<aegis_msgs::msg::FilterDiagnostics>::SharedPtr diagnostics_pub_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
   rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_sub_;
+  rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr correction_sub_;
   nav_msgs::msg::Path path_msg_;
 };
 

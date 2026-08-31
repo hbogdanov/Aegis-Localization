@@ -2,184 +2,57 @@
 
 ## North Star
 
-Aegis Localization should become a modular localization benchmarking and evaluation framework that starts with a reproducible synthetic baseline, extends to honest simulator evaluation, and later supports public datasets and vision- or landmark-assisted localization.
+Aegis is a robotics localization benchmarking and research platform: in-house EKF, UKF, and PF implementations evaluated through reproducible synthetic and recorded-data workflows, with a focused study of intermittent and delayed exteroceptive correction. It is not a hardware-validation claim, a full 6-DoF MAV localizer, or a Gazebo-first project.
 
-Synthetic benchmarking is not the final goal. It is the first credibility gate.
+## Current Status
 
-## What The Project Should Prove
+- **Phase 1 - Recorded-data benchmark:** complete for a single EuRoC `MH_01_easy` planar proxy. The same canonical evaluation path now produces populated outputs, metadata, metrics, and an honest synthetic comparison.
+- **Phase 2 - Repeated synthetic evidence:** complete. Campaigns vary deterministic seeds, preserve per-run artifacts, and aggregate mean and standard deviation for ATE, drift, yaw error, and update rate.
+- **Phase 3 - Consistency analysis:** complete for EKF and UKF synthetic runs. NIS, chi-square bounds, and synthetic-only planar NEES summaries are exported.
+- **Phase 4 - Robustness gating:** complete as a characterized result. Pose-update Mahalanobis gating is configurable and its false-rejection tradeoff is documented through a corruption/threshold sweep.
+- **Phase 5 - Intermittent correction:** partially complete. A timestamped correction stream and EKF/UKF/PF replay support exist. Phase 5A correctness is complete for EKF/UKF: zero-latency equivalence, delayed-arrival terminal-state invariance, reversed arrival order, and stale-history rejection are all evidenced. The remaining research evidence is the naive-late-fusion baseline and a compact degradation campaign.
+- **Phase 6 - External smoothing baseline:** not started. A GTSAM/iSAM2 baseline remains optional and should be added only after Phase 5 produces its primary result.
 
-- EKF, UKF, and particle-filter localization are implemented and understood in-house.
-- The evaluation pipeline is trustworthy and reproducible.
-- Synthetic, simulator, and future dataset backends can share one metrics framework.
-- Repository claims are backed by working commands and defensible evidence.
-- The project can grow into a research platform rather than staying a synthetic-only demo.
+Gazebo remains integration/demo validation only because its ground-truth scoring bridge is not a reliable benchmark backend. Raw EuRoC files are intentionally local and ignored by Git; compact run summaries and reports are versioned instead.
 
-## Phase 1: Establish Official Repo Truth
+## Evidence Map
 
-Goal:
-Decide what the project officially is before changing behavior.
+- Recorded-data method and limitations: `docs/euroc_backend.md`
+- Synthetic versus EuRoC comparison: `results/reports/phase2_low_noise_vs_euroc_mh01.md`
+- Consistency analysis: `results/reports/phase3_estimator_consistency.md`
+- Gating study: `results/reports/phase4_gating_report.md` and `results/reports/phase4b_gating_sweep.md`
+- Intermittent-correction experiment: `results/reports/phase5_intermittent_correction.md`
+- Delayed-replay correctness checks: `results/reports/phase5_correctness.md`
 
-Work:
+## Remaining Work
 
-- Promote or discard dirty local Gazebo and campaign work intentionally.
-- Separate official evidence from stale or broken artifacts.
-- Define supported evaluation backends:
-  - synthetic
-  - Gazebo
-  - future dataset adapters
-- Define what claims are currently allowed.
+### Phase 5B: Naive Late Fusion Versus Timestamp-Aware Replay
 
-Exit criteria:
+Goal: turn asynchronous replay support into a direct result.
 
-- No ambiguity about which files are official.
-- No docs implying unsupported functionality.
-- Clear repo identity.
+- Apply the same delayed correction stream under two policies: fuse stale data on arrival, or rewind to the measurement timestamp and replay forward.
+- Sweep a small set of latencies and report both online trajectory error and post-fusion/current-state error.
+- Keep EKF and UKF as the primary comparison; report PF separately because its stochastic resampling means exact equivalence is not expected.
 
-## Phase 2: Repair The Baseline
+Exit criteria: a concise table shows when timestamp-aware replay improves current-state correctness and preserves the distinction from unavoidable online latency error.
 
-Goal:
-Make one end-to-end synthetic benchmark path actually work.
+### Phase 5C: Compact Degradation Campaign
 
-Work:
+- Vary one factor at a time: correction frequency, dropout, latency, noise, and corruption/gating.
+- Add one combined degraded condition and repeated seeds where randomness is present.
+- Report ATE, final drift, yaw RMSE, NIS where meaningful, gating statistics, and recovery after dropout.
 
-- Fix stale WSL and absolute path assumptions.
-- Fix current ground-truth and output handling.
-- Make `scripts/evaluate_trajectory.py` robust on current outputs.
-- Make README commands run from the current repo layout.
-- Verify EKF, UKF, and PF all evaluate through the same path.
+Exit criteria: one defensible Phase 5 report answers how intermittent correction affects estimator robustness under controlled degradation.
 
-Exit criteria:
+### Phase 6: Optional External Baseline
 
-- Documented synthetic benchmark commands work.
-- Metrics generate cleanly for all three estimators.
-- No manual cleanup is required between runs.
+- Add an offline GTSAM/iSAM2 smoother only as a comparator, using the canonical output format where practical.
+- Start on synthetic data and extend to the EuRoC planar proxy only if the mapping remains methodologically honest.
 
-## Phase 3: Harden The Evaluation Framework
+Exit criteria: one comparison table of EKF, UKF, PF, and smoothing on a clearly bounded scenario.
 
-Goal:
-Make the pipeline trustworthy, repeatable, and extensible.
+## Scope Guardrails
 
-Work:
-
-- Add deterministic seeds where appropriate.
-- Capture run metadata:
-  - scenario
-  - duration
-  - seed
-  - estimator
-  - timestamp
-  - commit hash when practical
-- Improve result schema and output organization.
-- Ensure future backends can reuse the same metric pipeline.
-
-Exit criteria:
-
-- Reruns are comparable.
-- Results are traceable.
-- Evaluation structure is backend-agnostic.
-
-## Phase 4: Strengthen Regression Protection
-
-Goal:
-Stop future changes from silently breaking estimators or evaluation.
-
-Work:
-
-- Add estimator regression tests for:
-  - zero motion
-  - angle wrap
-  - dropout behavior
-  - covariance and PSD sanity
-  - repeated updates
-  - initialization edge cases
-- Add evaluation tests for:
-  - timestamp alignment
-  - empty and malformed CSV handling
-  - metric sanity
-
-Exit criteria:
-
-- Core estimator and evaluation edge cases are covered.
-- Failures point clearly to the broken layer.
-
-## Phase 5: Resolve Gazebo Honestly
-
-Goal:
-Make Gazebo either real evidence or clearly demo-only.
-
-Acceptable outcomes:
-
-- Gazebo scoring works with usable ground-truth-backed metrics.
-- Gazebo is explicitly described as integration or demo validation only.
-
-Work:
-
-- Verify ground-truth bridge behavior.
-- Verify logger output under Gazebo.
-- Verify whether metrics are meaningful.
-- Update docs to match the truth.
-
-Exit criteria:
-
-- No ambiguous simulator claims.
-- Gazebo status is technically defensible.
-
-## Phase 6: Add Public Dataset Support
-
-Goal:
-Move from synthetic and simulated evaluation to stronger research evidence.
-
-Work:
-
-- Make a dataset adapter interface.
-- Pick a first public dataset later, likely a localization-relevant one.
-- Reuse the same metrics pipeline.
-- Document exact commands and limitations.
-
-Exit criteria:
-
-- At least one non-synthetic backend can run through the shared evaluation framework.
-
-## Phase 7: Add The Research Extension
-
-Goal:
-Make the repo intellectually stronger, not just better organized.
-
-Best extension:
-
-- vision- or landmark-assisted correction into localization
-
-Possible directions:
-
-- intermittent visual pose correction
-- landmark observation updates
-- exteroceptive correction under drift, noise, and dropout
-
-Exit criteria:
-
-- The project evolves from a filter comparison into a more compelling localization research platform.
-
-## Priority Order
-
-1. Phase 1: official repo truth
-2. Phase 2: synthetic baseline repair
-3. Phase 3: evaluation hardening
-4. Phase 4: regression protection
-5. Phase 5: Gazebo resolution
-6. Phase 6: public dataset support
-7. Phase 7: research extension
-
-## What Not To Do Yet
-
-- Do not overbuild synthetic-only infrastructure.
-- Do not jump to large public datasets before the current metrics pipeline is trustworthy.
-- Do not present Gazebo as stronger evidence than it is.
-- Do not add a research extension before the baseline is reproducible.
-
-## Immediate Next Sprint
-
-- Finalize official inclusion of Gazebo and campaign files.
-- Repair stale path assumptions.
-- Repair ground-truth and evaluation flow.
-- Get one clean documented synthetic benchmark reproduction working.
-- Verify EKF, UKF, and PF all produce valid metrics through the same path.
+- Do not add a second public dataset, a plugin framework, or a large reporting system before Phase 5 is complete.
+- Do not describe Gazebo as quantitative validation or EuRoC as native 6-DoF MAV validation.
+- Do not hide negative robustness or consistency results; they are part of the research evidence.

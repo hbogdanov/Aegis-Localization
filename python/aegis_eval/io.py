@@ -41,11 +41,17 @@ def load_trajectory_csv(path: str | Path) -> dict[str, np.ndarray]:
         raise ValueError(f"CSV contains no valid trajectory samples: {csv_path}")
 
     rows.sort(key=lambda row: row[0])
+    deduplicated_rows: list[tuple[float, float, float, float]] = []
+    for row in rows:
+        if deduplicated_rows and row[0] == deduplicated_rows[-1][0]:
+            deduplicated_rows[-1] = row
+        else:
+            deduplicated_rows.append(row)
     return {
-        "timestamp": np.array([row[0] for row in rows], dtype=float),
-        "x": np.array([row[1] for row in rows], dtype=float),
-        "y": np.array([row[2] for row in rows], dtype=float),
-        "yaw": np.array([row[3] for row in rows], dtype=float),
+        "timestamp": np.array([row[0] for row in deduplicated_rows], dtype=float),
+        "x": np.array([row[1] for row in deduplicated_rows], dtype=float),
+        "y": np.array([row[2] for row in deduplicated_rows], dtype=float),
+        "yaw": np.array([row[3] for row in deduplicated_rows], dtype=float),
     }
 
 
