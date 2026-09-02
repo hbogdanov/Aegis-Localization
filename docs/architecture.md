@@ -1,26 +1,12 @@
 # Architecture
 
-## Overview
-
-Aegis Localization separates filter logic from ROS2 integration.
-
-- `aegis_core`: pure C++ estimation library.
-- `aegis_ros`: ROS2 nodes and launch/configuration.
-- `aegis_msgs`: custom ROS messages.
-
-## Data Flow
+`aegis_core` contains ROS-independent C++ implementations of the EKF, UKF, particle filter, motion model, state representation, and unit tests. `aegis_ros` owns ROS2 message conversion, runtime orchestration, synthetic sensing, timestamp-aware correction replay, and logging. `aegis_msgs` defines the filter-diagnostic message. Python packages normalize trajectories and compute metrics without changing estimator behavior.
 
 ```text
-/odom -> filter node
-/imu  -> filter node
-/ground_truth/pose -> trajectory logger
-
-filter node -> /aegis/*_pose
-filter node -> /aegis/*_path
-trajectory logger -> CSV
-evaluator -> metrics + plots
+/odom, /imu, pose correction -> EKF / UKF / PF nodes -> pose and path topics
+/ground_truth/pose -------------------------------------> trajectory logger
+filter diagnostics -------------------------------------> trajectory logger
+trajectory CSV + diagnostics -> shared evaluator -> metrics, plots, summaries
 ```
 
-## Design Choices
-
-Core filters are ROS-independent for testability. ROS nodes only handle message conversion and runtime orchestration.
+Delayed corrections retain bounded odometry and estimator snapshots. For replay-enabled filters, a correction is inserted at its measurement timestamp, then subsequent stored motion is reapplied and affected snapshots are rewritten. Measurements older than the retained history are rejected explicitly. The logger records ground truth, estimator trajectories, and EKF/UKF innovation diagnostics separately so performance and consistency can be evaluated independently.

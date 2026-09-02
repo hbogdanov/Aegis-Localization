@@ -63,16 +63,9 @@ with:
 - `manifest.json`
 - `metadata.json`
 
-## Preserved Benchmark Artifacts
+## Preserved Benchmark Artifact
 
-The `MH_01_easy` development history is intentionally preserved under:
-
-- `results/euroc/MH_01_easy/full_mh01/` - first full recorded-data run artifact
-- `results/euroc/MH_01_easy/full_mh01_diag/` - UKF diagnostic rerun with enriched crash logging
-- `results/euroc/MH_01_easy/full_mh01_ready/` - replay-readiness-gated benchmark artifact
-- `results/euroc/MH_01_easy/full_mh01_phase1_accounted/` - faithful-timing Phase 1 benchmark artifact with coverage accounting and stabilized UKF
-
-Each run includes:
+The retained `MH_01_easy` evidence is `results/euroc/MH_01_easy/full_mh01_phase1_accounted/`. It includes:
 
 - canonical normalized CSV outputs
 - `metrics/summary.json`
@@ -80,7 +73,7 @@ Each run includes:
 - `benchmark_report.md`
 - raw launch and replay logs
 
-## Current Findings
+## Findings
 
 On `MH_01_easy`, the backend now demonstrates:
 

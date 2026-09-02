@@ -1,297 +1,120 @@
 # Aegis Localization
 
-C++ ROS2 multi-sensor localization and state-estimation framework for autonomous robots.
+A C++17 and ROS2 platform for implementing and evaluating in-house EKF, UKF, and particle-filter pose estimators under reproducible synthetic sensing, a bounded EuRoC planar proxy, and delayed exteroceptive corrections.
 
-Aegis Localization implements and benchmarks classical robotics estimation methods for real-time robot pose estimation using wheel odometry, IMU, and simulator-derived ground truth.
+## Overview
 
-## Features
+Aegis studies corrections measured at time `t_m` but received later at `t_a`. Naive fusion applies the stale correction to the current state. Timestamp-aware replay restores the retained state at `t_m`, applies the correction there, and repropagates motion history to the present. This is a practical problem in robotic pipelines with perception, communication, or compute latency.
 
-- C++17 ROS2 localization stack
-- Extended Kalman Filter (EKF)
-- Unscented Kalman Filter (UKF)
-- Particle Filter localization
-- Odometry + IMU fusion
-- Synthetic sensor benchmark with configurable noise/dropout
-- Reproducible multi-scenario benchmark campaign
-- Ground-truth trajectory logging
-- ATE/drift/yaw RMSE evaluation
-- NIS consistency analysis for EKF and UKF synthetic runs
-- Pose-update gating experiment path for corrupted synthetic corrections
-- Intermittent timestamped pose corrections with bounded out-of-sequence replay
-- Phase 5 replay-correctness evidence for EKF and UKF
-- Trajectory plotting
+Online ATE describes what an estimator published before later information arrived. Final drift describes the current state after received corrections are incorporated; replay does not retroactively change previously published estimates.
 
-## Planned
+## Key Results
 
-- GTSAM pose graph optimization
+All values below are synthetic. Full three-repeat evidence: [Phase 5 report](results/reports/phase5_final_report.md).
 
-## Project Structure
+| Scenario | Estimator | Result |
+| --- | --- | --- |
+| 1.0 s delayed correction | EKF / UKF | Replay reduced final drift from `0.3005 m` to `0.0552 m` (about 82%). |
+| 1.0 s delayed correction | EKF / UKF | Naive online ATE was about `0.440 m`; replay was about `0.097 m`. |
+| Injected outliers | EKF | Gating reduced ATE from `0.2342 +/- 0.0414 m` to `0.0709 +/- 0.0059 m`. |
+| 3 s correction blackout | EKF / UKF | Peak error was about `0.138 m`; error one second after recovery was about `0.054 m`. |
+| Combined degradation | EKF / UKF | ATE was `0.0967 +/- 0.0178 m`, versus `0.0539 +/- 0.0098 m` for reference. |
 
-- `ros2_ws/src/aegis_core` - filter math library
-- `ros2_ws/src/aegis_ros` - ROS2 nodes, launch files, configs
-- `ros2_ws/src/aegis_msgs` - custom diagnostics messages
-- `scripts/` - evaluation, plotting, and benchmark helpers
-- `docs/` - architecture, experiment notes, benchmark results, and resume bullets
-- `results/` - generated metrics and plots
+## Architecture
 
-## Setup
+```mermaid
+flowchart LR
+  S["Synthetic or EuRoC proxy stream"] --> R["ROS2 adapters"]
+  R --> E["In-house EKF / UKF / PF"]
+  E --> L["Trajectory and diagnostic logger"]
+  S --> L
+  L --> V["ATE, drift, yaw RMSE, NIS/NEES"]
+  V --> A["Versioned evidence"]
+```
+
+- `aegis_core`: ROS-independent C++ estimator mathematics and unit tests.
+- `aegis_ros`: ROS2 nodes, correction replay, launch files, and synthetic sensors.
+- `aegis_msgs`: diagnostic message definitions.
+- `python/aegis_eval`: shared trajectory and consistency evaluation.
+- `python/aegis_bench`: normalized benchmark schema and EuRoC adapter.
+
+See [architecture](docs/architecture.md), [benchmark scenarios](docs/benchmark_scenarios.md), [EuRoC method](docs/euroc_backend.md), and [run schema](docs/run_schema.md).
+
+## Capabilities
+
+- In-house planar EKF, UKF, and particle-filter estimators.
+- Synthetic noise, dropout, pose corrections, latency, blackout, and injected outliers.
+- Timestamp-aware out-of-sequence correction replay for EKF, UKF, and PF; deterministic correctness checks cover EKF/UKF.
+- EKF/UKF NIS diagnostics, synthetic planar NEES, and Mahalanobis pose-update gating.
+- One EuRoC `MH_01_easy` planar proxy through the shared evaluation path.
+- TurtleBot3 Gazebo launch and logging for ROS2 integration.
+
+## Installation
+
+ROS 2 Humble on Ubuntu is the supported runtime:
 
 ```bash
-cd aegis-localization
 source /opt/ros/humble/setup.bash
-rosdep update
-rosdep install --from-paths ros2_ws/src --ignore-src -r -y
 cd ros2_ws
+rosdep install --from-paths src --ignore-src -r -y
 colcon build --symlink-install
 source install/setup.bash
 ```
 
-## Run Filters
+Python 3 and NumPy are required for evaluation. Matplotlib is optional.
 
-EKF:
+## Reproducing Results
 
-```bash
-cd ros2_ws
-source install/setup.bash
-ros2 launch aegis_ros ekf_localization.launch.py
-```
-
-UKF:
+Run from the repository root after building the workspace:
 
 ```bash
-cd ros2_ws
-source install/setup.bash
-ros2 launch aegis_ros ukf_localization.launch.py
-```
-
-Particle Filter:
-
-```bash
-cd ros2_ws
-source install/setup.bash
-ros2 launch aegis_ros particle_filter_localization.launch.py
-```
-
-## Synthetic Benchmark
-
-The default synthetic benchmark launches the fake sensor publisher, EKF, UKF, particle filter, and the trajectory logger:
-
-```bash
-cd ros2_ws
-source /opt/ros/humble/setup.bash
-source install/setup.bash
-ros2 launch aegis_ros fake_benchmark.launch.py
-```
-
-You can disable individual estimators with `run_ekf:=false`, `run_ukf:=false`, or `run_pf:=false`.
-
-Scenario presets are documented in `docs/benchmark_scenarios.md`. Three especially useful runs are:
-
-Low noise:
-
-```bash
-ros2 launch aegis_ros fake_benchmark.launch.py odom_position_noise_std:=0.03 odom_velocity_noise_std:=0.02 imu_yaw_rate_noise_std:=0.01 dropout_probability:=0.0
-```
-
-High noise + 20% dropout:
-
-```bash
-ros2 launch aegis_ros fake_benchmark.launch.py odom_position_noise_std:=0.15 odom_velocity_noise_std:=0.10 imu_yaw_rate_noise_std:=0.05 dropout_probability:=0.2
-```
-
-Dead reckoning stress test:
-
-```bash
-ros2 launch aegis_ros fake_benchmark.launch.py use_odom_pose_update:=false
-```
-
-To reproduce the packaged benchmark campaign from the repository root:
-
-```bash
-cd /path/to/Aegis-Localization
-python3 scripts/run_fake_benchmark_campaign.py --duration 20
-```
-
-To generate repeated synthetic evidence with uncertainty consistency summaries:
-
-```bash
-cd /path/to/Aegis-Localization
+# Synthetic benchmark and consistency artifacts
 python3 scripts/run_fake_benchmark_campaign.py --duration 20 --repeats 5
-```
 
-In addition to trajectory metrics, each run now logs `filter_diagnostics.csv` and computes:
-
-- per-update NIS for EKF and UKF pose and velocity/yaw-rate updates
-- 95% chi-square consistency bounds
-- fraction of updates inside bounds
-- synthetic-only planar NEES summaries where the covariance interpretation is clean enough
-
-For the Phase 4 robustness path, you can run:
-
-```bash
-cd /path/to/Aegis-Localization
+# Gating and delayed-correction validation
 python3 scripts/run_phase4_gating_experiment.py --duration 20 --repeats 5
-```
-
-That experiment injects corrupted pose-like corrections into the synthetic benchmark and compares EKF/UKF behavior with pose gating disabled versus enabled.
-
-## Results
-
-Packaged scenario summaries currently live in `results/campaign/summary.json`, and selected evidence plots live in `docs/assets/`.
-
-Repeated-run synthetic campaign artifacts now also preserve:
-
-- per-run `filter_diagnostics.csv`
-- per-run `consistency_summary.json`
-- NIS time-series plots when matplotlib is available
-- scenario-level aggregated NIS and planar NEES summaries inside `results/campaign/summary.json`
-
-Headline results from the packaged benchmark campaign:
-
-### Low Noise
-
-| Method | ATE RMSE | Final Drift | Yaw RMSE | Update Rate |
-|---|---:|---:|---:|---:|
-| EKF | 0.0420 m | 0.0159 m | 0.0245 rad | 9.71 Hz |
-| UKF | 0.0418 m | 0.0159 m | 0.0243 rad | 9.71 Hz |
-| Particle Filter | 0.0252 m | 0.0084 m | 0.0016 rad | 9.71 Hz |
-
-### High Noise + 20% Dropout
-
-| Method | ATE RMSE | Final Drift | Yaw RMSE | Update Rate |
-|---|---:|---:|---:|---:|
-| EKF | 0.1181 m | 0.0410 m | 0.0686 rad | 10.23 Hz |
-| UKF | 0.1010 m | 0.1001 m | 0.0655 rad | 10.23 Hz |
-| Particle Filter | 0.1102 m | 0.2013 m | 0.0767 rad | 10.23 Hz |
-
-### Dead Reckoning (`use_odom_pose_update:=false`)
-
-| Method | ATE RMSE | Final Drift | Yaw RMSE | Update Rate |
-|---|---:|---:|---:|---:|
-| EKF | 0.1257 m | 0.1368 m | 0.0918 rad | 10.20 Hz |
-| UKF | 0.1257 m | 0.1368 m | 0.0918 rad | 10.20 Hz |
-| Particle Filter | 0.1100 m | 0.0576 m | 0.0924 rad | 10.20 Hz |
-
-Takeaways:
-
-- PF is strongest in the easy synthetic case and remains most stable in the dead-reckoning stress test.
-- UKF delivers the best ATE in the high-noise dropout scenario, though EKF holds lower final drift there.
-- All three methods sustain roughly 10 Hz in the current ROS2 wrappers, so the comparison is mostly about estimator behavior rather than raw loop speed.
-
-![Low-noise particle filter trajectory](docs/assets/low_noise_pf_vs_ground_truth.png)
-
-## Evaluate and Plot
-
-```bash
-cd /path/to/Aegis-Localization
-python3 scripts/evaluate_trajectory.py --est results/metrics/ekf.csv --gt results/metrics/ground_truth.csv
-python3 scripts/evaluate_trajectory.py --est results/metrics/ukf.csv --gt results/metrics/ground_truth.csv
-python3 scripts/evaluate_trajectory.py --est results/metrics/pf.csv --gt results/metrics/ground_truth.csv
-python3 scripts/plot_trajectories.py --est results/metrics/ekf.csv --gt results/metrics/ground_truth.csv --out results/plots/ekf_vs_ground_truth.png
-python3 scripts/plot_trajectories.py --est results/metrics/pf.csv --gt results/metrics/ground_truth.csv --out results/plots/pf_vs_ground_truth.png
-```
-
-These commands are intended for the synthetic benchmark outputs under `results/metrics/`. Gazebo integration should write to `results/gazebo_metrics/` so incomplete simulator ground truth does not overwrite the synthetic baseline.
-
-For consistency analysis, the synthetic benchmark also writes `results/metrics/filter_diagnostics.csv`, which the campaign runner promotes into each preserved repeat artifact.
-
-## TurtleBot3 Gazebo Validation
-
-Headless TurtleBot3 Gazebo integration is available through a dedicated launch:
-
-```bash
-cd ros2_ws
-source /opt/ros/humble/setup.bash
-source install/setup.bash
-ros2 launch aegis_ros gazebo_validation.launch.py gui:=false
-```
-
-This launch:
-
-- starts TurtleBot3 Burger in Gazebo Classic
-- drives a repeatable circular `cmd_vel` profile
-- runs EKF, UKF, and particle-filter estimators on simulated `/odom` and `/imu`
-- reuses the same trajectory logger and CSV pipeline as the synthetic benchmark
-
-Current Gazebo status:
-
-- launch integration is intended to run in WSL with installed TurtleBot3 and Gazebo packages
-- estimator trajectories can be logged from simulation
-- Gazebo logs should be treated as separate outputs under `results/gazebo_metrics/`
-- quantitative Gazebo scoring should still be treated as incomplete until the simulator ground-truth bridge reliably produces a populated `ground_truth.csv`
-
-Gazebo is therefore an integration/demo path, not a source of benchmark claims in the current project direction.
-
-## Intermittent Correction And Delayed Replay
-
-The synthetic benchmark can inject timestamped pose-like corrections with configurable frequency, dropout, latency, noise, and outliers. EKF and UKF apply delayed corrections at their measurement timestamp and replay stored odometry forward; corrections outside the retained history are explicitly rejected.
-
-To reproduce the focused Phase 5 artifacts after building the ROS workspace:
-
-```bash
-cd /path/to/Aegis-Localization
 python3 scripts/run_phase5_correctness_checks.py --duration 8
 python3 scripts/generate_phase5_correctness_report.py
-python3 scripts/run_phase5_intermittent_correction_experiment.py --duration 12
-python3 scripts/generate_phase5_report.py
-```
 
-The correctness checks show that, for deterministic EKF/UKF cases, zero-latency replay agrees with immediate fusion and terminal state/covariance remain invariant for 100 ms, 500 ms, and 1000 ms delayed arrivals. They also cover reversed correction arrival order and clean rejection of corrections older than the retained history window.
-
-The delayed-run trajectory remains an online record: estimates published before a correction arrives cannot be retroactively improved. Whole-trajectory error and reconstructed current-state correctness are therefore reported as distinct concepts. See `results/reports/phase5_correctness.md` and `results/reports/phase5_intermittent_correction.md` for the preserved evidence.
-
-The remaining Phase 5 research experiments are reproducible from the repository root:
-
-```bash
+# Principal latency comparison and degradation campaign
 python3 scripts/run_phase5_replay_comparison.py --duration 12 --repeats 3
 python3 scripts/run_phase5_degradation_campaign.py --duration 12 --repeats 3
 python3 scripts/generate_phase5_final_report.py
 ```
 
-The first command compares naive arrival-time fusion with timestamp-aware replay at `0`, `100`, `500`, and `1000` ms latency. The second holds replay fixed while varying correction frequency, dropout, latency, noise, corruption/gating, and a timed blackout-recovery condition. The final report presents online ATE separately from post-fusion terminal drift.
-
-## EuRoC Recorded-Data Benchmark
-
-A minimal recorded-data backend is now available for one EuRoC sequence at a time through the same evaluation pipeline used by the synthetic benchmark:
+For a locally supplied EuRoC sequence:
 
 ```bash
-python scripts/run_euroc_benchmark.py --sequence-root C:\path\to\MH_01_easy --run-name full_mh01_ready
+python3 scripts/run_euroc_benchmark.py --sequence-root /path/to/MH_01_easy
 ```
 
-Current scope and caveats:
+## Repository Structure
 
-- this is a planar proxy benchmark, not a native 6-DoF MAV localization benchmark
-- EuRoC ground truth is reduced to planar `x`, `y`, and `yaw`
-- planar linear velocities are derived from ground-truth position differences
-- IMU yaw rate is mirrored into `/odom.twist.angular.z` for compatibility with the current ROS wrappers
-- plotting is optional and benchmark generation still succeeds even if the local matplotlib stack is broken
+```text
+ros2_ws/src/           ROS2 packages and C++ estimator implementation
+python/                shared evaluation and benchmark packages
+scripts/               reproducible experiment and reporting entry points
+docs/                  technical design and methodology
+results/reports/       preserved experimental evidence
+results/*/summary.json compact machine-readable summaries
+tests/                 Python and C++ tests
+```
 
-Important preserved artifacts live under:
+## Validation Scope And Limitations
 
-- `results/euroc/MH_01_easy/full_mh01/`
-- `results/euroc/MH_01_easy/full_mh01_diag/`
-- `results/euroc/MH_01_easy/full_mh01_ready/`
-- `results/euroc/MH_01_easy/full_mh01_phase1_accounted/`
+- Evidence is simulation and recorded-data proxy evaluation only; no hardware validation is claimed.
+- Gazebo is an integration path, not quantitative benchmark evidence, because its ground-truth scoring bridge is unreliable.
+- EuRoC is one planar proxy sequence, not native 6-DoF MAV localization; yaw conclusions are limited.
+- PF resampling is stochastic, so exact EKF/UKF replay-equivalence expectations do not apply.
+- Combined-degradation NIS is unavailable in the preserved campaign because it predates a diagnostic logging correction; it is not inferred. Focused validation confirms one NIS record per applied EKF/UKF correction.
 
-The current recorded-data findings are intentionally mixed rather than polished:
+## Testing
 
-- EKF and UKF now complete the faithful `MH_01_easy` replay with nearly identical translational metrics under the current proxy definition
-- the earlier UKF crash was traced to unscaled per-step process noise at high replay rates plus an overly aggressive `alpha=0.1` sigma-point setting that produced a very negative central covariance weight
-- the current accounted run still shows a small logged-sample shortfall versus replay publication, now narrowed to shutdown/write-path behavior rather than estimator failure
-- translational error can look excellent while yaw error remains large, so yaw conclusions should still be treated cautiously and not presented as the strongest result of the proxy benchmark
+```bash
+source /opt/ros/humble/setup.bash
+cd ros2_ws
+colcon test --packages-select aegis_core aegis_ros
+colcon test-result --verbose
+```
 
-For the benchmark-specific methodology and interpretation notes, see `docs/euroc_backend.md` and each run-local `benchmark_report.md`.
-
-The cleanest external-data claim for the repo is:
-
-- Aegis supports a reproducible planar recorded-data benchmark on one public EuRoC sequence using the same shared evaluation path as its synthetic benchmark.
-
-The repo should not claim:
-
-- full EuRoC validation as a native MAV localizer
-- hardware validation
-- strong yaw validation from the current planar proxy alone
-
-## Notes
-
-The localization nodes initialize from the first odometry pose, optionally apply odometry pose corrections through `use_odom_pose_update`, fuse `/odom` and `/imu`, and publish filter-specific pose/path topics for benchmarking.
+Python checks are under `tests/`; script syntax can be checked with `python3 -m py_compile scripts/*.py`.

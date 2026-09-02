@@ -16,6 +16,7 @@ machine_hall/
 results/**/*.csv
 results/**/*.png
 results/**/*.pdf
+results/**/*.log
 ros2_ws/results/**
 
 # OS/editor
