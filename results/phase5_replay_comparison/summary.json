@@ -1,0 +1,3889 @@
+{
+  "run_started_at_utc": "2026-09-02T03:54:47.425296+00:00",
+  "duration_seconds": 12,
+  "repeats": 3,
+  "latencies_seconds": [
+    0.0,
+    0.1,
+    0.5,
+    1.0
+  ],
+  "policies": {
+    "naive_arrival": false,
+    "timestamp_aware_replay": true
+  },
+  "scenarios": {
+    "latency_0000ms": {
+      "naive_arrival": {
+        "runs": [
+          {
+            "seed": 5100,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.0",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "5100",
+              "pf_random_seed": "5101",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_001",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_001/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_001/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_001/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_001/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_001/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_001/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.057829562621951866,
+                "final_drift": 0.057267209656262245,
+                "yaw_rmse": 0.022204298609825115
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.057829562621951866,
+                "final_drift": 0.057267209656262245,
+                "yaw_rmse": 0.022204298609825115
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.04960022596794739,
+                "final_drift": 0.02395916296757673,
+                "yaw_rmse": 0.027654426986226954
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 5100,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 4.27642e-50,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 282.724
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 5101,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.0",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "5101",
+              "pf_random_seed": "5102",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_002",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_002/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_002/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_002/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_002/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_002/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_002/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05564913808898327,
+                "final_drift": 0.018416275638310036,
+                "yaw_rmse": 0.01784348751800359
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05535601624627386,
+                "final_drift": 0.018421167264397555,
+                "yaw_rmse": 0.01771477050390319
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.050934193350982884,
+                "final_drift": 0.03472023817062104,
+                "yaw_rmse": 0.022758481765081096
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 5101,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 0,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 5102,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.0",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "5102",
+              "pf_random_seed": "5103",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_003",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_003/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_003/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_003/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_003/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_003/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/naive_arrival/repeats/run_003/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.059680536021494035,
+                "final_drift": 0.058833630745907306,
+                "yaw_rmse": 0.01928820013773777
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.059680536021494035,
+                "final_drift": 0.058833630745907306,
+                "yaw_rmse": 0.01928820013773777
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.043816137417949555,
+                "final_drift": 0.03001872973603209,
+                "yaw_rmse": 0.024158625555693956
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 5102,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 2.71051e-20,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          }
+        ],
+        "aggregate": {
+          "ekf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.05771974557747639,
+              "std": 0.0016476421860760117,
+              "min": 0.05564913808898327,
+              "max": 0.059680536021494035
+            },
+            "final_drift": {
+              "mean": 0.044839038680159864,
+              "std": 0.018694655632592434,
+              "min": 0.018416275638310036,
+              "max": 0.058833630745907306
+            },
+            "yaw_rmse": {
+              "mean": 0.01977866208852216,
+              "std": 0.0018137590870002244,
+              "min": 0.01784348751800359,
+              "max": 0.022204298609825115
+            }
+          },
+          "ukf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.05762203829657325,
+              "std": 0.0017715657068979908,
+              "min": 0.05535601624627386,
+              "max": 0.059680536021494035
+            },
+            "final_drift": {
+              "mean": 0.04484066922218904,
+              "std": 0.018692351047613603,
+              "min": 0.018421167264397555,
+              "max": 0.058833630745907306
+            },
+            "yaw_rmse": {
+              "mean": 0.01973575641715536,
+              "std": 0.0018599633725605654,
+              "min": 0.01771477050390319,
+              "max": 0.022204298609825115
+            }
+          },
+          "pf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.04811685224562661,
+              "std": 0.003089442049572662,
+              "min": 0.043816137417949555,
+              "max": 0.050934193350982884
+            },
+            "final_drift": {
+              "mean": 0.029566043624743285,
+              "std": 0.004404836615805336,
+              "min": 0.02395916296757673,
+              "max": 0.03472023817062104
+            },
+            "yaw_rmse": {
+              "mean": 0.024857178102334,
+              "std": 0.0020588915541180906,
+              "min": 0.022758481765081096,
+              "max": 0.027654426986226954
+            }
+          }
+        }
+      },
+      "timestamp_aware_replay": {
+        "runs": [
+          {
+            "seed": 5100,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.0",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "5100",
+              "pf_random_seed": "5101",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_001",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_001/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_001/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_001/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_001/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_001/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_001/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.057829562621951866,
+                "final_drift": 0.057267209656262245,
+                "yaw_rmse": 0.022204298609825115
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.057829562621951866,
+                "final_drift": 0.057267209656262245,
+                "yaw_rmse": 0.022204298609825115
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.049918574639563236,
+                "final_drift": 0.023171516841452917,
+                "yaw_rmse": 0.02672100306104259
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 5100,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 4.27642e-50,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 60,
+                "velocity_update_calls": 240,
+                "pose_published": 301,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 60,
+                "correction_replays": 60,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 273.412
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 301,
+                "odom_received": 0,
+                "diagnostics_received": 905,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 5101,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.0",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "5101",
+              "pf_random_seed": "5102",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_002",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_002/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_002/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_002/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_002/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_002/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_002/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05561412167370049,
+                "final_drift": 0.018421156511999277,
+                "yaw_rmse": 0.017959349158633682
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05561412167370049,
+                "final_drift": 0.018421156511999277,
+                "yaw_rmse": 0.017959349158633682
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.050934193350982884,
+                "final_drift": 0.03472023817062104,
+                "yaw_rmse": 0.022758481765081096
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 5101,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 1.71057e-49,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 5102,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.0",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "5102",
+              "pf_random_seed": "5103",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_003",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_003/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_003/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_003/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_003/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_003/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0000ms/timestamp_aware_replay/repeats/run_003/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.059680536021494035,
+                "final_drift": 0.058833630745907306,
+                "yaw_rmse": 0.01928820013773777
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.059680536021494035,
+                "final_drift": 0.058833630745907306,
+                "yaw_rmse": 0.01928820013773777
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.043816137417949555,
+                "final_drift": 0.03001872973603209,
+                "yaw_rmse": 0.024158625555693956
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 5102,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 2.71051e-20,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          }
+        ],
+        "aggregate": {
+          "ekf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.057708073439048796,
+              "std": 0.0016623279115259117,
+              "min": 0.05561412167370049,
+              "max": 0.059680536021494035
+            },
+            "final_drift": {
+              "mean": 0.044840665638056276,
+              "std": 0.01869235611337565,
+              "min": 0.018421156511999277,
+              "max": 0.058833630745907306
+            },
+            "yaw_rmse": {
+              "mean": 0.019817282635398854,
+              "std": 0.0017729157110611285,
+              "min": 0.017959349158633682,
+              "max": 0.022204298609825115
+            }
+          },
+          "ukf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.057708073439048796,
+              "std": 0.0016623279115259117,
+              "min": 0.05561412167370049,
+              "max": 0.059680536021494035
+            },
+            "final_drift": {
+              "mean": 0.044840665638056276,
+              "std": 0.01869235611337565,
+              "min": 0.018421156511999277,
+              "max": 0.058833630745907306
+            },
+            "yaw_rmse": {
+              "mean": 0.019817282635398854,
+              "std": 0.0017729157110611285,
+              "min": 0.017959349158633682,
+              "max": 0.022204298609825115
+            }
+          },
+          "pf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.04822296846949856,
+              "std": 0.003143563824644337,
+              "min": 0.043816137417949555,
+              "max": 0.050934193350982884
+            },
+            "final_drift": {
+              "mean": 0.029303494916035348,
+              "std": 0.004741793733774699,
+              "min": 0.023171516841452917,
+              "max": 0.03472023817062104
+            },
+            "yaw_rmse": {
+              "mean": 0.024546036793939213,
+              "std": 0.0016407232868212189,
+              "min": 0.022758481765081096,
+              "max": 0.02672100306104259
+            }
+          }
+        }
+      }
+    },
+    "latency_0100ms": {
+      "naive_arrival": {
+        "runs": [
+          {
+            "seed": 6100,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.1",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "6100",
+              "pf_random_seed": "6101",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_001",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_001/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_001/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_001/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_001/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_001/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_001/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.06654775229669217,
+                "final_drift": 0.0699901664241086,
+                "yaw_rmse": 0.036576242652597575
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.06654775229669217,
+                "final_drift": 0.0699901664241086,
+                "yaw_rmse": 0.036576242652597575
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.0516105609815168,
+                "final_drift": 0.05714761318780206,
+                "yaw_rmse": 0.03786950674109404
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 6100,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000479732,
+                "last_max_eigenvalue": 0.00124457,
+                "last_symmetry_error": 8.55285e-50,
+                "last_condition_number": 2.5943,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 6101,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.1",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "6101",
+              "pf_random_seed": "6102",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_002",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_002/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_002/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_002/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_002/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_002/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_002/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.06311176485775993,
+                "final_drift": 0.038604147380861764,
+                "yaw_rmse": 0.04266843816073228
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.06311176485775993,
+                "final_drift": 0.038604147380861764,
+                "yaw_rmse": 0.04266843816073228
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05184731684322773,
+                "final_drift": 0.04114054080856313,
+                "yaw_rmse": 0.04504670918460027
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 6101,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000479732,
+                "last_max_eigenvalue": 0.00124457,
+                "last_symmetry_error": 2.13821e-50,
+                "last_condition_number": 2.5943,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 250.394
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 6102,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.1",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "6102",
+              "pf_random_seed": "6103",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_003",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_003/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_003/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_003/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_003/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_003/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/naive_arrival/repeats/run_003/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.06435917764554917,
+                "final_drift": 0.0693116213189365,
+                "yaw_rmse": 0.035793891549283745
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.06435917764554917,
+                "final_drift": 0.0693116213189365,
+                "yaw_rmse": 0.035793891549283745
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.045650301987460125,
+                "final_drift": 0.026205821031110445,
+                "yaw_rmse": 0.03951763228925588
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 6102,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000479732,
+                "last_max_eigenvalue": 0.00124457,
+                "last_symmetry_error": 0,
+                "last_condition_number": 2.5943,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 274.596
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          }
+        ],
+        "aggregate": {
+          "ekf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.0646728982666671,
+              "std": 0.0014201685090652664,
+              "min": 0.06311176485775993,
+              "max": 0.06654775229669217
+            },
+            "final_drift": {
+              "mean": 0.059301978374635626,
+              "std": 0.014638198016378418,
+              "min": 0.038604147380861764,
+              "max": 0.0699901664241086
+            },
+            "yaw_rmse": {
+              "mean": 0.03834619078753787,
+              "std": 0.003072934002819736,
+              "min": 0.035793891549283745,
+              "max": 0.04266843816073228
+            }
+          },
+          "ukf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.0646728982666671,
+              "std": 0.0014201685090652664,
+              "min": 0.06311176485775993,
+              "max": 0.06654775229669217
+            },
+            "final_drift": {
+              "mean": 0.059301978374635626,
+              "std": 0.014638198016378418,
+              "min": 0.038604147380861764,
+              "max": 0.0699901664241086
+            },
+            "yaw_rmse": {
+              "mean": 0.03834619078753787,
+              "std": 0.003072934002819736,
+              "min": 0.035793891549283745,
+              "max": 0.04266843816073228
+            }
+          },
+          "pf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.049702726604068215,
+              "std": 0.0028671265859139708,
+              "min": 0.045650301987460125,
+              "max": 0.05184731684322773
+            },
+            "final_drift": {
+              "mean": 0.04149799167582521,
+              "std": 0.012634462231237636,
+              "min": 0.026205821031110445,
+              "max": 0.05714761318780206
+            },
+            "yaw_rmse": {
+              "mean": 0.04081128273831673,
+              "std": 0.003069550167047767,
+              "min": 0.03786950674109404,
+              "max": 0.04504670918460027
+            }
+          }
+        }
+      },
+      "timestamp_aware_replay": {
+        "runs": [
+          {
+            "seed": 6100,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.1",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "6100",
+              "pf_random_seed": "6101",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_001",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_001/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_001/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_001/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_001/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_001/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_001/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.061819953793536886,
+                "final_drift": 0.06174076047256467,
+                "yaw_rmse": 0.022789220994089296
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.061819953793536886,
+                "final_drift": 0.06174076047256467,
+                "yaw_rmse": 0.022789220994089296
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05082234645884779,
+                "final_drift": 0.055364643056446304,
+                "yaw_rmse": 0.029081938282375524
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 6100,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 300,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 300,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 300,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 300,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 0,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 300,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 300,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 6101,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.1",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "6101",
+              "pf_random_seed": "6102",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_002",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_002/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_002/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_002/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_002/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_002/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_002/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05566604684508856,
+                "final_drift": 0.023908771653664482,
+                "yaw_rmse": 0.025464609613119464
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05566604684508856,
+                "final_drift": 0.023908771653664482,
+                "yaw_rmse": 0.025464609613119464
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.047107856883365114,
+                "final_drift": 0.03750194739485204,
+                "yaw_rmse": 0.030787671342926846
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 6101,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 300,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 300,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 300,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 300,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 1.71057e-49,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 300,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 300,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 6102,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.1",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "6102",
+              "pf_random_seed": "6103",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_003",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_003/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_003/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_003/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_003/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_003/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0100ms/timestamp_aware_replay/repeats/run_003/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.06006213958238953,
+                "final_drift": 0.06436915653156304,
+                "yaw_rmse": 0.022078839196824525
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.06006213958238953,
+                "final_drift": 0.06436915653156304,
+                "yaw_rmse": 0.022078839196824525
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.041058878722838775,
+                "final_drift": 0.0291072935073054,
+                "yaw_rmse": 0.025990023191014046
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 6102,
+                "published_truth_samples": 246,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 300,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 300,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 300,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 300,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 0,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 300,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 300,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 297.102
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          }
+        ],
+        "aggregate": {
+          "ekf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.05918271340700499,
+              "std": 0.002588137745046782,
+              "min": 0.05566604684508856,
+              "max": 0.061819953793536886
+            },
+            "final_drift": {
+              "mean": 0.0500062295525974,
+              "std": 0.018484860436776752,
+              "min": 0.023908771653664482,
+              "max": 0.06436915653156304
+            },
+            "yaw_rmse": {
+              "mean": 0.023444223268011096,
+              "std": 0.0014577679998537827,
+              "min": 0.022078839196824525,
+              "max": 0.025464609613119464
+            }
+          },
+          "ukf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.05918271340700499,
+              "std": 0.002588137745046782,
+              "min": 0.05566604684508856,
+              "max": 0.061819953793536886
+            },
+            "final_drift": {
+              "mean": 0.0500062295525974,
+              "std": 0.018484860436776752,
+              "min": 0.023908771653664482,
+              "max": 0.06436915653156304
+            },
+            "yaw_rmse": {
+              "mean": 0.023444223268011096,
+              "std": 0.0014577679998537827,
+              "min": 0.022078839196824525,
+              "max": 0.025464609613119464
+            }
+          },
+          "pf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.04632969402168389,
+              "std": 0.004023719559271594,
+              "min": 0.041058878722838775,
+              "max": 0.05082234645884779
+            },
+            "final_drift": {
+              "mean": 0.04065796131953458,
+              "std": 0.010949350643030088,
+              "min": 0.0291072935073054,
+              "max": 0.055364643056446304
+            },
+            "yaw_rmse": {
+              "mean": 0.02861987760543881,
+              "std": 0.001985695847684381,
+              "min": 0.025990023191014046,
+              "max": 0.030787671342926846
+            }
+          }
+        }
+      }
+    },
+    "latency_0500ms": {
+      "naive_arrival": {
+        "runs": [
+          {
+            "seed": 10100,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.5",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "10100",
+              "pf_random_seed": "10101",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_001",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_001/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_001/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_001/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_001/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_001/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_001/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.2288456388411805,
+                "final_drift": 0.18078377399523538,
+                "yaw_rmse": 0.194147419194081
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.2288456388411805,
+                "final_drift": 0.18078377399523538,
+                "yaw_rmse": 0.194147419194081
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.22598882964657652,
+                "final_drift": 0.15106419525163073,
+                "yaw_rmse": 0.18967755111723558
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 10100,
+                "published_truth_samples": 361,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.5,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.00038086,
+                "last_max_eigenvalue": 0.000943407,
+                "last_symmetry_error": 4.27642e-50,
+                "last_condition_number": 2.47705,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 10101,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.5",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "10101",
+              "pf_random_seed": "10102",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_002",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_002/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_002/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_002/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_002/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_002/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_002/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.2376304252729378,
+                "final_drift": 0.18876036703245344,
+                "yaw_rmse": 0.23153824867218858
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.2376304252729378,
+                "final_drift": 0.18876036703245344,
+                "yaw_rmse": 0.23153824867218858
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.23326726225690605,
+                "final_drift": 0.17746614019859852,
+                "yaw_rmse": 0.22662794643153925
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 10101,
+                "published_truth_samples": 359,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.5,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.00038086,
+                "last_max_eigenvalue": 0.000943407,
+                "last_symmetry_error": 2.67276e-51,
+                "last_condition_number": 2.47705,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 10102,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.5",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "10102",
+              "pf_random_seed": "10103",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_003",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_003/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_003/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_003/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_003/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_003/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/naive_arrival/repeats/run_003/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.2204293877850224,
+                "final_drift": 0.1508144068851591,
+                "yaw_rmse": 0.1978298225288714
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.2204293877850224,
+                "final_drift": 0.1508144068851591,
+                "yaw_rmse": 0.1978298225288714
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.21487529347418924,
+                "final_drift": 0.07869523028021723,
+                "yaw_rmse": 0.2017272139754458
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 10102,
+                "published_truth_samples": 366,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.5,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.00038086,
+                "last_max_eigenvalue": 0.000943407,
+                "last_symmetry_error": 2.71051e-20,
+                "last_condition_number": 2.47705,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          }
+        ],
+        "aggregate": {
+          "ekf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.22896848396638023,
+              "std": 0.007022831378618197,
+              "min": 0.2204293877850224,
+              "max": 0.2376304252729378
+            },
+            "final_drift": {
+              "mean": 0.17345284930428265,
+              "std": 0.01633566273511889,
+              "min": 0.1508144068851591,
+              "max": 0.18876036703245344
+            },
+            "yaw_rmse": {
+              "mean": 0.20783849679838032,
+              "std": 0.01682555007005868,
+              "min": 0.194147419194081,
+              "max": 0.23153824867218858
+            }
+          },
+          "ukf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.22896848396638023,
+              "std": 0.007022831378618197,
+              "min": 0.2204293877850224,
+              "max": 0.2376304252729378
+            },
+            "final_drift": {
+              "mean": 0.17345284930428265,
+              "std": 0.01633566273511889,
+              "min": 0.1508144068851591,
+              "max": 0.18876036703245344
+            },
+            "yaw_rmse": {
+              "mean": 0.20783849679838032,
+              "std": 0.01682555007005868,
+              "min": 0.194147419194081,
+              "max": 0.23153824867218858
+            }
+          },
+          "pf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.22471046179255727,
+              "std": 0.00756270662323791,
+              "min": 0.21487529347418924,
+              "max": 0.23326726225690605
+            },
+            "final_drift": {
+              "mean": 0.13574185524348217,
+              "std": 0.04175327323711863,
+              "min": 0.07869523028021723,
+              "max": 0.17746614019859852
+            },
+            "yaw_rmse": {
+              "mean": 0.20601090384140686,
+              "std": 0.015386041891308103,
+              "min": 0.18967755111723558,
+              "max": 0.22662794643153925
+            }
+          }
+        }
+      },
+      "timestamp_aware_replay": {
+        "runs": [
+          {
+            "seed": 10100,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.5",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "10100",
+              "pf_random_seed": "10101",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_001",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_001/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_001/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_001/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_001/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_001/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_001/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.09367817745881991,
+                "final_drift": 0.08212353261374764,
+                "yaw_rmse": 0.02538558969828647
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.09367817745881991,
+                "final_drift": 0.08212353261374764,
+                "yaw_rmse": 0.02538558969828647
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05791413196253015,
+                "final_drift": 0.039005005504927553,
+                "yaw_rmse": 0.027024065767496074
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 10100,
+                "published_truth_samples": 363,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.5,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 774,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 774,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 774,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 774,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 0,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 774,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 774,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 282.827
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 10101,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.5",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "10101",
+              "pf_random_seed": "10102",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_002",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_002/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_002/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_002/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_002/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_002/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_002/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.0906519736759312,
+                "final_drift": 0.04895798371586812,
+                "yaw_rmse": 0.026575676696229764
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.0906519736759312,
+                "final_drift": 0.04895798371586812,
+                "yaw_rmse": 0.026575676696229764
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05441361156688346,
+                "final_drift": 0.03880584494482001,
+                "yaw_rmse": 0.028142314958983523
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 10101,
+                "published_truth_samples": 362,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.5,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 774,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 774,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 774,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 774,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 2.71051e-20,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 774,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 774,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 272.416
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 10102,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "0.5",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "10102",
+              "pf_random_seed": "10103",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_003",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_003/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_003/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_003/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_003/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_003/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_0500ms/timestamp_aware_replay/repeats/run_003/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.09260103637180148,
+                "final_drift": 0.02673319319478443,
+                "yaw_rmse": 0.025264755312964834
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.09260103637180148,
+                "final_drift": 0.02673319319478443,
+                "yaw_rmse": 0.025264755312964834
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.05438706442704936,
+                "final_drift": 0.055380161061922374,
+                "yaw_rmse": 0.029385713395948487
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 10102,
+                "published_truth_samples": 346,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 0.5,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 774,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 774,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 774,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 774,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 0,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 774,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 774,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          }
+        ],
+        "aggregate": {
+          "ekf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.09231039583551752,
+              "std": 0.0012524193320372803,
+              "min": 0.0906519736759312,
+              "max": 0.09367817745881991
+            },
+            "final_drift": {
+              "mean": 0.052604903174800065,
+              "std": 0.022759575880523193,
+              "min": 0.02673319319478443,
+              "max": 0.08212353261374764
+            },
+            "yaw_rmse": {
+              "mean": 0.025742007235827022,
+              "std": 0.0005915537811983864,
+              "min": 0.025264755312964834,
+              "max": 0.026575676696229764
+            }
+          },
+          "ukf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.09231039583551752,
+              "std": 0.0012524193320372803,
+              "min": 0.0906519736759312,
+              "max": 0.09367817745881991
+            },
+            "final_drift": {
+              "mean": 0.052604903174800065,
+              "std": 0.022759575880523193,
+              "min": 0.02673319319478443,
+              "max": 0.08212353261374764
+            },
+            "yaw_rmse": {
+              "mean": 0.025742007235827022,
+              "std": 0.0005915537811983864,
+              "min": 0.025264755312964834,
+              "max": 0.026575676696229764
+            }
+          },
+          "pf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.05557160265215432,
+              "std": 0.0016564538156627927,
+              "min": 0.05438706442704936,
+              "max": 0.05791413196253015
+            },
+            "final_drift": {
+              "mean": 0.04439700383722331,
+              "std": 0.0077666905521386635,
+              "min": 0.03880584494482001,
+              "max": 0.055380161061922374
+            },
+            "yaw_rmse": {
+              "mean": 0.028184031374142698,
+              "std": 0.0009645897486199426,
+              "min": 0.027024065767496074,
+              "max": 0.029385713395948487
+            }
+          }
+        }
+      }
+    },
+    "latency_1000ms": {
+      "naive_arrival": {
+        "runs": [
+          {
+            "seed": 15100,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "1.0",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "15100",
+              "pf_random_seed": "15101",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_001",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_001/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_001/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_001/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_001/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_001/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_001/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.44691840755319867,
+                "final_drift": 0.28916155822831785,
+                "yaw_rmse": 0.44383432757453123
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.44691840755319867,
+                "final_drift": 0.28916155822831785,
+                "yaw_rmse": 0.44383432757453123
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.44874627618244717,
+                "final_drift": 0.343331963871636,
+                "yaw_rmse": 0.4253065596048713
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 15100,
+                "published_truth_samples": 363,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000283437,
+                "last_max_eigenvalue": 0.000763145,
+                "last_symmetry_error": 1.35525e-20,
+                "last_condition_number": 2.69247,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 438.237
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 15101,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "1.0",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "15101",
+              "pf_random_seed": "15102",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_002",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_002/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_002/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_002/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_002/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_002/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_002/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.4303326252620388,
+                "final_drift": 0.3133772807749276,
+                "yaw_rmse": 0.4541288327437709
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.4307193724714932,
+                "final_drift": 0.3133772807749276,
+                "yaw_rmse": 0.45450090330669646
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.4340709663474977,
+                "final_drift": 0.33357921318909856,
+                "yaw_rmse": 0.42782789505707725
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 15101,
+                "published_truth_samples": 355,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000283437,
+                "last_max_eigenvalue": 0.000763145,
+                "last_symmetry_error": 2.13821e-50,
+                "last_condition_number": 2.69247,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 341.725
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 15102,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "1.0",
+              "correction_replay_enabled": "false",
+              "fake_sensor_seed": "15102",
+              "pf_random_seed": "15103",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_003",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_003/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_003/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_003/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_003/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_003/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/naive_arrival/repeats/run_003/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.44348564522230444,
+                "final_drift": 0.2989611403434452,
+                "yaw_rmse": 0.4117350090979378
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.44348564522230444,
+                "final_drift": 0.2989611403434452,
+                "yaw_rmse": 0.4117350090979378
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.45223597343285893,
+                "final_drift": 0.36746471231357825,
+                "yaw_rmse": 0.39432185734607805
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 15102,
+                "published_truth_samples": 362,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000283437,
+                "last_max_eigenvalue": 0.000763145,
+                "last_symmetry_error": 1.35525e-20,
+                "last_condition_number": 2.69247,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 240,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 240,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 0,
+                "correction_naive_arrival_updates": 61,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 299.515
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          }
+        ],
+        "aggregate": {
+          "ekf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.44024555934584725,
+              "std": 0.007148224064644813,
+              "min": 0.4303326252620388,
+              "max": 0.44691840755319867
+            },
+            "final_drift": {
+              "mean": 0.3004999931155636,
+              "std": 0.009945731262013476,
+              "min": 0.28916155822831785,
+              "max": 0.3133772807749276
+            },
+            "yaw_rmse": {
+              "mean": 0.43656605647207997,
+              "std": 0.01805417577630441,
+              "min": 0.4117350090979378,
+              "max": 0.4541288327437709
+            }
+          },
+          "ukf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.44037447508233213,
+              "std": 0.006969539397715965,
+              "min": 0.4307193724714932,
+              "max": 0.44691840755319867
+            },
+            "final_drift": {
+              "mean": 0.3004999931155636,
+              "std": 0.009945731262013476,
+              "min": 0.28916155822831785,
+              "max": 0.3133772807749276
+            },
+            "yaw_rmse": {
+              "mean": 0.43669007999305515,
+              "std": 0.018175269498190007,
+              "min": 0.4117350090979378,
+              "max": 0.45450090330669646
+            }
+          },
+          "pf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.44501773865426797,
+              "std": 0.007870551216489927,
+              "min": 0.4340709663474977,
+              "max": 0.45223597343285893
+            },
+            "final_drift": {
+              "mean": 0.3481252964581043,
+              "std": 0.014242864662516746,
+              "min": 0.33357921318909856,
+              "max": 0.36746471231357825
+            },
+            "yaw_rmse": {
+              "mean": 0.4158187706693422,
+              "std": 0.01523542461800975,
+              "min": 0.39432185734607805,
+              "max": 0.42782789505707725
+            }
+          }
+        }
+      },
+      "timestamp_aware_replay": {
+        "runs": [
+          {
+            "seed": 15100,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "1.0",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "15100",
+              "pf_random_seed": "15101",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_001",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_001/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_001/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_001/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_001/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_001/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_001/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.09972081143925436,
+                "final_drift": 0.021374132719614587,
+                "yaw_rmse": 0.033643501212766005
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.09972081143925436,
+                "final_drift": 0.021374132719614587,
+                "yaw_rmse": 0.033643501212766005
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.053142868255529795,
+                "final_drift": 0.03893795031281516,
+                "yaw_rmse": 0.03713707793603037
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 15100,
+                "published_truth_samples": 365,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 1344,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 1344,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 1344,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 1344,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 0,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 1344,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 1344,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 15101,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "1.0",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "15101",
+              "pf_random_seed": "15102",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_002",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_002/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_002/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_002/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_002/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_002/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_002/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.09885792215938259,
+                "final_drift": 0.0752897421935202,
+                "yaw_rmse": 0.03193171960728809
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.09885792215938259,
+                "final_drift": 0.0752897421935202,
+                "yaw_rmse": 0.03193171960728809
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.04958706419723799,
+                "final_drift": 0.03243136924751047,
+                "yaw_rmse": 0.03473706308851622
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 15101,
+                "published_truth_samples": 358,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 1344,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 1344,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 1344,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 1344,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 0,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 1344,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 1344,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 500
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          },
+          {
+            "seed": 15102,
+            "launch_args": {
+              "use_odom_pose_update": "false",
+              "correction_enabled": "true",
+              "correction_frequency_hz": "5.0",
+              "correction_dropout_probability": "0.0",
+              "correction_position_noise_std": "0.05",
+              "correction_yaw_noise_std": "0.08",
+              "correction_outlier_probability": "0.0",
+              "odom_position_noise_std": "0.08",
+              "odom_velocity_noise_std": "0.05",
+              "imu_yaw_rate_noise_std": "0.03",
+              "dropout_probability": "0.0",
+              "max_history_seconds": "3.0",
+              "correction_latency_seconds": "1.0",
+              "correction_replay_enabled": "true",
+              "fake_sensor_seed": "15102",
+              "pf_random_seed": "15103",
+              "benchmark_duration_seconds": "12.0",
+              "results_dir": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_003",
+              "fake_sensor_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_003/fake_sensor_stats.json",
+              "correction_log_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_003/correction_log.csv",
+              "ekf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_003/ekf_stats.json",
+              "ukf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_003/ukf_stats.json",
+              "pf_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_003/pf_stats.json",
+              "logger_stats_out": "/mnt/c/Users/Ivan/dev/Aegis-Localization/results/phase5_replay_comparison/latency_1000ms/timestamp_aware_replay/repeats/run_003/logger_stats.json"
+            },
+            "metrics": {
+              "ekf": {
+                "num_samples": 241,
+                "ate_rmse": 0.09172500348751937,
+                "final_drift": 0.06908344941212634,
+                "yaw_rmse": 0.03185800189476303
+              },
+              "ukf": {
+                "num_samples": 241,
+                "ate_rmse": 0.09172500348751937,
+                "final_drift": 0.06908344941212634,
+                "yaw_rmse": 0.03185800189476303
+              },
+              "pf": {
+                "num_samples": 241,
+                "ate_rmse": 0.04946867322659096,
+                "final_drift": 0.036505836580055524,
+                "yaw_rmse": 0.03889911519096922
+              }
+            },
+            "stats": {
+              "fake_sensor": {
+                "random_seed": 15102,
+                "published_truth_samples": 363,
+                "dropped_measurements": 0,
+                "corrupted_pose_measurements": 0,
+                "published_corrections": 61,
+                "dropped_corrections": 0,
+                "blackout_dropped_corrections": 0,
+                "corrupted_corrections": 0,
+                "enqueued_corrections": 61,
+                "correction_frequency_hz": 5,
+                "correction_latency_seconds": 1,
+                "pose_outlier_probability": 0,
+                "pose_outlier_position_std": 1.5,
+                "pose_outlier_yaw_std": 0.75
+              },
+              "ekf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 1344,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 1344,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "ukf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 1344,
+                "pose_update_attempts": 61,
+                "pose_update_calls": 61,
+                "pose_updates_rejected": 0,
+                "velocity_update_calls": 1344,
+                "pose_published": 302,
+                "failed_updates": 0,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "last_covariance_stage": "measurement_update",
+                "last_min_eigenvalue": 0.000489143,
+                "last_max_eigenvalue": 0.00129104,
+                "last_symmetry_error": 0,
+                "last_condition_number": 2.63938,
+                "last_covariance_finite": true,
+                "last_covariance_psd": true,
+                "pose_gating_enabled": false,
+                "pose_gating_threshold": 9.32415
+              },
+              "pf": {
+                "odom_received": 241,
+                "imu_received": 241,
+                "predict_calls": 1344,
+                "pose_update_calls": 61,
+                "velocity_update_calls": 1344,
+                "pose_published": 302,
+                "correction_messages_received": 61,
+                "correction_messages_applied": 61,
+                "correction_replays": 61,
+                "correction_naive_arrival_updates": 0,
+                "correction_history_rejections": 0,
+                "effective_sample_size": 301.512
+              },
+              "logger": {
+                "ground_truth_received": 241,
+                "ekf_received": 302,
+                "ukf_received": 302,
+                "pf_received": 302,
+                "odom_received": 0,
+                "diagnostics_received": 906,
+                "log_odom_baseline": false,
+                "use_odom_as_ground_truth": false
+              }
+            }
+          }
+        ],
+        "aggregate": {
+          "ekf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.09676791236205211,
+              "std": 0.003583233355035661,
+              "min": 0.09172500348751937,
+              "max": 0.09972081143925436
+            },
+            "final_drift": {
+              "mean": 0.055249108108420375,
+              "std": 0.024086856522679802,
+              "min": 0.021374132719614587,
+              "max": 0.0752897421935202
+            },
+            "yaw_rmse": {
+              "mean": 0.032477740904939045,
+              "std": 0.0008248662100662518,
+              "min": 0.03185800189476303,
+              "max": 0.033643501212766005
+            }
+          },
+          "ukf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.09676791236205211,
+              "std": 0.003583233355035661,
+              "min": 0.09172500348751937,
+              "max": 0.09972081143925436
+            },
+            "final_drift": {
+              "mean": 0.055249108108420375,
+              "std": 0.024086856522679802,
+              "min": 0.021374132719614587,
+              "max": 0.0752897421935202
+            },
+            "yaw_rmse": {
+              "mean": 0.032477740904939045,
+              "std": 0.0008248662100662518,
+              "min": 0.03185800189476303,
+              "max": 0.033643501212766005
+            }
+          },
+          "pf": {
+            "num_samples": {
+              "mean": 241.0,
+              "std": 0.0,
+              "min": 241.0,
+              "max": 241.0
+            },
+            "ate_rmse": {
+              "mean": 0.05073286855978625,
+              "std": 0.0017048124052410534,
+              "min": 0.04946867322659096,
+              "max": 0.053142868255529795
+            },
+            "final_drift": {
+              "mean": 0.03595838538012705,
+              "std": 0.002684359191324529,
+              "min": 0.03243136924751047,
+              "max": 0.03893795031281516
+            },
+            "yaw_rmse": {
+              "mean": 0.03692441873850527,
+              "std": 0.0017057915809778497,
+              "min": 0.03473706308851622,
+              "max": 0.03889911519096922
+            }
+          }
+        }
+      }
+    }
+  }
+}

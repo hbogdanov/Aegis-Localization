@@ -56,6 +56,7 @@ public:
     use_odom_pose_update_ = this->declare_parameter<bool>("use_odom_pose_update", true);
     pose_gating_enabled_ = this->declare_parameter<bool>("pose_gating_enabled", false);
     pose_gating_threshold_ = this->declare_parameter<double>("pose_gating_threshold", 9.324146034653893);
+    correction_replay_enabled_ = this->declare_parameter<bool>("correction_replay_enabled", true);
     max_history_seconds_ = this->declare_parameter<double>("max_history_seconds", 5.0);
 
     auto process_noise = this->declare_parameter<std::vector<double>>(
@@ -115,6 +116,7 @@ private:
   {
     rclcpp::Time stamp{0, 0, RCL_ROS_TIME};
     geometry_msgs::msg::PoseWithCovarianceStamped msg;
+    bool diagnostics_pending = false;
   };
 
   std::deque<Snapshot>::iterator findSnapshot(const rclcpp::Time &stamp)
@@ -160,6 +162,7 @@ private:
     handle << "  \"correction_messages_received\": " << correction_received_count_ << ",\n";
     handle << "  \"correction_messages_applied\": " << correction_applied_count_ << ",\n";
     handle << "  \"correction_replays\": " << correction_replay_count_ << ",\n";
+    handle << "  \"correction_naive_arrival_updates\": " << correction_naive_arrival_count_ << ",\n";
     handle << "  \"correction_history_rejections\": " << correction_history_rejection_count_ << ",\n";
     handle << "  \"pose_gating_enabled\": " << (pose_gating_enabled_ ? "true" : "false") << ",\n";
     handle << "  \"pose_gating_threshold\": " << pose_gating_threshold_ << "\n";
@@ -212,6 +215,14 @@ private:
       return;
     }
 
+    if (!correction_replay_enabled_) {
+      applyCorrectionMeasurement(*msg, true);
+      ++correction_naive_arrival_count_;
+      publishPose(toBuiltinTime(last_processed_stamp_));
+      maybeWriteStats();
+      return;
+    }
+
     const rclcpp::Time correction_stamp(msg->header.stamp);
     if (!odom_history_.empty() && correction_stamp < odom_history_.front().stamp) {
       ++correction_history_rejection_count_;
@@ -221,7 +232,7 @@ private:
       return;
     }
 
-    processed_corrections_.push_back(CorrectionRecord{correction_stamp, *msg});
+    processed_corrections_.push_back(CorrectionRecord{correction_stamp, *msg, true});
     std::stable_sort(
       processed_corrections_.begin(),
       processed_corrections_.end(),
@@ -352,9 +363,11 @@ private:
     ekf_ = snapshot_it->filter;
     last_processed_stamp_ = correction_stamp;
 
-    for (const auto &correction : processed_corrections_) {
+    for (auto &correction : processed_corrections_) {
       if (correction.stamp == correction_stamp) {
-        applyCorrectionMeasurement(correction.msg, false);
+        // Publish the newly received correction once; historical replay stays silent.
+        applyCorrectionMeasurement(correction.msg, correction.diagnostics_pending);
+        correction.diagnostics_pending = false;
       }
     }
     snapshot_it->filter = ekf_;
@@ -378,7 +391,6 @@ private:
 
     ++correction_replay_count_;
     publishPose(toBuiltinTime(last_processed_stamp_));
-    publishDiagnostics(toBuiltinTime(last_processed_stamp_));
   }
 
   builtin_interfaces::msg::Time toBuiltinTime(const rclcpp::Time &stamp) const
@@ -474,6 +486,7 @@ private:
   std::string frame_id_;
   bool use_odom_pose_update_ = true;
   bool pose_gating_enabled_ = false;
+  bool correction_replay_enabled_ = true;
   double pose_gating_threshold_ = 9.324146034653893;
   double max_history_seconds_ = 5.0;
   bool initialized_ = false;
@@ -498,6 +511,7 @@ private:
   std::size_t correction_received_count_ = 0;
   std::size_t correction_applied_count_ = 0;
   std::size_t correction_replay_count_ = 0;
+  std::size_t correction_naive_arrival_count_ = 0;
   std::size_t correction_history_rejection_count_ = 0;
   double last_innovation_ = 0.0;
   std::string diagnostics_status_ = "INIT";

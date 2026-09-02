@@ -34,9 +34,12 @@ def generate_launch_description():
     pose_outlier_yaw_std = LaunchConfiguration('pose_outlier_yaw_std')
     pose_outlier_start_seconds = LaunchConfiguration('pose_outlier_start_seconds')
     correction_enabled = LaunchConfiguration('correction_enabled')
+    correction_replay_enabled = LaunchConfiguration('correction_replay_enabled')
     correction_start_seconds = LaunchConfiguration('correction_start_seconds')
     correction_frequency_hz = LaunchConfiguration('correction_frequency_hz')
     correction_dropout_probability = LaunchConfiguration('correction_dropout_probability')
+    correction_blackout_start_seconds = LaunchConfiguration('correction_blackout_start_seconds')
+    correction_blackout_duration_seconds = LaunchConfiguration('correction_blackout_duration_seconds')
     correction_latency_seconds = LaunchConfiguration('correction_latency_seconds')
     correction_latency_schedule_seconds = LaunchConfiguration('correction_latency_schedule_seconds')
     correction_max_emissions = LaunchConfiguration('correction_max_emissions')
@@ -74,9 +77,12 @@ def generate_launch_description():
         DeclareLaunchArgument('pose_outlier_yaw_std', default_value='0.75'),
         DeclareLaunchArgument('pose_outlier_start_seconds', default_value='0.0'),
         DeclareLaunchArgument('correction_enabled', default_value='false'),
+        DeclareLaunchArgument('correction_replay_enabled', default_value='true'),
         DeclareLaunchArgument('correction_start_seconds', default_value='0.0'),
         DeclareLaunchArgument('correction_frequency_hz', default_value='2.0'),
         DeclareLaunchArgument('correction_dropout_probability', default_value='0.0'),
+        DeclareLaunchArgument('correction_blackout_start_seconds', default_value='-1.0'),
+        DeclareLaunchArgument('correction_blackout_duration_seconds', default_value='0.0'),
         DeclareLaunchArgument('correction_latency_seconds', default_value='0.0'),
         DeclareLaunchArgument('correction_latency_schedule_seconds', default_value=''),
         DeclareLaunchArgument('correction_max_emissions', default_value='0'),
@@ -120,6 +126,8 @@ def generate_launch_description():
                 'correction_start_seconds': correction_start_seconds,
                 'correction_frequency_hz': correction_frequency_hz,
                 'correction_dropout_probability': correction_dropout_probability,
+                'correction_blackout_start_seconds': correction_blackout_start_seconds,
+                'correction_blackout_duration_seconds': correction_blackout_duration_seconds,
                 'correction_latency_seconds': correction_latency_seconds,
                 'correction_latency_schedule_seconds': correction_latency_schedule_seconds,
                 'correction_max_emissions': correction_max_emissions,
@@ -145,6 +153,7 @@ def generate_launch_description():
             'pose_gating_enabled': pose_gating_enabled,
             'pose_gating_threshold': pose_gating_threshold,
             'max_history_seconds': max_history_seconds,
+            'correction_replay_enabled': correction_replay_enabled,
             'stats_out': ekf_stats_out,
         }],
         condition=IfCondition(run_ekf),
@@ -160,6 +169,7 @@ def generate_launch_description():
             'pose_gating_enabled': pose_gating_enabled,
             'pose_gating_threshold': pose_gating_threshold,
             'max_history_seconds': max_history_seconds,
+            'correction_replay_enabled': correction_replay_enabled,
             'stats_out': ukf_stats_out,
         }],
         condition=IfCondition(run_ukf),
@@ -173,6 +183,7 @@ def generate_launch_description():
         parameters=[pf_config, {
             'use_odom_pose_update': use_odom_pose_update,
             'max_history_seconds': max_history_seconds,
+            'correction_replay_enabled': correction_replay_enabled,
             'random_seed': pf_random_seed,
             'stats_out': pf_stats_out,
         }],

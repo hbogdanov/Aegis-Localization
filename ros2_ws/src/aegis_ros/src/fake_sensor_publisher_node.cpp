@@ -52,6 +52,8 @@ public:
     correction_start_seconds_ = this->declare_parameter<double>("correction_start_seconds", 0.0);
     correction_frequency_hz_ = this->declare_parameter<double>("correction_frequency_hz", 2.0);
     correction_dropout_probability_ = this->declare_parameter<double>("correction_dropout_probability", 0.0);
+    correction_blackout_start_seconds_ = this->declare_parameter<double>("correction_blackout_start_seconds", -1.0);
+    correction_blackout_duration_seconds_ = this->declare_parameter<double>("correction_blackout_duration_seconds", 0.0);
     correction_latency_seconds_ = this->declare_parameter<double>("correction_latency_seconds", 0.0);
     correction_latency_schedule_seconds_ = parseLatencySchedule(
       this->declare_parameter<std::string>("correction_latency_schedule_seconds", ""));
@@ -75,7 +77,7 @@ public:
     if (!correction_log_out_.empty()) {
       correction_log_.open(correction_log_out_, std::ios::out | std::ios::trunc);
       if (correction_log_.is_open()) {
-        correction_log_ << "measurement_timestamp,publish_timestamp,dropped,corrupted\n";
+        correction_log_ << "measurement_timestamp,publish_timestamp,dropped,corrupted,blackout\n";
         correction_log_.flush();
       }
     }
@@ -105,6 +107,7 @@ private:
     double publish_timestamp = 0.0;
     bool dropped = false;
     bool corrupted = false;
+    bool blackout = false;
     geometry_msgs::msg::PoseWithCovarianceStamped msg;
   };
 
@@ -160,6 +163,7 @@ private:
     handle << "  \"corrupted_pose_measurements\": " << pose_outlier_count_ << ",\n";
     handle << "  \"published_corrections\": " << published_correction_count_ << ",\n";
     handle << "  \"dropped_corrections\": " << dropped_correction_count_ << ",\n";
+    handle << "  \"blackout_dropped_corrections\": " << blackout_dropped_correction_count_ << ",\n";
     handle << "  \"corrupted_corrections\": " << corrupted_correction_count_ << ",\n";
     handle << "  \"enqueued_corrections\": " << enqueued_correction_count_ << ",\n";
     handle << "  \"correction_frequency_hz\": " << correction_frequency_hz_ << ",\n";
@@ -196,7 +200,16 @@ private:
     double theta)
   {
     const std::size_t correction_index = enqueued_correction_count_;
-    const bool dropped = std::bernoulli_distribution(correction_dropout_probability_)(rng_);
+    const double measurement_elapsed_seconds =
+      static_cast<double>(sample_index_) * kSamplePeriodSeconds;
+    const bool in_blackout = correction_blackout_start_seconds_ >= 0.0 &&
+      measurement_elapsed_seconds >= correction_blackout_start_seconds_ &&
+      measurement_elapsed_seconds <
+      correction_blackout_start_seconds_ + correction_blackout_duration_seconds_;
+    const bool dropped = in_blackout || std::bernoulli_distribution(correction_dropout_probability_)(rng_);
+    if (in_blackout) {
+      ++blackout_dropped_correction_count_;
+    }
     const bool corrupted = !dropped && std::bernoulli_distribution(correction_outlier_probability_)(rng_);
 
     double measured_x = addNoise(x, correction_position_noise_std_);
@@ -237,6 +250,7 @@ private:
       publish_timestamp,
       dropped,
       corrupted,
+      in_blackout,
       correction,
     });
     ++enqueued_correction_count_;
@@ -261,7 +275,8 @@ private:
                         << measurement_stamp.seconds() << ','
                         << pending.publish_timestamp << ','
                         << (pending.dropped ? "true" : "false") << ','
-                        << (pending.corrupted ? "true" : "false") << '\n';
+                        << (pending.corrupted ? "true" : "false") << ','
+                        << (pending.blackout ? "true" : "false") << '\n';
       }
     }
   }
@@ -391,6 +406,7 @@ private:
   std::size_t pose_outlier_count_ = 0;
   std::size_t published_correction_count_ = 0;
   std::size_t dropped_correction_count_ = 0;
+  std::size_t blackout_dropped_correction_count_ = 0;
   std::size_t corrupted_correction_count_ = 0;
   std::size_t enqueued_correction_count_ = 0;
   double radius_;
@@ -410,6 +426,8 @@ private:
   double correction_start_seconds_ = 0.0;
   double correction_frequency_hz_ = 2.0;
   double correction_dropout_probability_ = 0.0;
+  double correction_blackout_start_seconds_ = -1.0;
+  double correction_blackout_duration_seconds_ = 0.0;
   double correction_latency_seconds_ = 0.0;
   std::vector<double> correction_latency_schedule_seconds_;
   std::size_t correction_max_emissions_ = 0U;

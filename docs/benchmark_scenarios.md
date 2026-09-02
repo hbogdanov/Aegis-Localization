@@ -82,3 +82,17 @@ That campaign preserves per-run artifacts and aggregates:
 - mean and standard deviation of yaw RMSE
 - mean and standard deviation of update rate
 - mean and standard deviation of NIS fraction-in-bounds for EKF and UKF
+
+## Phase 5 Delayed Correction Evidence
+
+The delayed-correction research path uses pose-like corrections with a measurement timestamp and a possibly later arrival timestamp.
+
+```bash
+python3 scripts/run_phase5_replay_comparison.py --duration 12 --repeats 3
+python3 scripts/run_phase5_degradation_campaign.py --duration 12 --repeats 3
+python3 scripts/generate_phase5_final_report.py
+```
+
+`run_phase5_replay_comparison.py` compares naive fusion at arrival time with timestamp-aware historical replay. Its ATE is the online published-trajectory result; final drift is the post-fusion current-state result.
+
+`run_phase5_degradation_campaign.py` evaluates replay under low correction frequency, random dropout, latency, noise, outliers with and without gating, a timed correction blackout, and a combined degraded condition. The blackout condition records error growth during the outage and error one second after corrections resume.

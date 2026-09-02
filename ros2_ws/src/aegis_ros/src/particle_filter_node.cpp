@@ -39,6 +39,7 @@ public:
     const auto random_seed = static_cast<std::uint32_t>(this->declare_parameter<int64_t>("random_seed", 4242));
     frame_id_ = this->declare_parameter<std::string>("frame_id", "map");
     use_odom_pose_update_ = this->declare_parameter<bool>("use_odom_pose_update", true);
+    correction_replay_enabled_ = this->declare_parameter<bool>("correction_replay_enabled", true);
     max_history_seconds_ = this->declare_parameter<double>("max_history_seconds", 5.0);
     process_noise_x_ = this->declare_parameter<double>("process_noise_x", 0.02);
     process_noise_y_ = this->declare_parameter<double>("process_noise_y", 0.02);
@@ -145,6 +146,7 @@ private:
     handle << "  \"correction_messages_received\": " << correction_received_count_ << ",\n";
     handle << "  \"correction_messages_applied\": " << correction_applied_count_ << ",\n";
     handle << "  \"correction_replays\": " << correction_replay_count_ << ",\n";
+    handle << "  \"correction_naive_arrival_updates\": " << correction_naive_arrival_count_ << ",\n";
     handle << "  \"correction_history_rejections\": " << correction_history_rejection_count_ << ",\n";
     handle << "  \"effective_sample_size\": " << last_effective_sample_size_ << "\n";
     handle << "}\n";
@@ -197,6 +199,15 @@ private:
   {
     ++correction_received_count_;
     if (!initialized_) {
+      return;
+    }
+
+    if (!correction_replay_enabled_) {
+      applyCorrectionMeasurement(*msg, false);
+      ++correction_naive_arrival_count_;
+      publishPose(toBuiltinTime(last_processed_stamp_));
+      publishDiagnostics(toBuiltinTime(last_processed_stamp_));
+      maybeWriteStats();
       return;
     }
 
@@ -404,6 +415,7 @@ private:
   std::string stats_out_;
   std::string frame_id_;
   bool use_odom_pose_update_ = true;
+  bool correction_replay_enabled_ = true;
   bool initialized_ = false;
   double max_history_seconds_ = 5.0;
   double process_noise_x_ = 0.02;
@@ -433,6 +445,7 @@ private:
   std::size_t correction_received_count_ = 0;
   std::size_t correction_applied_count_ = 0;
   std::size_t correction_replay_count_ = 0;
+  std::size_t correction_naive_arrival_count_ = 0;
   std::size_t correction_history_rejection_count_ = 0;
   rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr pose_pub_;
   rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub_;

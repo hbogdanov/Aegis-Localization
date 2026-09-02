@@ -240,6 +240,16 @@ The correctness checks show that, for deterministic EKF/UKF cases, zero-latency 
 
 The delayed-run trajectory remains an online record: estimates published before a correction arrives cannot be retroactively improved. Whole-trajectory error and reconstructed current-state correctness are therefore reported as distinct concepts. See `results/reports/phase5_correctness.md` and `results/reports/phase5_intermittent_correction.md` for the preserved evidence.
 
+The remaining Phase 5 research experiments are reproducible from the repository root:
+
+```bash
+python3 scripts/run_phase5_replay_comparison.py --duration 12 --repeats 3
+python3 scripts/run_phase5_degradation_campaign.py --duration 12 --repeats 3
+python3 scripts/generate_phase5_final_report.py
+```
+
+The first command compares naive arrival-time fusion with timestamp-aware replay at `0`, `100`, `500`, and `1000` ms latency. The second holds replay fixed while varying correction frequency, dropout, latency, noise, corruption/gating, and a timed blackout-recovery condition. The final report presents online ATE separately from post-fusion terminal drift.
+
 ## EuRoC Recorded-Data Benchmark
 
 A minimal recorded-data backend is now available for one EuRoC sequence at a time through the same evaluation pipeline used by the synthetic benchmark:
