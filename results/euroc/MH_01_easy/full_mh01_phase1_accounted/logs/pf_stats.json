@@ -1,9 +1,0 @@
-{
-  "odom_received": 36000,
-  "imu_received": 35999,
-  "predict_calls": 35999,
-  "pose_update_calls": 0,
-  "velocity_update_calls": 35999,
-  "pose_published": 36000,
-  "effective_sample_size": 500
-}

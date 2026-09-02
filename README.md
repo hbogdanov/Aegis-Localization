@@ -12,6 +12,8 @@ Online ATE describes what an estimator published before later information arrive
 
 All values below are synthetic. Full three-repeat evidence: [Phase 5 report](results/reports/phase5_final_report.md).
 
+![Final drift at one second correction latency](results/reports/phase5_replay_latency.svg)
+
 | Scenario | Estimator | Result |
 | --- | --- | --- |
 | 1.0 s delayed correction | EKF / UKF | Replay reduced final drift from `0.3005 m` to `0.0552 m` (about 82%). |

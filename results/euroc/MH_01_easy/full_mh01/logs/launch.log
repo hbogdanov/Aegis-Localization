@@ -1,9 +1,0 @@
-[INFO] [launch]: All log files can be found below /home/hbogdanov/.ros/log/2026-08-17-21-04-58-439333-Ivanb-337
-[INFO] [launch]: Default logging verbosity is set to INFO
-[INFO] [ekf_node-1]: process started with pid [449]
-[INFO] [ukf_node-2]: process started with pid [451]
-[INFO] [particle_filter_node-3]: process started with pid [454]
-[INFO] [trajectory_logger_node-4]: process started with pid [456]
-[ukf_node-2] terminate called after throwing an instance of 'std::runtime_error'
-[ukf_node-2]   what():  UKF covariance is not positive definite
-[ERROR] [ukf_node-2]: process has died [pid 451, exit code -6, cmd '/mnt/c/Users/Ivan/dev/Aegis-Localization/ros2_ws/install/aegis_ros/lib/aegis_ros/ukf_node --ros-args -r __node:=ukf_node --params-file /mnt/c/Users/Ivan/dev/Aegis-Localization/ros2_ws/install/aegis_ros/share/aegis_ros/config/ukf.yaml --params-file /tmp/launch_params_my8lnrt2'].

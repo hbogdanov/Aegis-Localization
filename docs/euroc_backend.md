@@ -63,16 +63,6 @@ with:
 - `manifest.json`
 - `metadata.json`
 
-## Preserved Benchmark Artifact
-
-The retained `MH_01_easy` evidence is `results/euroc/MH_01_easy/full_mh01_phase1_accounted/`. It includes:
-
-- canonical normalized CSV outputs
-- `metrics/summary.json`
-- `metrics/diagnostics.json`
-- `benchmark_report.md`
-- raw launch and replay logs
-
 ## Findings
 
 On `MH_01_easy`, the backend now demonstrates:

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="260" viewBox="0 0 720 260" role="img" aria-labelledby="title desc">
+  <title id="title">Timestamp-aware replay reduces final drift at one second latency</title>
+  <desc id="desc">Mean EKF and UKF final drift over three synthetic repeats: naive arrival-time fusion 0.3005 meters, timestamp-aware replay 0.0552 meters.</desc>
+  <style>text{font-family:Arial,sans-serif;fill:#1f2937}.label{font-size:16px}.small{font-size:13px;fill:#4b5563}.value{font-size:18px;font-weight:bold}</style>
+  <rect width="720" height="260" fill="#f8fafc"/>
+  <text x="34" y="38" class="label" font-weight="bold">Final drift at 1.0 s correction latency</text>
+  <text x="34" y="59" class="small">Synthetic, EKF/UKF mean over three repeats; lower is better</text>
+  <text x="34" y="112" class="label">Naive arrival-time fusion</text><rect x="285" y="88" width="360" height="36" fill="#c2410c"/><text x="655" y="113" class="value">0.3005 m</text>
+  <text x="34" y="172" class="label">Timestamp-aware replay</text><rect x="285" y="148" width="66" height="36" fill="#047857"/><text x="362" y="173" class="value">0.0552 m</text>
+  <line x1="285" y1="204" x2="645" y2="204" stroke="#94a3b8"/><text x="285" y="228" class="small">0 m</text><text x="605" y="228" class="small">0.30 m</text>
+  <text x="34" y="248" class="small">Replay lowers mean final drift by approximately 82%; see phase5_final_report.md for full evidence.</text>
+</svg>
