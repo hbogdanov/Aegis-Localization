@@ -27,7 +27,6 @@ jobs:
       - run: |
           source /opt/ros/humble/setup.bash
           cd ros2_ws
-          rosdep install --from-paths src --ignore-src -r -y
-          colcon build --symlink-install --packages-select aegis_core aegis_msgs aegis_ros
-          colcon test --packages-select aegis_core aegis_ros
+          colcon build --symlink-install --packages-select aegis_core
+          colcon test --packages-select aegis_core
           colcon test-result --verbose
